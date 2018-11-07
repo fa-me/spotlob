@@ -1,0 +1,9 @@
+reader: **reader_kwargs --> image, metadata
+converter: image (any), **converter_kwargs --> image (grey)
+preprocessor: image (grey), **preprocessor_kwargs --> image (grey)
+binarize: image (grey), **binarization_kwargs --> image (binary)
+postprocessor: image (binary), **postprocessor_kwargs --> image (binary)
+feature_extractor: image (binary), **feature_extractor_kwargs --> contours
+feature_filter: contours, **feature_filter_kwargs --> contours
+analysis: contours, **feature_filter_kwargs --> DataFrame
+export: MetaData, **feature_filter_kwargs --> None
