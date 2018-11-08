@@ -47,7 +47,7 @@ class Spim:
         return Spim(None, metadata, SpimStage.features_extracted)
 
     def filter_features(self, feature_filter):
-        filtered_contours.apply(self.metadata["contours"])
+        filtered_contours = feature_filter.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["contours"] = filtered_contours
         return Spim(None, metadata, SpimStage.features_filtered)

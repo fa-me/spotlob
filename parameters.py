@@ -4,6 +4,7 @@ class SpotlobParameter(object):
         self.value = value
         self.type = type_
         self.description = description
+        super(SpotlobParameter, self).__init__()
 
     def __repr__(self):
         return "<SpotlobParameter(%s) %s: %s>" % (self.type, self.name, self.value)
@@ -28,24 +29,26 @@ class SpotlobParameterSet(object):
             ind = self.names.index(identifier)
             return self.parameters[ind]
 
+    def to_dict(self):
+        return dict([(p.name, p.value) for p in self.parameters])
+
 
 class FilepathParameter(SpotlobParameter):
-    def __init__(self, path):
-        super(FilepathParameter, self).__init__(
-            "Filepath", path, str, "")
+    def __init__(self, name, path):
+        super(FilepathParameter, self).__init__(name, path, str, "")
 
 
-class FloatParameter(SpotlobParameter):
-    def __init__(self, name, value, minvalue, maxvalue, description=""):
+class EnumParameter(SpotlobParameter):
+    def __init__(self, name, value, options, description=""):
+        self.options = options
+        super(EnumParameter, self).__init__(
+            name, value, str, description)
+
+
+class NumericRangeParameter(SpotlobParameter):
+    def __init__(self, name, value, minvalue, maxvalue, type_=int, step=1, description=""):
         self.minvalue = minvalue
         self.maxvalue = maxvalue
-        super(FloatParameter, self).__init__(
-            name, value, float, description)
-
-
-class IntParameter(SpotlobParameter):
-    def __init__(self, name, value, minvalue, maxvalue, description=""):
-        self.minvalue = minvalue
-        self.maxvalue = maxvalue
-        super(IntParameter, self).__init__(
-            name, value, int, description)
+        self.step = step
+        super(NumericRangeParameter, self).__init__(
+            name, value, type_, description)
