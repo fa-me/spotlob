@@ -45,8 +45,7 @@ class GaussianPreprocess(Preprocessor):
 class BinaryThreshold(Binarisation):
     def __init__(self, threshold):
         pars = SpotlobParameterSet(
-            [NumericRangeParameter("threshold", threshold, 0, 255)
-             ])
+            [NumericRangeParameter("threshold", threshold, 0, 255)])
         super(BinaryThreshold, self).__init__(self.threshold_fn, pars)
 
     def threshold_fn(self, grey_image, threshold):
@@ -75,14 +74,25 @@ class ContourFinderSimple(FeatureFinder):
         return contours
 
 
-class FeatureSizeFilter(FeatureFilter):
-    def __init__(self, size):
+class FeatureFormFilter(FeatureFilter):
+    def __init__(self, size, solidity):
         pars = SpotlobParameterSet(
-            [NumericRangeParameter("minimal_area", size, 0, 10000)])
-        super(FeatureSizeFilter, self).__init__(self.filter_fn, pars)
+            [NumericRangeParameter("minimal_area", size, 0, 10000),
+             NumericRangeParameter(
+                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float)
+             ])
+        super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
-    def filter_fn(self, contours, minimal_area):
-        return filter(lambda c: cv2.contourArea(c) > minimal_area, contours)
+    def solidity(self, c):
+        try:
+            return cv2.contourArea(c)/cv2.contourArea(cv2.convexHull(c))
+        except ZeroDivisionError:
+            return 0
+
+    def filter_fn(self, contours, minimal_area, solidity_limit):
+        contours = filter(lambda c: cv2.contourArea(c)
+                          > minimal_area, contours)
+        return filter(lambda c: self.solidity(c) > solidity_limit, contours)
 
 
 class CircleAnalysis(Analysis):
