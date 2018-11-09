@@ -37,6 +37,9 @@ def parameter_as_widget(parameter):
 
         elif ty == str:
             widget = Text(value=v, description=name, disabled=False)
+        else:
+            raise NotImplementedError(
+                "Could not construct widget for parameter type %s" % ty)
 
     def update_to_widgetstate(widgetstate):
         parameter.value = widgetstate["new"]

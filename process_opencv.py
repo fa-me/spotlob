@@ -101,19 +101,30 @@ class CircleAnalysis(Analysis):
         super(CircleAnalysis, self).__init__(self.analyse, pars)
 
     def analyse(self, contours):
-        areas = [cv2.contourArea(c) for c in contours]
-        # xys = []
-        # MAs = []
-        # mas = []
-        # angles = []
+        areas = []
+        ellipses_positions = []
+        ellipses_majorAxes = []
+        ellipses_minorAxes = []
+        ellipses_angles = []
 
-        # for c in contours_sel:
-        #     try:
-        #         xy, (MA, ma), angle = cv2.fitEllipse(c)
-        #         xys += [xy]
-        #         MAs += [MAs]
-        #     except:
-        #         #print("failed fitting contour %s" % c)
-        #         pass
+        for c in contours:
+            # AREA
+            areas += [cv2.contourArea(c)]
 
-        return pd.DataFrame(areas, columns=["area"])
+            # ELLIPSE
+            try:
+                xy, (MA, ma), angle = cv2.fitEllipse(c)
+            except:
+                xy, (MA, ma), angle = np.nan, (np.nan, np.nan), np.nan
+
+            ellipses_positions += [xy]
+            ellipses_majorAxes += [MA]
+            ellipses_minorAxes += [ma]
+            ellipses_angles += [angle]
+
+        # ADD METADATA
+        return pd.DataFrame({"area": areas,
+                             "ellipse_position": ellipses_positions,
+                             "ellipse_majorAxis": ellipses_majorAxes,
+                             "ellipse_minorAxis": ellipses_minorAxes,
+                             "ellipse_angle": ellipses_angles})
