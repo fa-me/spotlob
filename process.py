@@ -4,9 +4,12 @@ import numpy as np
 
 
 class SpotlobProcessStep(object):
+    """A super class for process steps"""
+
+    # stage that a spim should have before this Process can be applied
     input_stage = None
 
-    """a process is outdated, if it has not been applied since the parameters changed"""
+    # a process is outdated, if it has not been applied since the parameters changed
     outdated = True
 
     def __init__(self, function, parameters):

@@ -25,9 +25,9 @@ class SpotlobNotebookGui(object):
         self.run()
         return self.pipeline_as_widget(self.pipeline)
 
-    def show_preview_screen(self):
+    def show_preview_screen(self, *args, **kwargs):
         self.preview_screen.make_new(
-            self.dummyspim.get_at_stage(SpimStage.loaded).image)
+            self.dummyspim.get_at_stage(SpimStage.loaded).image, *args, **kwargs)
 
     def parameter_as_widget(self, parameter, parent_process):
         v = parameter.value
@@ -99,12 +99,14 @@ class SpotlobNotebookGui(object):
             self.run()
 
             # draw results
-            results_dataframe = self.dummyspim.metadata["results"]
             image = self.dummyspim.get_at_stage(SpimStage.loaded).image
             analyis_process = self.pipeline.process_stage_dict[SpimStage.analyzed-1]
             image_with_results = analyis_process.draw_results(
-                image, results_dataframe)
+                image, self.results())
             self.preview_screen.update(image_with_results)
 
         rb.on_click(run_inner)
         return rb
+
+    def results(self):
+        return self.dummyspim.metadata["results"]

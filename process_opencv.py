@@ -16,17 +16,34 @@ class SimpleReader(Reader):
 
 class GreyscaleConverter(Converter):
     def __init__(self):
-        converter_options = ["Grey"]
+        self.hsv_str_list = ["Hue", "Saturation", "Value"]
+        self.rgb_str_list = ["Red channel", "Blue channel", "Green channel"]
+        converter_options = ["Grey"] + self.hsv_str_list + self.rgb_str_list
 
         pars = SpotlobParameterSet(
-            [EnumParameter("conversion", converter_options[0], converter_options)])
+            [EnumParameter("conversion", converter_options[0], converter_options),
+             BoolParameter("invert", False)
+             ])
         super(GreyscaleConverter, self).__init__(self.convert, pars)
 
-    def convert(self, rgb_image, conversion):
+    def convert(self, rgb_image, conversion, invert):
         if conversion == "Grey":
-            code = cv2.COLOR_RGB2GRAY
+            out = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2GRAY).astype(np.uint8)
+        else:
+            if conversion in self.hsv_str_list:
+                code = cv2.COLOR_RGB2HSV
+                ch_nr = self.hsv_str_list.index(conversion)
+                out = cv2.cvtColor(rgb_image, code)
+            elif conversion in self.rgb_str_list:
+                ch_nr = self.rgb_str_list.index(conversion)
+                out = rgb_image
 
-        return cv2.cvtColor(rgb_image, code).astype(np.uint8)
+            out = out[:, :, ch_nr].astype(np.uint8)
+
+        if invert:
+            return cv2.bitwise_not(out)
+        else:
+            return out
 
 
 class GaussianPreprocess(Preprocessor):
@@ -108,7 +125,6 @@ class CircleAnalysis(Analysis):
         super(CircleAnalysis, self).__init__(self.analyse, pars)
 
     def analyse(self, contours):
-        print "analysing"
         areas = []
         ellipses_positions = []
         ellipses_majorAxes = []
@@ -143,6 +159,11 @@ class CircleAnalysis(Analysis):
             ma = row["ellipse_minorAxis"]
             angle = row["ellipse_angle"]
 
-            cv2.ellipse(image, (int(x), int(y)), (int(
-                MA/2.0), int(ma/2.0)), angle, 0, 360, [255, 255, 0], 3)
+            xy = (int(x), int(y))
+            e_size = (int(MA/2.0), int(ma/2.0))
+
+            pen_color = [255, 0, 0]
+
+            cv2.circle(image, xy, 10, pen_color, -1)
+            cv2.ellipse(image, xy, e_size, angle, 0, 360, pen_color, 3)
         return image
