@@ -34,7 +34,7 @@ class GreyscaleConverter(Converter):
 class GaussianPreprocess(Preprocessor):
     def __init__(self, ksize):
         pars = SpotlobParameterSet(
-            [NumericRangeParameter("kernelsize", ksize, 1, 21, step=2)])
+            [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)])
         super(GaussianPreprocess, self).__init__(self.filter_fn, pars)
 
     def filter_fn(self, grey_image, kernelsize):
@@ -92,7 +92,13 @@ class FeatureFormFilter(FeatureFilter):
     def filter_fn(self, contours, minimal_area, solidity_limit):
         contours = filter(lambda c: cv2.contourArea(c)
                           > minimal_area, contours)
-        return filter(lambda c: self.solidity(c) > solidity_limit, contours)
+        filtered_contours = filter(
+            lambda c: self.solidity(c) > solidity_limit, contours)
+        return filtered_contours
+
+    def draw_contours(self, image, contours):
+        bg = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
+        return cv2.drawContours(bg, contours, -1, (0, 255, 0), 3)
 
 
 class CircleAnalysis(Analysis):

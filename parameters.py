@@ -5,7 +5,6 @@ class SpotlobParameter(object):
         self.type = type_
         self.description = description
         self.preview_enabled = False
-        self.update_preview_function = None
         super(SpotlobParameter, self).__init__()
 
     def __repr__(self):
@@ -18,14 +17,6 @@ class SpotlobParameter(object):
     @value.setter
     def value(self, new_val):
         self._value = new_val
-        if self.preview_enabled:
-            self.update_preview_function(new_val)
-
-    def enable_preview(self, update_preview_function):
-        """preview function must be a function that is called upon change of value of this parameter"""
-        raise NotImplementedError("preview not yet supported")
-        self.update_preview_function = update_preview_function
-        self.preview_enabled = True
 
 
 class SpotlobParameterSet(object):

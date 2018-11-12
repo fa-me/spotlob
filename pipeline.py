@@ -1,33 +1,39 @@
-class Pipeline:
-    reader = None
-    converter = None
-    preprocessor = None
-    binarization = None
-    postprocessor = None
-    feature_extractor = None
-    feature_filter = None
-    analysis = None
-
-    def __init__(self):
-        pass
+class Pipeline(object):
+    def __init__(self, processes):
+        self.process_stage_dict = dict([(p.input_stage, p) for p in processes])
 
     @property
     def processes(self):
-        return [self.reader,
-                self.converter,
-                self.preprocessor,
-                self.binarization,
-                self.postprocessor,
-                self.feature_extractor,
-                self.feature_filter,
-                self.analysis]
+        return self.process_stage_dict.values()
+
+    def apply_from_stage_to_stage(self, spim, from_stage, to_stage):
+        """recursively applies all pipeline-processes up to the given stage"""
+        if from_stage >= to_stage:
+            return spim
+        else:
+            intermediate_spim = self.apply_from_stage_to_stage(
+                spim, from_stage, to_stage-1)
+            last_process = self.process_stage_dict[to_stage-1]
+            return intermediate_spim.do_process_at_stage(last_process)
 
     def apply_to(self, spim):
-        return spim.read(self.reader) \
-            .convert(self.converter) \
-            .preprocess(self.preprocessor) \
-            .binarize(self.binarization) \
-            .postprocess(self.postprocessor)\
-            .extract_features(self.feature_extractor)\
-            .filter_features(self.feature_filter) \
-            .analyse(self.analysis)
+        minstage = min(self.process_stage_dict.keys())
+        maxstage = max(self.process_stage_dict.keys())+1
+        return self.apply_from_stage_to_stage(spim, minstage, maxstage)
+
+    def apply_outdated_up_to_stage(self, spim, up_to_stage):
+        """applies all processes since the first outdated one on spim up to a given stage"""
+        first_outdated_stage = -1
+
+        # find first stage that is outdated
+        for st, process in self.process_stage_dict.items():
+            if process.outdated:
+                first_outdated_stage = st
+                break
+
+        if first_outdated_stage >= 0:
+            return self.apply_from_stage_to_stage(
+                spim, first_outdated_stage, up_to_stage)
+        else:
+            # nothing is outdated, don't do anything
+            return spim

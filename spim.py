@@ -13,65 +13,107 @@ class SpimStage:
 class Spim:
     """Spotlob image item"""
 
-    def __init__(self, image=None, metadata=dict(), stage=SpimStage.new, cached=False, predecessors=[]):
-        self.image = image
+    def __init__(self, image=None, metadata=dict(), stage=SpimStage.new, cached=False, predecessors=dict()):
+        self._image = image
         self.metadata = metadata
         self.stage = stage
         self.cached = cached
         self.predecessors = predecessors
 
+    @property
+    def image(self):
+        if not (self._image is None):
+            return self._image
+        elif self.cached:
+            return self.predecessor_image()
+        else:
+            raise Exception("image not found, has not been cached")
+
+    def predecessor_image(self):
+        predecessor_stages = self.predecessors.keys()
+        predecessor_stages.sort()
+
+        for i in predecessor_stages[::-1]:
+            p = self.predecessors[i]
+            if not (p.image is None):
+                return p.image
+        raise Exception("no image found")
+
     def read(self, reader):
         im, metadata = reader.apply()
         metadata.update(self.metadata)
-        return Spim(im, metadata, SpimStage.loaded, self.cached, self._list_predecessors())
+        return Spim(im, metadata, SpimStage.loaded, self.cached, self._predecessors_and_self())
 
     def convert(self, converter):
         im = converter.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.converted, self.cached, self._list_predecessors())
+        return Spim(im, self.metadata.copy(), SpimStage.converted, self.cached, self._predecessors_and_self())
 
     def preprocess(self, preprocessor):
         im = preprocessor.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.preprocessed, self.cached, self._list_predecessors())
+        return Spim(im, self.metadata.copy(), SpimStage.preprocessed, self.cached, self._predecessors_and_self())
 
     def binarize(self, binarizer):
         im = binarizer.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.binarized, self.cached, self._list_predecessors())
+        return Spim(im, self.metadata.copy(), SpimStage.binarized, self.cached, self._predecessors_and_self())
 
     def postprocess(self, postprocessor):
         im = postprocessor.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.postprocessed, self.cached, self._list_predecessors())
+        return Spim(im, self.metadata.copy(), SpimStage.postprocessed, self.cached, self._predecessors_and_self())
 
     def extract_features(self, feature_extractor):
         contours = feature_extractor.apply(self.image)
-        metadata = {"contours": contours}
-        metadata.update(self.metadata)
-        return Spim(None, metadata, SpimStage.features_extracted, self.cached, self._list_predecessors())
+        new_metadata = self.metadata.copy()
+        new_metadata.update({"contours": contours})
+        newspim = Spim(None, new_metadata, SpimStage.features_extracted,
+                       self.cached, self._predecessors_and_self())
+        return newspim
 
     def filter_features(self, feature_filter):
         filtered_contours = feature_filter.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["contours"] = filtered_contours
-        return Spim(None, metadata, SpimStage.features_filtered, self.cached, self._list_predecessors())
+        return Spim(None, metadata, SpimStage.features_filtered, self.cached, self._predecessors_and_self())
 
     def analyse(self, analysis):
         results = analysis.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["results"] = results
-        return Spim(None, metadata, SpimStage.analyzed, self.cached, self._list_predecessors())
+        return Spim(None, metadata, SpimStage.analyzed, self.cached, self._predecessors_and_self())
 
-    def _list_predecessors(self):
+    def func_at_stage(self, spimstage):
+        """returns the function, that can be applied the given stage"""
+        functions = [self.read,
+                     self.convert,
+                     self.preprocess,
+                     self.binarize,
+                     self.postprocess,
+                     self.extract_features,
+                     self.filter_features,
+                     self.analyse]
+        return functions[spimstage]
+
+    def do_process_at_stage(self, process):
+        return self.func_at_stage(process.input_stage)(process)
+
+    def _predecessors_and_self(self):
         if self.cached:
-            return self.predecessors + [self]
+            outd = dict()
+            for p_stage, p_spim in self.predecessors.items():
+                if p_stage < self.stage:
+                    outd.update({p_stage: p_spim})
+            outd.update({self.stage: self})
+            return outd
         else:
-            return []
+            return dict()
 
     def get_at_stage(self, spimstage):
-        if not self.cached:
-            raise Exception("Predecessors have not been cached")
+        if spimstage == self.stage:
+            return self
+        else:
+            try:
+                return self.predecessors[spimstage]
+            except KeyError:
+                raise Exception("No predecessor at stage %s" % spimstage)
 
-        predecessors = self._list_predecessors()
-        stages = [spim.stage for spim in predecessors]
-        try:
-            return predecessors[stages.index(spimstage)]
-        except ValueError:
-            raise IndexError("There is no predesessor at this stage")
+    def __repr__(self):
+        return "<Spim instance %s at stage %s>" % (id(self), self.stage)
