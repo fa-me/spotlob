@@ -61,3 +61,8 @@ class NumericRangeParameter(SpotlobParameter):
         self.step = step
         super(NumericRangeParameter, self).__init__(
             name, value, type_, description)
+
+
+class BoolParameter(SpotlobParameter):
+    def __init__(self, name, value):
+        super(BoolParameter, self).__init__(name, value, bool, description="")

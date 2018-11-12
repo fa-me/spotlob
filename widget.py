@@ -1,4 +1,4 @@
-from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox
+from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox
 from IPython.display import display
 
 from parameters import *
@@ -60,6 +60,9 @@ class SpotlobNotebookGui(object):
                 widget = Dropdown(options=parameter.options,
                                   value=parameter.value, description=name)
 
+            if isinstance(parameter, BoolParameter):
+                widget = Checkbox(value=parameter.value,
+                                  description=name)
             elif ty == str:
                 widget = Text(value=v, description=name, disabled=False)
             else:
