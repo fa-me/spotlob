@@ -34,6 +34,9 @@ class SpotlobNotebookGui(object):
         ty = parameter.type
         name = parameter.name
 
+        # if isinstance(parameter, FilepathParameter):
+        #     return fileselect.SelectFilesButton()
+        # TODO: handle other than a string
         try:
             min_ = parameter.minvalue
             max_ = parameter.maxvalue
@@ -53,9 +56,6 @@ class SpotlobNotebookGui(object):
                                  continuous_update=False)
 
         except AttributeError:
-            # if isinstance(parameter, FilepathParameter):
-            #    # TODO: return filepath selector
-            #    pass
             if isinstance(parameter, EnumParameter):
                 widget = Dropdown(options=parameter.options,
                                   value=parameter.value, description=name)

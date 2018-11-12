@@ -90,12 +90,11 @@ class ContourFinderSimple(FeatureFinder):
 
 
 class FeatureFormFilter(FeatureFilter):
-    def __init__(self, size, solidity, exclude_edge):
+    def __init__(self, size, solidity):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
              NumericRangeParameter(
-                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float),
-             BoolParameter("exclude_edge_touching", exclude_edge)
+                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float)
              ])
         super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
@@ -105,7 +104,7 @@ class FeatureFormFilter(FeatureFilter):
         except ZeroDivisionError:
             return 0
 
-    def filter_fn(self, contours, minimal_area, solidity_limit, exclude_edge_touching):
+    def filter_fn(self, contours, minimal_area, solidity_limit):
         contours = filter(lambda c: cv2.contourArea(c)
                           > minimal_area, contours)
         filtered_contours = filter(
