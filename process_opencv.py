@@ -11,24 +11,22 @@ class SimpleReader(Reader):
         super(SimpleReader, self).__init__(self.fn_read, pars)
 
     def fn_read(self, filepath):
-        return cv2.imread(filepath), {"filepath": filepath}
+        return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_RGB2BGR), {"filepath": filepath}
 
 
 class GreyscaleConverter(Converter):
     def __init__(self):
-        converter_options = ["BGR to Grey", "RGB to Grey"]
+        converter_options = ["Grey"]
 
         pars = SpotlobParameterSet(
             [EnumParameter("conversion", converter_options[0], converter_options)])
         super(GreyscaleConverter, self).__init__(self.convert, pars)
 
-    def convert(self, image, conversion):
-        if conversion == "BGR to Grey":
-            code = cv2.COLOR_BGR2GRAY
-        elif conversion == "RGB to Grey":
+    def convert(self, rgb_image, conversion):
+        if conversion == "Grey":
             code = cv2.COLOR_RGB2GRAY
 
-        return cv2.cvtColor(image, code).astype(np.uint8)
+        return cv2.cvtColor(rgb_image, code).astype(np.uint8)
 
 
 class GaussianPreprocess(Preprocessor):
@@ -110,6 +108,7 @@ class CircleAnalysis(Analysis):
         super(CircleAnalysis, self).__init__(self.analyse, pars)
 
     def analyse(self, contours):
+        print "analysing"
         areas = []
         ellipses_positions = []
         ellipses_majorAxes = []
@@ -131,9 +130,19 @@ class CircleAnalysis(Analysis):
             ellipses_minorAxes += [ma]
             ellipses_angles += [angle]
 
-        # ADD METADATA
         return pd.DataFrame({"area": areas,
                              "ellipse_position": ellipses_positions,
                              "ellipse_majorAxis": ellipses_majorAxes,
                              "ellipse_minorAxis": ellipses_minorAxes,
                              "ellipse_angle": ellipses_angles})
+
+    def draw_results(self, image, dataframe):
+        for index, row in dataframe.iterrows():
+            x, y = row["ellipse_position"]
+            MA = row["ellipse_majorAxis"]
+            ma = row["ellipse_minorAxis"]
+            angle = row["ellipse_angle"]
+
+            cv2.ellipse(image, (int(x), int(y)), (int(
+                MA/2.0), int(ma/2.0)), angle, 0, 360, [255, 255, 0], 3)
+        return image

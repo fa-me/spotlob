@@ -1,4 +1,4 @@
-from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox
+from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox, Button, Output
 from IPython.display import display
 
 from parameters import *
@@ -59,8 +59,7 @@ class SpotlobNotebookGui(object):
             if isinstance(parameter, EnumParameter):
                 widget = Dropdown(options=parameter.options,
                                   value=parameter.value, description=name)
-
-            if isinstance(parameter, BoolParameter):
+            elif isinstance(parameter, BoolParameter):
                 widget = Checkbox(value=parameter.value,
                                   description=name)
             elif ty == str:
@@ -92,3 +91,20 @@ class SpotlobNotebookGui(object):
                   for p in process.parameters.parameters])
             for process in pipeline.processes if process
         ])
+
+    def run_button(self):
+        rb = Button(description="Evaluate")
+
+        def run_inner(btn):
+            self.run()
+
+            # draw results
+            results_dataframe = self.dummyspim.metadata["results"]
+            image = self.dummyspim.get_at_stage(SpimStage.loaded).image
+            analyis_process = self.pipeline.process_stage_dict[SpimStage.analyzed-1]
+            image_with_results = analyis_process.draw_results(
+                image, results_dataframe)
+            self.preview_screen.update(image_with_results)
+
+        rb.on_click(run_inner)
+        return rb

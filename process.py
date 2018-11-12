@@ -69,7 +69,10 @@ class Binarisation(SpotlobProcessStep):
 
     def preview(self, spim):
         input = spim.get_at_stage(self.input_stage).image
-        return self.apply(input)
+        binim = self.apply(input)
+        #bin_masked = ~np.ma.masked_array(binim, binim == 0)
+        # return bin_masked
+        return binim
 
 
 class Postprocessor(SpotlobProcessStep):
@@ -104,3 +107,13 @@ class FeatureFilter(SpotlobProcessStep):
 class Analysis(SpotlobProcessStep):
     """apply returns pandas DataFrame"""
     input_stage = SpimStage.features_filtered
+
+    def preview(self, spim):
+        contours = spim.metadata["contours"]
+        df = self.apply(contours)
+
+        im = spim.get_at_stage(SpimStage.loaded).image
+        return self.draw_results(im, df)
+
+    def draw_results(self, image, dataframe):
+        raise NotImplementedError("abstract: to be implemented by subclass")
