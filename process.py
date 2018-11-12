@@ -93,7 +93,9 @@ class FeatureFilter(SpotlobProcessStep):
     def preview(self, spim):
         input_ = spim.get_at_stage(self.input_stage)
         new_contours = self.apply(input_.metadata["contours"])
-        return self.draw_contours(spim.image, new_contours)
+
+        background = spim.get_at_stage(SpimStage.converted).image
+        return self.draw_contours(background, new_contours)
 
     def draw_contours(self, image, contours):
         raise NotImplementedError("abstract: to be implemented by subclass")
