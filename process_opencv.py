@@ -11,7 +11,8 @@ class SimpleReader(Reader):
         super(SimpleReader, self).__init__(self.fn_read, pars)
 
     def fn_read(self, filepath):
-        return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_RGB2BGR), {"filepath": filepath}
+        # load as color, convert from BGR to RGB
+        return cv2.cvtColor(cv2.imread(filepath, 1), cv2.COLOR_BGR2RGB), {"filepath": filepath}
 
 
 class GreyscaleConverter(Converter):

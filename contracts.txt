@@ -1,8 +1,0 @@
-reader.apply: () --> image, metadata
-converter.apply: image (any) --> image (grey)
-preprocessor.apply: image (grey) --> image (grey)
-binarize.apply: image (grey) --> image (binary)
-postprocessor.apply: image (binary) --> image (binary)
-feature_extractor.apply: image (binary) --> contours
-feature_filter.apply: contours --> contours
-analysis.apply: contours --> DataFrame
