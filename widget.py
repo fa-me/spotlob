@@ -12,7 +12,7 @@ class SpotlobNotebookGui(object):
         self.preview_screen = preview_screen
 
     def run(self):
-        self.dummyspim = self.pipeline.apply_to(self.dummyspim)
+        self.dummyspim = self.pipeline.apply_all_steps(self.dummyspim)
 
     def update_preview(self, process_that_changed):
         spim_before = self.dummyspim.get_at_stage(

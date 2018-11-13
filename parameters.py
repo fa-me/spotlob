@@ -1,3 +1,36 @@
+def parameter_from_spec(spec):
+    """
+    float range: ("parameter_name", (float_min_value, float_max_value, float_value))
+    int range: ("parameter_name", (int_value, int_min_value, int_max_value))
+    bool: ("parameter name", boolean)
+    enum: ("parameter name", ["option1", "option2", "option3"])
+
+    ---
+    returns: SpotlobParameter
+    """
+    try:
+        parname, val = spec
+        try:
+            # split into min,max,value
+            minv, maxv, v = val
+
+            if any([type(vi) == float for vi in val]):
+                return NumericRangeParameter(parname, float(v), float(minv), float(maxv), float)
+            elif all([type(vi) == int for vi in val]):
+                return NumericRangeParameter(parname, v, minv, maxv, int)
+            else:
+                raise TypeError
+
+        except TypeError:
+            # could not create a slider
+            if type(val) == bool:
+                return BoolParameter(parname, val)
+            elif all([type(s) == str for s in val]):
+                return EnumParameter(parname, val[0], val)
+    except:
+        raise Exception("Invalid parameter specification")
+
+
 class SpotlobParameter(object):
     def __init__(self, name, value, type_, description=""):
         self.name = name

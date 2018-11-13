@@ -1,6 +1,7 @@
 from parameters import *
 from spim import SpimStage
 import numpy as np
+import register
 
 
 class SpotlobProcessStep(object):
@@ -12,13 +13,16 @@ class SpotlobProcessStep(object):
     # a process is outdated, if it has not been applied since the parameters changed
     outdated = True
 
-    def __init__(self, function, parameters):
+    def __init__(self, function, parameters, add_to_register=True):
         self.function = function
         self.parameters = SpotlobParameterSet(parameters)
 
+        if add_to_register:
+            register.ProcessRegister.register_process(self)
+
     def preview(self, spim):
         """This function takes spim at an undefined stage and draws the effect of the process on top, to provide a preview for the user on how the funciton will work. No storage or sideeffects should take place.
-        In contrast to the apply_to function it must always return an image"""
+        In contrast to the apply function it must always return an image"""
         raise NotImplementedError("abstract: to be implemented by subclass")
 
     def apply(self, input):
@@ -33,19 +37,9 @@ class Reader(SpotlobProcessStep):
     def apply(self):
         return self.function(**self.parameters.to_dict())
 
-    @classmethod
-    def from_function(cls, reader_function):
-        argspecs = inspect.getargspec(reader_function)
-
-        try:
-            assert len(argspecs.args) == 1
-            assert type(argspecs.defaults[0]) == str
-        except AssertionError:
-            raise Exception(
-                "Could not register function. Invalid signature for reader function %s" % reader_function.__name__)
-
-        fpp = FilepathParameter("filepath", argspecs.defaults[0])
-        return Reader(reader_function, [fpp])
+    # def preview(self, spim):
+    #     # preview does not make sense here
+    #     pass
 
 
 class Converter(SpotlobProcessStep):
