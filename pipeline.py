@@ -1,3 +1,6 @@
+import dill
+
+
 class Pipeline(object):
     def __init__(self, processes):
         self.process_stage_dict = dict([(p.input_stage, p) for p in processes])
@@ -46,3 +49,13 @@ class Pipeline(object):
         else:
             # nothing is outdated, don't do anything
             return spim
+
+    def save(self, target_path):
+        with open(target_path, "wb") as dill_file:
+            dill.dump(self, dill_file)
+
+    @classmethod
+    def from_file(cls, filepath):
+        with open(filepath, "rb") as dill_file:
+            restored_pipe = dill.load(dill_file)
+        return restored_pipe

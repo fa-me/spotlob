@@ -5,6 +5,7 @@ import process_opencv
 import pipeline
 import preview
 import register
+import process_opencv
 
 
 def default_pipeline(start_filepath):
@@ -41,3 +42,9 @@ def use_in(gui):
         gui.pipeline.process_stage_dict[process.input_stage] = process
         return fn
     return wrapper
+
+
+def load_image(filepath, cached=False):
+    spim = Spim(cached)
+    reader = process_opencv.SimpleReader(filepath)
+    return spim.read(reader)
