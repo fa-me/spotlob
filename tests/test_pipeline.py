@@ -16,7 +16,7 @@ import spotlob.defaults as defaults
 
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
-        s0 = Spim()
+        s0 = Spim.from_file("testim.png")
 
         def get_image(): return s0.image
         self.assertRaises(Exception, get_image)
@@ -26,12 +26,9 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s0.cached == False)
 
     def test_reader(self):
-        s0 = Spim()
+        s0 = Spim.from_file("testim.png")
 
-        im_path = "testim.png"
-        assert os.path.isfile(im_path)
-
-        reader = p_cv.SimpleReader(im_path)
+        reader = p_cv.SimpleReader()
         s1 = s0.read(reader)
 
         self.assertTrue(s1.stage == SpimStage.loaded)
@@ -44,7 +41,7 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s1.image is np.ndarray)
 
     def test_portable_pipeline(self):
-        mypipe = defaults.default_pipeline("testim.png")
+        mypipe = defaults.default_pipeline()
         filename = "test_save.pipe"
 
         # store

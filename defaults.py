@@ -8,8 +8,8 @@ import register
 import process_opencv
 
 
-def default_pipeline(start_filepath):
-    return pipeline.Pipeline([process_opencv.SimpleReader(start_filepath),
+def default_pipeline():
+    return pipeline.Pipeline([process_opencv.SimpleReader(),
                               process_opencv.GreyscaleConverter(),
                               process_opencv.GaussianPreprocess(3),
                               process_opencv.BinaryThreshold(100),
@@ -19,10 +19,10 @@ def default_pipeline(start_filepath):
                               process_opencv.CircleAnalysis()])
 
 
-def make_gui(start_filepath):
-    pipe = default_pipeline(start_filepath)
+def make_gui(image_filepath):
+    pipe = default_pipeline()
     preview_screen = preview.MatplotlibPreviewScreen()
-    gui = widget.SpotlobNotebookGui(pipe, preview_screen)
+    gui = widget.SpotlobNotebookGui(pipe, preview_screen, image_filepath)
     return gui
 
 
@@ -45,6 +45,6 @@ def use_in(gui):
 
 
 def load_image(filepath, cached=False):
-    spim = Spim(cached)
-    reader = process_opencv.SimpleReader(filepath)
+    spim = Spim.from_file(filepath, cached=cached)
+    reader = process_opencv.SimpleReader()
     return spim.read(reader)

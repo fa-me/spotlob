@@ -34,13 +34,6 @@ class SpotlobProcessStep(object):
 class Reader(SpotlobProcessStep):
     input_stage = SpimStage.new
 
-    def apply(self):
-        return self.function(**self.parameters.to_dict())
-
-    # def preview(self, spim):
-    #     # preview does not make sense here
-    #     pass
-
 
 class Converter(SpotlobProcessStep):
     """apply returns grey image"""

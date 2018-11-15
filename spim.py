@@ -13,12 +13,17 @@ class SpimStage:
 class Spim:
     """Spotlob image item"""
 
-    def __init__(self, image=None, metadata=dict(), stage=SpimStage.new, cached=False, predecessors=dict()):
+    def __init__(self, image, metadata, stage, cached, predecessors):
         self._image = image
         self.metadata = metadata
         self.stage = stage
         self.cached = cached
         self.predecessors = predecessors
+
+    @classmethod
+    def from_file(cls, image_filepath, cached=False):
+        md = {"filepath": image_filepath}
+        return Spim(None, md, SpimStage.new, cached=cached, predecessors=dict())
 
     @property
     def image(self):
@@ -40,7 +45,7 @@ class Spim:
         raise Exception("no image found")
 
     def read(self, reader):
-        im, metadata = reader.apply()
+        im, metadata = reader.apply(self.metadata["filepath"])
         metadata.update(self.metadata)
         return Spim(im, metadata, SpimStage.loaded, self.cached, self._predecessors_and_self())
 
