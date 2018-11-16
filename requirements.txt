@@ -1,0 +1,6 @@
+dill
+opencv
+ipython
+numpy
+pandas
+matplotlib

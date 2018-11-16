@@ -120,5 +120,10 @@ class Spim:
             except KeyError:
                 raise Exception("No predecessor at stage %s" % spimstage)
 
+    def get_data(self):
+        """return all metadata and results as flat metadata"""
+        # TODO: implement returning single dataframe from spim
+        NotImplementedError("")
+
     def __repr__(self):
         return "<Spim instance %s at stage %s>" % (id(self), self.stage)
