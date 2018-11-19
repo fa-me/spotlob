@@ -18,13 +18,34 @@ class Calibration(object):
             else:
                 calibration_file = "calibrations.json"
 
-            with open(calibration_file, "rb") as f_:
-                self.caldict = json.load(f_)
+            caldict = Calibration.read_calibration_file(calibration_file)
 
-            self.pxPerMicron = float(self.caldict[microscope_name][objective])
+            self.pxPerMicron = float(caldict[microscope_name][objective])
 
-    def pixel2micron(self, pixels):
+    def pixel_to_micron(self, pixels):
         return pixels / self.pxPerMicron
 
-    def micron2pixel(self, microns):
+    def squarepixel_to_squaremicron(self, pixels_squared):
+        return pixels_squared / self.pxPerMicron**2
+
+    def micron_to_pixel(self, microns):
         return microns * self.pxPerMicron
+
+    def squaremicron_to_squarepixel(self, microns_squared):
+        return microns_squared * self.pxPerMicron**2
+
+    @classmethod
+    def read_calibration_file(cls, calibration_file="calibrations.json"):
+        with open(calibration_file, "rb") as f_:
+            caldict = json.load(f_)
+        return caldict
+
+    @classmethod
+    def microscope_in_file(cls, calibration_file="calibrations.json"):
+        caldict = Calibration.read_calibration_file(calibration_file)
+        return caldict.keys()
+
+    @classmethod
+    def lenses_in_file(cls, microscope, calibration_file="calibrations.json"):
+        caldict = Calibration.read_calibration_file(calibration_file)
+        return caldict[microscope].keys()
