@@ -7,6 +7,7 @@ class ProcessRegister(object):
 
     @classmethod
     def binarisation_plugin(cls, param_spec):
+        """register your binarisation function as a plugin by using this function as a decorator"""
         wrapper = cls._get_wrapper(p_cv.Binarisation, param_spec)
         return wrapper
 

@@ -23,6 +23,7 @@ class Pipeline(object):
         return max(self.process_stage_dict.keys())+1
 
     def apply_all_steps(self, spim):
+        """return a spim with all processes within this pipeline applied in the defined order"""
         minstage = min(self.process_stage_dict.keys())
         maxstage = self._maxstage()
         return self.apply_from_stage_to_stage(spim, minstage, maxstage)
@@ -51,6 +52,8 @@ class Pipeline(object):
             return spim
 
     def save(self, target_path):
+        """store the pipeline including process paramaters for later use (suitable for batch process and parallelization)
+        use from_file to load the pipeline"""
         with open(target_path, "wb") as dill_file:
             dill.dump(self, dill_file)
 

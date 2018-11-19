@@ -11,8 +11,13 @@ class SpotlobNotebookGui(object):
         self.dummyspim = Spim.from_file(image_filepath, cached=True)
         self.preview_screen = preview_screen
 
+    def new_image(self, image_filepath):
+        self.dummyspim = Spim.from_file(image_filepath, cached=True)
+        self.run()
+
     def run(self):
         self.dummyspim = self.pipeline.apply_all_steps(self.dummyspim)
+        self.update_preview(self.pipeline.process_stage_dict[SpimStage.loaded])
 
     def update_preview(self, process_that_changed):
         spim_before = self.dummyspim.get_at_stage(
