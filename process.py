@@ -1,7 +1,8 @@
-from parameters import *
+
 from spim import SpimStage
 import numpy as np
 import register
+from parameters import *
 
 
 class SpotlobProcessStep(object):

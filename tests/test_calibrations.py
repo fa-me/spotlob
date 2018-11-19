@@ -1,8 +1,8 @@
-
-import sys
-sys.path.append("../")
-import os
 import unittest
+import os
+import sys
+
+sys.path.append("../")
 
 import numpy
 import pandas as pd
@@ -14,7 +14,6 @@ import analyse_opencv
 class TestCalibration(unittest.TestCase):
     def test_create_numeric(self):
         mycal = calibration.Calibration(3.0)
-
         mycal.pixel_to_micron(1)
 
     def test_create_fromFile(self):

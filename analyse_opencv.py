@@ -2,21 +2,21 @@ import json
 
 import cv2
 
-from process import Analysis
-from parameters import SpotlobParameterSet
+import process
+import parameters
 
 
-class CircleAnalysis(Analysis):
+class CircleAnalysis(process.Analysis):
     def __init__(self, calibration=None):
-        pars = SpotlobParameterSet([])
+        pars = parameters.SpotlobParameterSet([])
         self.calibration = calibration
         super(CircleAnalysis, self).__init__(self.analyse, pars)
 
     def analyse(self, contours):
         areas = []
         ellipses_positions = []
-        ellipses_majorAxes = []
-        ellipses_minorAxes = []
+        ellipses_major_axes = []
+        ellipses_minor_axes = []
         ellipses_angles = []
 
         for c in contours:
@@ -30,14 +30,14 @@ class CircleAnalysis(Analysis):
                 xy, (MA, ma), angle = np.nan, (np.nan, np.nan), np.nan
 
             ellipses_positions += [xy]
-            ellipses_majorAxes += [MA]
-            ellipses_minorAxes += [ma]
+            ellipses_major_axes += [MA]
+            ellipses_minor_axes += [ma]
             ellipses_angles += [angle]
 
         return self.calibrate(pd.DataFrame({"area_px2": areas,
                                             "ellipse_position_px": ellipses_positions,
-                                            "ellipse_majorAxis_px": ellipses_majorAxes,
-                                            "ellipse_minorAxis_px": ellipses_minorAxes,
+                                            "ellipse_majorAxis_px": ellipses_major_axes,
+                                            "ellipse_minorAxis_px": ellipses_minor_axes,
                                             "ellipse_angle": ellipses_angles}))
 
     def draw_results(self, image, dataframe):
@@ -57,18 +57,18 @@ class CircleAnalysis(Analysis):
         return image
 
     def calibrate(self, dataframe):
-        """if there is a calibration, get all columns that include the suffix _px and _px2 
-        and calculate additional columns with the micron / micron^2 values"""
+        """if there is a calibration, get all columns that include the suffix _px and _px2 \
+         and calculate additional columns with the micron / micron^2 values"""
         if not self.calibration:
             return dataframe
         else:
-            for cn in dataframe.columns:
-                if cn.endswith("_px"):
-                    new_col_name = cn[:-3] + "_um"
+            for col in dataframe.columns:
+                if col.endswith("_px"):
+                    new_col_name = col[:-3] + "_um"
                     dataframe[new_col_name] = self.calibration.pixel_to_micron(
-                        dataframe[cn])
-                elif cn.endswith("_px2"):
-                    new_col_name = cn[:-4] + "_um2"
+                        dataframe[col])
+                elif col.endswith("_px2"):
+                    new_col_name = col[:-4] + "_um2"
                     dataframe[new_col_name] = self.calibration.squarepixel_to_squaremicron(
-                        dataframe[cn])
+                        dataframe[col])
             return dataframe

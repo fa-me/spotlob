@@ -1,10 +1,11 @@
 import cv2
-from process import *
 import pandas as pd
 import numpy as np
 
+import process
 
-class SimpleReader(Reader):
+
+class SimpleReader(process.Reader):
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(SimpleReader, self).__init__(self.fn_read, pars)
@@ -14,7 +15,7 @@ class SimpleReader(Reader):
         return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_BGR2RGB), {}
 
 
-class GreyscaleConverter(Converter):
+class GreyscaleConverter(process.Converter):
     def __init__(self):
         self.hsv_str_list = ["Hue", "Saturation", "Value"]
         self.rgb_str_list = ["Red channel", "Blue channel", "Green channel"]
@@ -22,8 +23,7 @@ class GreyscaleConverter(Converter):
 
         pars = SpotlobParameterSet(
             [EnumParameter("conversion", converter_options[0], converter_options),
-             BoolParameter("invert", False)
-             ])
+             BoolParameter("invert", False)])
         super(GreyscaleConverter, self).__init__(self.convert, pars)
 
     def convert(self, rgb_image, conversion, invert):
@@ -46,7 +46,7 @@ class GreyscaleConverter(Converter):
             return out
 
 
-class GaussianPreprocess(Preprocessor):
+class GaussianPreprocess(process.Preprocessor):
     def __init__(self, ksize):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)])
@@ -57,7 +57,7 @@ class GaussianPreprocess(Preprocessor):
         return cv2.filter2D(grey_image, -1, kernel)
 
 
-class BinaryThreshold(Binarisation):
+class BinaryThreshold(process.Binarisation):
     def __init__(self, threshold):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("threshold", threshold, 0, 255)])
@@ -69,7 +69,7 @@ class BinaryThreshold(Binarisation):
         return im
 
 
-class PostprocessNothing(Postprocessor):
+class PostprocessNothing(process.Postprocessor):
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(PostprocessNothing, self).__init__(self.postprocess_fn, pars)
@@ -78,7 +78,7 @@ class PostprocessNothing(Postprocessor):
         return im
 
 
-class ContourFinderSimple(FeatureFinder):
+class ContourFinderSimple(process.FeatureFinder):
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
@@ -89,7 +89,7 @@ class ContourFinderSimple(FeatureFinder):
         return contours
 
 
-class FeatureFormFilter(FeatureFilter):
+class FeatureFormFilter(process.FeatureFilter):
     def __init__(self, size, solidity):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
