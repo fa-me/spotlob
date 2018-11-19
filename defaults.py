@@ -6,6 +6,7 @@ import pipeline
 import preview
 import register
 import process_opencv
+import analyse_opencv
 
 
 def default_pipeline():
@@ -16,7 +17,7 @@ def default_pipeline():
                               process_opencv.PostprocessNothing(),
                               process_opencv.ContourFinderSimple(),
                               process_opencv.FeatureFormFilter(4000, 0.98),
-                              process_opencv.CircleAnalysis()])
+                              analyse_opencv.CircleAnalysis()])
 
 
 def make_gui(image_filepath):

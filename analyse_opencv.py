@@ -19,19 +19,20 @@ class CircleAnalysis(process.Analysis):
         ellipses_minor_axes = []
         ellipses_angles = []
 
-        for c in contours:
+        for cont in contours:
             # AREA
-            areas += [cv2.contourArea(c)]
+            areas += [cv2.contourArea(cont)]
 
             # ELLIPSE
             try:
-                xy, (MA, ma), angle = cv2.fitEllipse(c)
-            except:
-                xy, (MA, ma), angle = np.nan, (np.nan, np.nan), np.nan
+                e_pos, (e_major_ax, e_minor_ax), angle = cv2.fitEllipse(cont)
+            except cv2.error:
+                e_pos, (e_major_ax,
+                        e_minor_ax), angle = np.nan, (np.nan, np.nan), np.nan
 
-            ellipses_positions += [xy]
-            ellipses_major_axes += [MA]
-            ellipses_minor_axes += [ma]
+            ellipses_positions += [e_pos]
+            ellipses_major_axes += [e_major_ax]
+            ellipses_minor_axes += [e_minor_ax]
             ellipses_angles += [angle]
 
         return self.calibrate(pd.DataFrame({"area_px2": areas,
@@ -42,18 +43,18 @@ class CircleAnalysis(process.Analysis):
 
     def draw_results(self, image, dataframe):
         for index, row in dataframe.iterrows():
-            x, y = row["ellipse_position_px"]
-            MA = row["ellipse_majorAxis_px"]
-            ma = row["ellipse_minorAxis_px"]
+            pos_x, pos_y = row["ellipse_position_px"]
+            e_major = row["ellipse_majorAxis_px"]
+            e_minor = row["ellipse_minorAxis_px"]
             angle = row["ellipse_angle"]
 
-            xy = (int(x), int(y))
-            e_size = (int(MA/2.0), int(ma/2.0))
+            e_pos = (int(pos_x), int(pos_y))
+            e_size = (int(e_major/2.0), int(e_minor/2.0))
 
             pen_color = [255, 0, 0]
 
-            cv2.circle(image, xy, 10, pen_color, -1)
-            cv2.ellipse(image, xy, e_size, angle, 0, 360, pen_color, 3)
+            cv2.circle(image, e_pos, 10, pen_color, -1)
+            cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 3)
         return image
 
     def calibrate(self, dataframe):

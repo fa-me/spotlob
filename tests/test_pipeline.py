@@ -26,19 +26,18 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s0.cached == False)
 
     def test_reader(self):
-        s0 = Spim.from_file("testim.png")
+        s0 = Spim.from_file("tests/testim.png")
 
         reader = p_cv.SimpleReader()
-        s1 = s0.read(reader)
-
-        self.assertTrue(s1.stage == SpimStage.loaded)
 
         try:
+            s1 = s0.read(reader)
             im = s1.image
         except Exception:
             self.fail("could not load image")
 
-        self.assertTrue(s1.image is np.ndarray)
+        self.assertTrue(s1.stage == SpimStage.loaded)
+        self.assertTupleEqual(s1.image.shape, (1920, 2560, 3))
 
     def test_portable_pipeline(self):
         mypipe = defaults.default_pipeline()

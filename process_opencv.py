@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 import process
+from parameters import *
 
 
 class SimpleReader(process.Reader):
@@ -94,8 +95,7 @@ class FeatureFormFilter(process.FeatureFilter):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
              NumericRangeParameter(
-                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float)
-             ])
+                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float)])
         super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
     def solidity(self, c):
@@ -105,14 +105,13 @@ class FeatureFormFilter(process.FeatureFilter):
             return 0
 
     def filter_fn(self, contours, minimal_area, solidity_limit):
-        contours = filter(lambda c: cv2.contourArea(c)
-                          > minimal_area, contours)
-        filtered_contours = filter(
-            lambda c: self.solidity(c) > solidity_limit, contours)
+        filtered_contours = [c for c in contours if
+                             (cv2.contourArea(c) > minimal_area and
+                              self.solidity(c) > solidity_limit)]
 
         # TODO: filter the ones that touch the border
         return filtered_contours
 
     def draw_contours(self, image, contours):
-        bg = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
-        return cv2.drawContours(bg, contours, -1, (0, 255, 0), 3)
+        background = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
+        return cv2.drawContours(background, contours, -1, (0, 255, 0), 3)

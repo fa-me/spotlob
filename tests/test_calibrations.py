@@ -21,7 +21,7 @@ class TestCalibration(unittest.TestCase):
 
         mycal.pixel_to_micron(1)
 
-    def test_create_fromCustomFile(self):
+    def test_create_from_custom_file(self):
         mycal = calibration.Calibration(
             microscope="zeiss", objective="20x", calibration_file="tests/test_calibration.json")
 
@@ -48,11 +48,11 @@ class TestCalibration(unittest.TestCase):
         self.assertTrue(mycal.pixel_to_micron(2) == 0.02)
 
     def test_analyse_dataframe(self):
-        df = pd.DataFrame({"area_px2": [100, 10000], "radius_px": [10, 20]})
+        data = pd.DataFrame({"area_px2": [100, 10000], "radius_px": [10, 20]})
         cal = calibration.Calibration(10)
 
         analysis = analyse_opencv.CircleAnalysis(cal)
-        df_cal = analysis.calibrate(df)
+        df_cal = analysis.calibrate(data)
 
         numpy.testing.assert_array_equal(
             df_cal["area_um2"], numpy.array([1, 100]))
