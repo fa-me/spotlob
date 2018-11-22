@@ -1,5 +1,4 @@
 import sys
-sys.path.append("../")
 import os
 
 import unittest
@@ -7,6 +6,9 @@ import unittest
 import numpy as np
 import numpy.random
 import numpy.testing
+
+
+sys.path.append("../")
 
 from spotlob.spim import *
 from spotlob.pipeline import *
@@ -16,7 +18,7 @@ import spotlob.defaults as defaults
 
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
-        s0 = Spim.from_file("testim.png")
+        s0 = Spim.from_file("tests/testim.png")
 
         def get_image(): return s0.image
         self.assertRaises(Exception, get_image)

@@ -1,6 +1,7 @@
 import json
 
 import cv2
+import pandas as pd
 
 import process
 import parameters

@@ -1,4 +1,4 @@
-class SpimStage:
+class SpimStage(object):
     new = 0
     loaded = 1
     converted = 2
@@ -10,7 +10,7 @@ class SpimStage:
     analyzed = 8
 
 
-class Spim:
+class Spim(object):
     """Spotlob image item"""
 
     def __init__(self, image, metadata, stage, cached, predecessors):
