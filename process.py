@@ -3,6 +3,7 @@ from spim import SpimStage
 import numpy as np
 import register
 from parameters import *
+from logger import log
 
 
 class SpotlobProcessStep(object):
@@ -27,7 +28,8 @@ class SpotlobProcessStep(object):
         raise NotImplementedError("abstract: to be implemented by subclass")
 
     def apply(self, input):
-        output = self.function(input, **self.parameters.to_dict())
+        output = log(self.function)(input, **self.parameters.to_dict())
+        #output = self.function(input, **self.parameters.to_dict())
         self.outdated = False
         return output
 
@@ -85,10 +87,11 @@ class FeatureFilter(SpotlobProcessStep):
     input_stage = SpimStage.features_extracted
 
     def preview(self, spim):
+        print("applying preview to spim id %s" % id(spim))
         input_ = spim.get_at_stage(self.input_stage)
         new_contours = self.apply(input_.metadata["contours"])
 
-        background = spim.get_at_stage(SpimStage.converted).image
+        background = spim.get_at_stage(SpimStage.binarized).image
         return self.draw_contours(background, new_contours)
 
     def draw_contours(self, image, contours):

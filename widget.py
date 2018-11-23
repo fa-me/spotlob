@@ -20,8 +20,10 @@ class SpotlobNotebookGui(object):
         self.update_preview(self.pipeline.process_stage_dict[SpimStage.loaded])
 
     def update_preview(self, process_that_changed):
+        print("preparing %s for preview" % id(self.dummyspim))
         spim_before = self.dummyspim.get_at_stage(
             process_that_changed.input_stage)
+        print("using %s for preview" % id(spim_before))
 
         preview_image = process_that_changed.preview(spim_before)
         self.preview_screen.update(preview_image)
@@ -49,16 +51,16 @@ class SpotlobNotebookGui(object):
 
             # use a slider
             if ty == float:
-                WidgetClass = FloatSlider
+                widget_class = FloatSlider
             elif ty == int:
-                WidgetClass = IntSlider
+                widget_class = IntSlider
             else:
                 NotImplementedError("Unsupported parameter type")
 
-            widget = WidgetClass(min=min_, max=max_,
-                                 step=step, value=v,
-                                 description=name,
-                                 continuous_update=False)
+            widget = widget_class(min=min_, max=max_,
+                                  step=step, value=v,
+                                  description=name,
+                                  continuous_update=False)
 
         except AttributeError:
             if isinstance(parameter, EnumParameter):
