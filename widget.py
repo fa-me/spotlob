@@ -1,5 +1,5 @@
 from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox, Button, Output
-from IPython.display import display
+from IPython.display import display, clear_output
 
 from parameters import *
 from spim import Spim, SpimStage
@@ -115,3 +115,14 @@ class SpotlobNotebookGui(object):
 
     def results(self):
         return self.dummyspim.metadata["results"]
+
+    def results_button(self):
+        rb = Button(description="Show Results")
+
+        def results_button_inner(btn):
+            clear_output()
+            display(rb)
+            display(self.results())
+
+        rb.on_click(results_button_inner)
+        return rb

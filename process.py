@@ -3,7 +3,6 @@ from spim import SpimStage
 import numpy as np
 import register
 from parameters import *
-from logger import log
 
 
 class SpotlobProcessStep(object):
@@ -28,8 +27,8 @@ class SpotlobProcessStep(object):
         raise NotImplementedError("abstract: to be implemented by subclass")
 
     def apply(self, input):
-        output = log(self.function)(input, **self.parameters.to_dict())
-        #output = self.function(input, **self.parameters.to_dict())
+        #output = log(self.function)(input, **self.parameters.to_dict())
+        output = self.function(input, **self.parameters.to_dict())
         self.outdated = False
         return output
 
