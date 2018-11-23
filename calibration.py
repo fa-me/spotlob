@@ -4,6 +4,10 @@ import json
 class Calibration(object):
 
     def __init__(self, *args, **kwargs):
+        """
+        Calibration(0.34) - 0.34 pixel per micrometer OR
+        Calibration(microscope = "Zeiss", objective = "20x")
+        """
         try:
             self.pxPerMicron = float(args[0])
         except ValueError:
