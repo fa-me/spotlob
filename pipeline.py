@@ -22,7 +22,6 @@ class Pipeline(object):
                 spim, from_stage, to_stage-1)
             last_process = self.process_stage_dict[to_stage-1]
             outspim = intermediate_spim.do_process_at_stage(last_process)
-            print("return at stage %s" % outspim.stage)
             return outspim
 
     def _maxstage(self):

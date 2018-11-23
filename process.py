@@ -87,7 +87,6 @@ class FeatureFilter(SpotlobProcessStep):
     input_stage = SpimStage.features_extracted
 
     def preview(self, spim):
-        print("applying preview to spim id %s" % id(spim))
         input_ = spim.get_at_stage(self.input_stage)
         new_contours = self.apply(input_.metadata["contours"])
 
