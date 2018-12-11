@@ -14,6 +14,11 @@ class ProcessRegister(object):
         return wrapper
 
     @classmethod
+    def convert_plugin(cls, param_spec):
+        wrapper = cls._get_wrapper(process.Converter, param_spec)
+        return wrapper
+
+    @classmethod
     def preprocess_plugin(cls, param_spec):
         wrapper = cls._get_wrapper(process.Preprocessor, param_spec)
         return wrapper

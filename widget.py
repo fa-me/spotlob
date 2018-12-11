@@ -6,14 +6,14 @@ from spim import Spim, SpimStage
 
 
 class SpotlobNotebookGui(object):
-    def __init__(self, pipeline, preview_screen, image_filepath):
+    def __init__(self, pipeline, preview_screen, spim):
         self.pipeline = pipeline
-        self.dummyspim = Spim.from_file(image_filepath, cached=True)
+        self.dummyspim = spim  # Spim.from_file(image_filepath, cached=True)
         self.preview_screen = preview_screen
 
-    def new_image(self, image_filepath):
-        self.dummyspim = Spim.from_file(image_filepath, cached=True)
-        self.run()
+    # def new_image(self, image_filepath):
+    #     self.dummyspim = Spim.from_file(image_filepath, cached=True)
+    #     self.run()
 
     def run(self):
         self.dummyspim = self.pipeline.apply_all_steps(self.dummyspim)

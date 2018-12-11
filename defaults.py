@@ -7,6 +7,7 @@ import preview
 import register
 import process_opencv
 import analyse_opencv
+from spim import *
 
 
 def default_pipeline():
@@ -23,7 +24,8 @@ def default_pipeline():
 def make_gui(image_filepath):
     pipe = default_pipeline()
     preview_screen = preview.MatplotlibPreviewScreen()
-    gui = widget.SpotlobNotebookGui(pipe, preview_screen, image_filepath)
+    spim = Spim.from_file(image_filepath, cached=True)
+    gui = widget.SpotlobNotebookGui(pipe, preview_screen, spim)
     return gui
 
 

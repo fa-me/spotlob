@@ -13,11 +13,10 @@ def parameter_from_spec(spec):
         try:
             # split into min,max,value
             minv, maxv, v = val
-
             if any([type(vi) == float for vi in val]):
                 return NumericRangeParameter(parname, float(v), float(minv), float(maxv), float)
             elif all([type(vi) == int for vi in val]):
-                return NumericRangeParameter(parname, v, minv, maxv, int)
+                return NumericRangeParameter(parname, int(v), int(minv), int(maxv), int)
             else:
                 raise TypeError
 

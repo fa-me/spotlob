@@ -1,6 +1,7 @@
 import cv2
 import pandas as pd
 import numpy as np
+import os
 
 import process
 from parameters import *
@@ -13,7 +14,10 @@ class SimpleReader(process.Reader):
 
     def fn_read(self, filepath):
         # load as color, convert from BGR to RGB
-        return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_BGR2RGB), {}
+        if os.path.exists(filepath):
+            return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_BGR2RGB), {}
+        else:
+            raise IOError("File %s not found" % filepath)
 
 
 class GreyscaleConverter(process.Converter):
