@@ -18,7 +18,7 @@ import spotlob.defaults as defaults
 
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
-        s0 = Spim.from_file("tests/testim.png")
+        s0 = Spim.from_file("tests/Bild--02.jpg")
 
         def get_image(): return s0.image
         self.assertRaises(Exception, get_image)
@@ -28,7 +28,7 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s0.cached == False)
 
     def test_reader(self):
-        s0 = Spim.from_file("tests/testim.png")
+        s0 = Spim.from_file("tests/Bild--02.jpg")
 
         reader = p_cv.SimpleReader()
 
@@ -39,7 +39,7 @@ class TestSpimLifecycle(unittest.TestCase):
             self.fail("could not load image")
 
         self.assertTrue(s1.stage == SpimStage.loaded)
-        self.assertTupleEqual(s1.image.shape, (1920, 2560, 3))
+        self.assertTupleEqual(s1.image.shape, (2306, 2560, 3))
 
     def test_portable_pipeline(self):
         mypipe = defaults.default_pipeline()
