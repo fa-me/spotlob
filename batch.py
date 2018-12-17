@@ -19,7 +19,7 @@ def _process_job(job):
     pipeline = Pipeline.from_file(pipeline_file)
     myspim = Spim.from_file(image_file)
     processed_spim = pipeline.apply_at_stage(myspim)
-    return processed_spim.metadata["results"]
+    return processed_spim.get_data()
 
 
 def batchprocess(pipeline_file, image_files, multiprocessing=False):
@@ -40,7 +40,8 @@ def batchprocess(pipeline_file, image_files, multiprocessing=False):
 
         def process_file(fn):
             myspim = Spim.from_file(fn)
-            return pipeline.apply_at_stage(myspim).metadata["results"]
+            respim = pipeline.apply_at_stage(myspim)
+            return respim.get_data()
 
         res = map(process_file, image_files)
     #

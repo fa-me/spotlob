@@ -1,3 +1,6 @@
+import pandas
+
+
 class SpimStage(object):
     new = 0
     loaded = 1
@@ -122,8 +125,12 @@ class Spim(object):
 
     def get_data(self):
         """return all metadata and results as flat metadata"""
-        # TODO: implement returning single dataframe from spim
-        NotImplementedError("")
+        if "results" in self.metadata.keys():
+            results = self.metadata["results"]
+            results["filename"] = self.metadata["filepath"]
+            return results
+        else:
+            return pandas.DataFrame(self.metadata, index=[0])
 
     def __repr__(self):
         return "<Spim instance %s at stage %s>" % (id(self), self.stage)
