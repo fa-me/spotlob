@@ -1,5 +1,7 @@
 from IPython.display import display
 
+import os.path
+
 import widget
 import process_opencv
 import pipeline
@@ -21,10 +23,14 @@ def default_pipeline():
                               analyse_opencv.CircleAnalysis()])
 
 
-def make_gui(image_filepath):
+def make_gui(spim_or_filepath):
+    if os.path.exists(spim_or_filepath):
+        spim = Spim.from_file(image_filepath, cached=True)
+    else:
+        spim = spim_or_filepath
+
     pipe = default_pipeline()
     preview_screen = preview.MatplotlibPreviewScreen()
-    spim = Spim.from_file(image_filepath, cached=True)
     gui = widget.SpotlobNotebookGui(pipe, preview_screen, spim)
     return gui
 
