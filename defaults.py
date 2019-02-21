@@ -26,7 +26,7 @@ def default_pipeline():
 def make_gui(spim_or_filepath):
     try:
         assert os.path.exists(spim_or_filepath)
-        spim = Spim.from_file(image_filepath, cached=True)
+        spim = Spim.from_file(spim_or_filepath, cached=True)
     except AssertionError:
         spim = spim_or_filepath
 
