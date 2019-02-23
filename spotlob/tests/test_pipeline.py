@@ -1,19 +1,15 @@
 import sys
 import os
-
 import unittest
 
 import numpy as np
 import numpy.random
 import numpy.testing
 
-
-sys.path.append("../")
-
-from spotlob.spim import *
-from spotlob.pipeline import *
-import spotlob.process_opencv as p_cv
-import spotlob.defaults as defaults
+from ..spim import *
+from ..pipeline import *
+from ..process_opencv import SimpleReader
+from ..defaults import default_pipeline
 
 
 class TestSpimLifecycle(unittest.TestCase):
@@ -30,7 +26,7 @@ class TestSpimLifecycle(unittest.TestCase):
     def test_reader(self):
         s0 = Spim.from_file("tests/Bild--02.jpg")
 
-        reader = p_cv.SimpleReader()
+        reader = SimpleReader()
 
         try:
             s1 = s0.read(reader)
@@ -42,7 +38,7 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTupleEqual(s1.image.shape, (2306, 2560, 3))
 
     def test_portable_pipeline(self):
-        mypipe = defaults.default_pipeline()
+        mypipe = default_pipeline()
         filename = "test_save.pipe"
 
         # store

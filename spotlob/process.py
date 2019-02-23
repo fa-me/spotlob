@@ -1,7 +1,8 @@
-from spim import SpimStage
 import numpy as np
-import register
-from parameters import *
+
+from .register import ProcessRegister
+from .parameters import *
+from .spim import SpimStage
 
 
 class SpotlobProcessStep(object):
@@ -18,7 +19,7 @@ class SpotlobProcessStep(object):
         self.parameters = SpotlobParameterSet(parameters)
 
         if add_to_register:
-            register.ProcessRegister.register_process(self)
+            ProcessRegister.register_process(self)
 
     def preview(self, spim):
         """This function takes spim at an undefined stage and draws the effect of the process on top, to provide a preview for the user on how the funciton will work. No storage or sideeffects should take place.

@@ -2,25 +2,24 @@ from IPython.display import display
 
 import os.path
 
-import widget
-import process_opencv
-import pipeline
-import preview
-import register
-import process_opencv
-import analyse_opencv
-from spim import *
+from .widget import SpotlobNotebookGui
+from .process_opencv import *
+from .pipeline import Pipeline
+from .preview import MatplotlibPreviewScreen
+from .register import ProcessRegister
+from .analyse_opencv import CircleAnalysis
+from .spim import *
 
 
 def default_pipeline():
-    return pipeline.Pipeline([process_opencv.SimpleReader(),
-                              process_opencv.GreyscaleConverter(),
-                              process_opencv.GaussianPreprocess(3),
-                              process_opencv.BinaryThreshold(100),
-                              process_opencv.PostprocessNothing(),
-                              process_opencv.ContourFinderSimple(),
-                              process_opencv.FeatureFormFilter(4000, 0.98),
-                              analyse_opencv.CircleAnalysis()])
+    return Pipeline([SimpleReader(),
+                     GreyscaleConverter(),
+                     GaussianPreprocess(3),
+                     BinaryThreshold(100),
+                     PostprocessNothing(),
+                     ContourFinderSimple(),
+                     FeatureFormFilter(4000, 0.98),
+                     CircleAnalysis()])
 
 
 def make_gui(spim_or_filepath):
@@ -31,8 +30,8 @@ def make_gui(spim_or_filepath):
         spim = spim_or_filepath
 
     pipe = default_pipeline()
-    preview_screen = preview.MatplotlibPreviewScreen()
-    gui = widget.SpotlobNotebookGui(pipe, preview_screen, spim)
+    preview_screen = MatplotlibPreviewScreen()
+    gui = SpotlobNotebookGui(pipe, preview_screen, spim)
     return gui
 
 
@@ -46,7 +45,7 @@ def show_gui(gui):
 def use_in(gui):
     """decorator to tell gui to replace function"""
     def wrapper(fn):
-        process = register.ProcessRegister.available_processes[fn.__name__]
+        process = ProcessRegister.available_processes[fn.__name__]
 
         # overwrite process at the given stage in pipeline of gui
         gui.pipeline.process_stage_dict[process.input_stage] = process
@@ -56,5 +55,5 @@ def use_in(gui):
 
 def load_image(filepath, cached=False):
     spim = Spim.from_file(filepath, cached=cached)
-    reader = process_opencv.SimpleReader()
+    reader = SimpleReader()
     return spim.read(reader)

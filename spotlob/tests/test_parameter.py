@@ -1,13 +1,10 @@
-
 import sys
-sys.path.append("../")
 import os
-
 import unittest
 
 import numpy as np
 
-from spotlob.parameters import *
+from ..parameters import *
 
 
 class TestParameter(unittest.TestCase):

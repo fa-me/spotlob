@@ -4,13 +4,13 @@ import cv2
 import pandas as pd
 import numpy as np
 
-import process
-import parameters
+from .process import Analysis
+from .parameters import SpotlobParameterSet
 
 
-class CircleAnalysis(process.Analysis):
+class CircleAnalysis(Analysis):
     def __init__(self, calibration=None):
-        pars = parameters.SpotlobParameterSet([])
+        pars = SpotlobParameterSet([])
         self.calibration = calibration
         super(CircleAnalysis, self).__init__(self.analyse, pars)
 

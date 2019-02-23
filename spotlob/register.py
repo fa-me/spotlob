@@ -1,5 +1,5 @@
-import process
-from parameters import parameter_from_spec
+from .process import *
+from .parameters import parameter_from_spec
 
 # TODO: should be possible to turn this into non-static class
 
@@ -10,27 +10,27 @@ class ProcessRegister(object):
     @classmethod
     def binarisation_plugin(cls, param_spec):
         """register your binarisation function as a plugin by using this function as a decorator"""
-        wrapper = cls._get_wrapper(process.Binarisation, param_spec)
+        wrapper = cls._get_wrapper(Binarisation, param_spec)
         return wrapper
 
     @classmethod
     def convert_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(process.Converter, param_spec)
+        wrapper = cls._get_wrapper(Converter, param_spec)
         return wrapper
 
     @classmethod
     def preprocess_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(process.Preprocessor, param_spec)
+        wrapper = cls._get_wrapper(Preprocessor, param_spec)
         return wrapper
 
     @classmethod
     def postprocess_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(process.Postprocessor, param_spec)
+        wrapper = cls._get_wrapper(Postprocessor, param_spec)
         return wrapper
 
     @classmethod
     def analysis_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(process.Analysis, param_spec)
+        wrapper = cls._get_wrapper(Analysis, param_spec)
         return wrapper
 
     @classmethod
