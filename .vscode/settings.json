@@ -1,7 +1,0 @@
-{
-    "python.pythonPath": "C:\\Users\\Lenovo\\Anaconda3\\envs\\py37\\python.exe",
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "python.unitTest.unittestEnabled": true,
-    "python.linting.enabled": true
-}
