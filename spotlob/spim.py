@@ -26,7 +26,11 @@ class Spim(object):
     @classmethod
     def from_file(cls, image_filepath, cached=False):
         md = {"filepath": image_filepath}
-        return Spim(None, md, SpimStage.new, cached=cached, predecessors=dict())
+        return Spim(None,
+                    md,
+                    SpimStage.new,
+                    cached=cached,
+                    predecessors=dict())
 
     @property
     def image(self):

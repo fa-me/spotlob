@@ -27,7 +27,9 @@ class GreyscaleConverter(Converter):
         converter_options = ["Grey"] + self.hsv_str_list + self.rgb_str_list
 
         pars = SpotlobParameterSet(
-            [EnumParameter("conversion", converter_options[0], converter_options),
+            [EnumParameter("conversion",
+                           converter_options[0],
+                           converter_options),
              BoolParameter("invert", False)])
         super(GreyscaleConverter, self).__init__(self.convert, pars)
 

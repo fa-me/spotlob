@@ -15,7 +15,8 @@ class Calibration(object):
             self.pxPerMicron = float(args[0])
         except ValueError:
             raise ValueError(
-                "invalid argument %s: need to give numeric value for pxPerMicron" % args[0])
+                "invalid argument %s: need to give numeric value \
+                 for pxPerMicron" % args[0])
         except IndexError:
             microscope_name = kwargs.get("microscope")
             objective = kwargs.get("objective")

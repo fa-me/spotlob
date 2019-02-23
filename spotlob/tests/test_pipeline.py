@@ -17,20 +17,20 @@ from ..defaults import default_pipeline
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
         image_filepath = resource_filename(
-            "spotlob.tests", "resources/Bild--02.jpg")
+            "spotlob.tests", "resources/testdata3.jpg")
 
         s0 = Spim.from_file(image_filepath)
 
-        def get_image(): return s0.image
+        def get_image():
+            return s0.image
+
         self.assertRaises(Exception, get_image)
-
         self.assertTrue(s0.stage == SpimStage.new)
-
-        self.assertTrue(s0.cached == False)
+        self.assertTrue(s0.cached is False)
 
     def test_reader(self):
         image_filepath = resource_filename(
-            "spotlob.tests", "resources/Bild--02.jpg")
+            "spotlob.tests", "resources/testdata3.jpg")
         s0 = Spim.from_file(image_filepath)
 
         reader = SimpleReader()
