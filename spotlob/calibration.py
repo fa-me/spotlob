@@ -1,4 +1,7 @@
 import json
+import os.path
+
+from pkg_resources import resource_filename
 
 
 class Calibration(object):
@@ -12,7 +15,8 @@ class Calibration(object):
             self.pxPerMicron = float(args[0])
         except ValueError:
             raise ValueError(
-                "invalid argument %s: need to give numeric value for pxPerMicron" % args[0])
+                "invalid argument %s: need to give numeric value \
+                 for pxPerMicron" % args[0])
         except IndexError:
             microscope_name = kwargs.get("microscope")
             objective = kwargs.get("objective")
@@ -20,7 +24,10 @@ class Calibration(object):
             if "calibration_file" in kwargs:
                 calibration_file = kwargs.get("calibration_file")
             else:
-                calibration_file = "calibrations.json"
+                calibration_file = resource_filename(
+                    "spotlob", "resources/calibrations.json")
+
+            assert os.path.exists(calibration_file)
 
             caldict = Calibration.read_calibration_file(calibration_file)
 

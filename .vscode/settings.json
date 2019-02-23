@@ -1,7 +1,0 @@
-{
-    "python.pythonPath": "D:\\Users\\fmeyer\\AppData\\Local\\Continuum\\Anaconda2\\python.exe",
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "python.unitTest.unittestEnabled": true,
-    "python.linting.enabled": true
-}

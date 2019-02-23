@@ -1,3 +1,7 @@
 *.pyc
 test_save.pipe
 *.vscode/
+__pycache__/
+.pytest_cache
+.hypothesis
+.coverage

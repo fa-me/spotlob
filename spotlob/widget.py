@@ -1,8 +1,8 @@
 from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox, Button, Output
 from IPython.display import display, clear_output
 
-from parameters import *
-from spim import Spim, SpimStage
+from .parameters import *
+from .spim import Spim, SpimStage
 
 
 class SpotlobNotebookGui(object):

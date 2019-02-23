@@ -4,3 +4,5 @@ ipython
 numpy
 pandas
 matplotlib
+ipywidgets
+pkg_resources

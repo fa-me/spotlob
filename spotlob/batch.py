@@ -3,8 +3,8 @@ import warnings
 
 import pandas as pd
 
-from spim import Spim
-from pipeline import Pipeline
+from .spim import Spim
+from .pipeline import Pipeline
 
 
 def is_interactive():
