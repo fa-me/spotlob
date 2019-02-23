@@ -1,0 +1,9 @@
+tests:
+  stage: test
+  image: continuumio/miniconda3:latest
+  tags:
+    - asprunner
+  script:
+    - conda env create -f environment.yml
+    - source activate spotlob-env
+    - pytest --cov spotlob
