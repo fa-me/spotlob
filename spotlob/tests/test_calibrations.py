@@ -1,14 +1,14 @@
+from __future__ import absolute_import
+
 import unittest
 import os
 import sys
 
-sys.path.append("../")
-
-import numpy
 import pandas as pd
+import numpy
 
-import calibration
-import analyse_opencv
+import .analyse_opencv
+import .calibration
 
 
 class TestCalibration(unittest.TestCase):

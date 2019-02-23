@@ -4,3 +4,4 @@ ipython
 numpy
 pandas
 matplotlib
+ipywidgets
