@@ -1,4 +1,5 @@
 import json
+import os.path
 
 
 class Calibration(object):
@@ -21,6 +22,8 @@ class Calibration(object):
                 calibration_file = kwargs.get("calibration_file")
             else:
                 calibration_file = "calibrations.json"
+
+            assert os.path.exists(calibration_file)
 
             caldict = Calibration.read_calibration_file(calibration_file)
 
