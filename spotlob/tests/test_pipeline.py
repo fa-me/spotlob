@@ -2,6 +2,8 @@ import sys
 import os
 import unittest
 
+from pkg_resources import resource_filename
+
 import numpy as np
 import numpy.random
 import numpy.testing
@@ -14,7 +16,10 @@ from ..defaults import default_pipeline
 
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
-        s0 = Spim.from_file("tests/Bild--02.jpg")
+        image_filepath = resource_filename(
+            "spotlob.tests", "resources/Bild--02.jpg")
+
+        s0 = Spim.from_file(image_filepath)
 
         def get_image(): return s0.image
         self.assertRaises(Exception, get_image)
@@ -24,7 +29,9 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s0.cached == False)
 
     def test_reader(self):
-        s0 = Spim.from_file("tests/Bild--02.jpg")
+        image_filepath = resource_filename(
+            "spotlob.tests", "resources/Bild--02.jpg")
+        s0 = Spim.from_file(image_filepath)
 
         reader = SimpleReader()
 

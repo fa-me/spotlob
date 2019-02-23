@@ -1,6 +1,8 @@
 import json
 import os.path
 
+from pkg_resources import resource_filename
+
 
 class Calibration(object):
 
@@ -21,7 +23,8 @@ class Calibration(object):
             if "calibration_file" in kwargs:
                 calibration_file = kwargs.get("calibration_file")
             else:
-                calibration_file = "calibrations.json"
+                calibration_file = resource_filename(
+                    "spotlob", "resources/calibrations.json")
 
             assert os.path.exists(calibration_file)
 

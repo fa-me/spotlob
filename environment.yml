@@ -12,3 +12,4 @@ dependencies:
   - ipywidgets
   - pytest
   - pytest-cov
+  - pkg_resources

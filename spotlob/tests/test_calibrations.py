@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
 import unittest
-
-
 import os
 import sys
+
+from pkg_resources import resource_filename
 
 import pandas as pd
 import numpy
@@ -24,27 +24,37 @@ class TestCalibration(unittest.TestCase):
         mycal.pixel_to_micron(1)
 
     def test_create_from_custom_file(self):
+        calibration_filename = resource_filename(
+            "spotlob.tests", "resources/test_calibrations.json")
         mycal = Calibration(
-            microscope="zeiss", objective="20x", calibration_file="spotlob/tests/data/test_calibrations.json")
+            microscope="zeiss", objective="20x",
+            calibration_file=calibration_filename)
 
         self.assertTrue(mycal.micron_to_pixel(1) == 99)
 
     def test_micron_to_pixel(self):
+        calibration_filename = resource_filename(
+            "spotlob.tests", "resources/test_calibrations.json")
         mycal = Calibration(
-            microscope="zeiss", objective="20x", calibration_file="spotlob/tests/data/test_calibrations.json")
+            microscope="zeiss", objective="20x",
+            calibration_file=calibration_filename)
 
         self.assertTrue(mycal.micron_to_pixel(1) == 99)
         self.assertTrue(mycal.micron_to_pixel(2) == 2*99)
 
         mycal2 = Calibration(
-            microscope="zeiss", objective="50x", calibration_file="spotlob/tests/data/test_calibrations.json")
+            microscope="zeiss", objective="50x",
+            calibration_file=calibration_filename)
 
         self.assertTrue(mycal2.micron_to_pixel(1) == 100)
         self.assertTrue(mycal2.micron_to_pixel(2) == 200)
 
     def test_pixel_to_microns(self):
+        calibration_filename = resource_filename(
+            "spotlob.tests", "resources/test_calibrations.json")
         mycal = Calibration(
-            microscope="zeiss", objective="50x", calibration_file="spotlob/tests/data/test_calibrations.json")
+            microscope="zeiss", objective="50x",
+            calibration_file=calibration_filename)
 
         self.assertTrue(mycal.pixel_to_micron(1) == 0.01)
         self.assertTrue(mycal.pixel_to_micron(2) == 0.02)
