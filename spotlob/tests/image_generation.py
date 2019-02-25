@@ -99,8 +99,8 @@ def binary_circle_off_border(shape=(1000, 1000), val_type=np.uint8, seed=None):
                          val_type)
 
 
-def binary_circle_border(border="left",
-                                shape=(1000, 1000),
+def binary_circle_border(border,
+                         shape=(1000, 1000),
                          val_type=np.uint8,
                          seed=None):
     """
@@ -139,17 +139,17 @@ def binary_circle_border(border="left",
     randfloats = np.random.random_sample(2)
 
     if border == "left":
-        circ_cx = randfloats[0]*circ_r
-        circ_cy = randfloats[1]*testim_shape[1]
+        circ_cx = randfloats[1]*circ_r
+        circ_cy = randfloats[0]*testim_shape[0]
     elif border == "right":
-        circ_cx = testim_shape[0] - randfloats[0]*circ_r
-        circ_cy = randfloats[1]*testim_shape[1]
+        circ_cx = testim_shape[1] - randfloats[1]*circ_r
+        circ_cy = randfloats[0]*testim_shape[0]
     elif border == "top":
-        circ_cx = randfloats[0]*testim_shape[0]
-        circ_cy = randfloats[1]*circ_r
+        circ_cx = randfloats[1]*testim_shape[1]
+        circ_cy = randfloats[0]*circ_r
     elif border == "bottom":
-        circ_cx = randfloats[0]*testim_shape[0]
-        circ_cy = testim_shape[1] - randfloats[1]*circ_r
+        circ_cx = randfloats[1]*testim_shape[1]
+        circ_cy = testim_shape[0] - randfloats[0]*circ_r
 
     return binary_circle((circ_cx, circ_cy),
                          circ_r,

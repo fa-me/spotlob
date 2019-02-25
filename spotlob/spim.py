@@ -23,6 +23,9 @@ class Spim(object):
         self.cached = cached
         self.predecessors = predecessors
 
+        if image is not None:
+            self.metadata.update({"image_shape": image.shape})
+
     @classmethod
     def from_file(cls, image_filepath, cached=False):
         md = {"filepath": image_filepath}
@@ -54,6 +57,7 @@ class Spim(object):
     def read(self, reader):
         im, metadata = reader.apply(self.metadata["filepath"])
         metadata.update(self.metadata)
+        metadata.update({"image_shape": im.shape})
         return Spim(im, metadata, SpimStage.loaded, self.cached, self._predecessors_and_self())
 
     def apply_process(self, process):
@@ -86,7 +90,8 @@ class Spim(object):
         return newspim
 
     def filter_features(self, feature_filter):
-        filtered_contours = feature_filter.apply(self.metadata["contours"])
+        filtered_contours = feature_filter.apply(self.metadata["contours"],
+                                                 self.metadata["image_shape"])
         metadata = self.metadata.copy()
         metadata["contours"] = filtered_contours
         return Spim(None, metadata, SpimStage.features_filtered, self.cached, self._predecessors_and_self())

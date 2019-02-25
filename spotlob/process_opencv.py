@@ -110,13 +110,35 @@ class FeatureFormFilter(FeatureFilter):
         except ZeroDivisionError:
             return 0
 
-    def filter_fn(self, contours, minimal_area, solidity_limit):
+    def filter_fn(self, contours, image_shape, minimal_area, solidity_limit):
         filtered_contours = [c for c in contours if
                              (cv2.contourArea(c) > minimal_area and
-                              self.solidity(c) > solidity_limit)]
+                              self.solidity(c) > solidity_limit and
+                              self.is_off_border(c, image_shape))]
 
-        # TODO: filter the ones that touch the border
         return filtered_contours
+
+    def is_off_border(self, contour, image_shape):
+        """
+        this function checks if a contour is touching the border
+        of an image shaped like image_shape
+        """
+        bb_x, bb_y, bb_w, bb_h = cv2.boundingRect(contour)
+        maxh = image_shape[0]
+        maxw = image_shape[1]
+
+        xMin = 0
+        yMin = 0
+        xMax = maxw - 1
+        yMax = maxh - 1
+
+        if any([bb_x <= xMin,
+                bb_y <= yMin,
+                bb_x+bb_w >= xMax,
+                bb_y+bb_h >= yMax]):
+            return False
+        else:
+            return True
 
     def draw_contours(self, image, contours):
         background = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)

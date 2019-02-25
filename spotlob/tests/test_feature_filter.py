@@ -21,6 +21,8 @@ class FeatureFilterTestCase(unittest.TestCase):
         feature_filter = FeatureFormFilter(size=0, solidity=0.9)
 
         for i in range(self.repetitions):
+
+            # randomly select a border
             j = np.random.randint(low=0, high=3)
             border = ["left", "right", "top", "bottom"][j]
 
