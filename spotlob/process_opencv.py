@@ -100,8 +100,8 @@ class FeatureFormFilter(FeatureFilter):
     def __init__(self, size, solidity):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
-             NumericRangeParameter(
-                 "solidity_limit", solidity, 0, 1, step=0.01, type_=float)])
+             NumericRangeParameter("solidity_limit",
+                                   solidity, 0, 1, step=0.01, type_=float)])
         super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
     def solidity(self, c):
