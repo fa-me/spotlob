@@ -43,7 +43,7 @@ class Spim(object):
 
     def predecessor_image(self):
         predecessor_stages = self.predecessors.keys()
-        predecessor_stages.sort()
+        predecessor_stages = sorted(predecessor_stages)
 
         for i in predecessor_stages[::-1]:
             p = self.predecessors[i]
@@ -56,21 +56,26 @@ class Spim(object):
         metadata.update(self.metadata)
         return Spim(im, metadata, SpimStage.loaded, self.cached, self._predecessors_and_self())
 
+    def apply_process(self, process):
+        assert self.stage == process.input_stage
+        im = process.apply(self.image)
+        return Spim(im,
+                    self.metadata.copy(),
+                    self.stage + 1,
+                    self.cached,
+                    self._predecessors_and_self())
+
     def convert(self, converter):
-        im = converter.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.converted, self.cached, self._predecessors_and_self())
+        return self.apply_process(converter)
 
     def preprocess(self, preprocessor):
-        im = preprocessor.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.preprocessed, self.cached, self._predecessors_and_self())
+        return self.apply_process(preprocessor)
 
     def binarize(self, binarizer):
-        im = binarizer.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.binarized, self.cached, self._predecessors_and_self())
+        return self.apply_process(binarizer)
 
     def postprocess(self, postprocessor):
-        im = postprocessor.apply(self.image)
-        return Spim(im, self.metadata.copy(), SpimStage.postprocessed, self.cached, self._predecessors_and_self())
+        return self.apply_process(postprocessor)
 
     def extract_features(self, feature_extractor):
         contours = feature_extractor.apply(self.image)
@@ -125,7 +130,8 @@ class Spim(object):
             try:
                 return self.predecessors[spimstage]
             except KeyError:
-                raise Exception("No predecessor at stage %s" % spimstage)
+                raise Exception("No predecessor at stage %s. Available predecessors at stages %s" % (
+                    spimstage, self.predecessors.keys()))
 
     def get_data(self):
         """return all metadata and results as flat metadata"""
