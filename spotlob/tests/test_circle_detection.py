@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_equal,\
     assert_array_almost_equal, assert_almost_equal
 
-from .image_generation import binary_circle
+from .image_generation import binary_circle_off_border
 
 from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
@@ -24,9 +24,10 @@ class CircleDetectionTestCase(unittest.TestCase):
 
         for i in range(self.repetitions):
             # create 8bit binary image with circle
-            circ_im, exp_pos, exp_radius = binary_circle(shape=(h, w),
-                                                         val_type=np.uint8,
-                                                         seed=self.seed)
+            circ_im, exp_pos, exp_radius = binary_circle_off_border(
+                shape=(h, w),
+                val_type=np.uint8,
+                seed=self.seed)
 
             assert_array_equal(np.sort(np.unique(circ_im)), np.array([0, 255]))
 
