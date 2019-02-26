@@ -32,9 +32,9 @@ class SpotlobProcessStep(object):
         """
         raise NotImplementedError("abstract: to be implemented by subclass")
 
-    def apply(self, input):
+    def apply(self, *input_args):
         #output = log(self.function)(input, **self.parameters.to_dict())
-        output = self.function(input, **self.parameters.to_dict())
+        output = self.function(*input_args, **self.parameters.to_dict())
         self.outdated = False
         return output
 
@@ -93,7 +93,8 @@ class FeatureFilter(SpotlobProcessStep):
 
     def preview(self, spim):
         input_ = spim.get_at_stage(self.input_stage)
-        new_contours = self.apply(input_.metadata["contours"])
+        new_contours = self.apply(input_.metadata["contours"],
+                                  input_.metadata["image_shape"])
 
         background = spim.get_at_stage(SpimStage.binarized).image
         return self.draw_contours(background, new_contours)
