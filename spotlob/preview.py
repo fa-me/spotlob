@@ -9,7 +9,7 @@ class MatplotlibPreviewScreen(object):
         self.fig = plt.figure(*args, **kwargs)
         self.ax = plt.Axes(self.fig, [0., 0., 1., 1.])
         self.fig.add_axes(self.ax)
-        #self.bg_ax = self.ax.imshow(background_im)
+        # self.bg_ax = self.ax.imshow(background_im)
         self.fg_ax = self.ax.imshow(background_im, cmap="gray")
         self.ax.set_axis_off()
 

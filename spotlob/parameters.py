@@ -1,12 +1,31 @@
 def parameter_from_spec(spec):
     """
-    float range: ("parameter_name", (float_min_value, float_max_value, float_value))
-    int range: ("parameter_name", (int_value, int_min_value, int_max_value))
-    bool: ("parameter name", boolean)
-    enum: ("parameter name", ["option1", "option2", "option3"])
+    This function will create a SpotlobParameter from a specification
 
-    ---
-    returns: SpotlobParameter
+    ARGS:
+    -----
+    spec: tuple(string, object)
+        specification for the parameter, must be one of the following
+        options:
+            - a float range:
+                ("parameter_name", (float min_value,
+                                    float_max_value,
+                                    float_value))
+            - an integer range:
+                ("parameter_name", (int_value,
+                                    int_min_value,
+                                    int_max_value))
+            - a boolean value:
+                ("parameter name", boolean)
+            - an enumeration:
+                ("parameter name", ["option1", "option2", "option3"])
+
+    RETURNS:
+    --------
+    SpotlobParameter
+        An instance of a SpotlobParameter subclass: EnumParameter,
+        FloatParameter, ... depending on the type of the spec
+
     """
     try:
         parname, val = spec
@@ -14,9 +33,17 @@ def parameter_from_spec(spec):
             # split into min,max,value
             minv, maxv, v = val
             if any([type(vi) == float for vi in val]):
-                return NumericRangeParameter(parname, float(v), float(minv), float(maxv), float)
+                return NumericRangeParameter(parname,
+                                             float(v),
+                                             float(minv),
+                                             float(maxv),
+                                             float)
             elif all([type(vi) == int for vi in val]):
-                return NumericRangeParameter(parname, int(v), int(minv), int(maxv), int)
+                return NumericRangeParameter(parname,
+                                             int(v),
+                                             int(minv),
+                                             int(maxv),
+                                             int)
             else:
                 raise TypeError
 
@@ -40,7 +67,8 @@ class SpotlobParameter(object):
         super(SpotlobParameter, self).__init__()
 
     def __repr__(self):
-        return "<SpotlobParameter(%s) %s: %s>" % (self.type, self.name, self.value)
+        return "<SpotlobParameter(%s) %s: %s>"\
+            % (self.type, self.name, self.value)
 
     @property
     def value(self):
@@ -87,7 +115,8 @@ class EnumParameter(SpotlobParameter):
 
 
 class NumericRangeParameter(SpotlobParameter):
-    def __init__(self, name, value, minvalue, maxvalue, type_=int, step=1, description=""):
+    def __init__(self, name, value, minvalue, maxvalue,
+                 type_=int, step=1, description=""):
         self.minvalue = minvalue
         self.maxvalue = maxvalue
         self.step = step
