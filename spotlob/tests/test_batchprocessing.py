@@ -1,7 +1,7 @@
 import unittest
 import os
 from pkg_resources import resource_filename
-from numpy.testing import assert_array_equal
+from pandas.testing import assert_frame_equal
 
 from ..batch import batchprocess
 from ..defaults import default_pipeline
@@ -27,8 +27,8 @@ class BatchProcessingTestCase(unittest.TestCase):
         results_mp = batchprocess(self.temp_pipe_filename,
                                   small_batch,
                                   multiprocessing=True)
-
-        assert_array_equal(results_mp, results_no_mp)
+        assert len(results_mp) > 0
+        assert_frame_equal(results_mp, results_no_mp)
 
     def tearDown(self):
         os.remove(self.temp_pipe_filename)
