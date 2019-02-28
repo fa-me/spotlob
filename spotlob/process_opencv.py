@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from .process import *
+from .process_steps import *
 from .parameters import *
 
 
