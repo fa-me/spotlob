@@ -14,7 +14,8 @@ def is_interactive():
 
 
 def _process_job(job):
-    # function cannot be pickled, so load function with dill within function call
+    # function cannot be pickled,
+    # so load function with dill within function call
     pipeline_file, image_file = job
     pipeline = Pipeline.from_file(pipeline_file)
     myspim = Spim.from_file(image_file)
@@ -26,7 +27,7 @@ def batchprocess(pipeline_file, image_files, multiprocessing=False):
     if multiprocessing:
         if is_interactive():
             warnings.warn(
-                """It seems you are running in an interactive environment. 
+                """It seems you are running in an interactive environment.
                 Multiprocessing might not work.
                 Consider using ipyparallel instead""")
 

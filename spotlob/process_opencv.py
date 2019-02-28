@@ -3,8 +3,10 @@ import pandas as pd
 import numpy as np
 import os
 
-from .process_steps import *
-from .parameters import *
+from .process_steps import Reader, Converter, Preprocessor,\
+    Binarisation, Postprocessor, FeatureFinder, FeatureFilter
+from .parameters import SpotlobParameterSet, EnumParameter,\
+    BoolParameter, NumericRangeParameter
 
 
 class SimpleReader(Reader):
@@ -71,7 +73,7 @@ class BinaryThreshold(Binarisation):
         super(BinaryThreshold, self).__init__(self.threshold_fn, pars)
 
     def threshold_fn(self, grey_image, threshold):
-        thresh, im = cv2.threshold(
+        _, im = cv2.threshold(
             grey_image, threshold, 255, cv2.THRESH_BINARY)
         return im
 
@@ -91,7 +93,7 @@ class ContourFinderSimple(FeatureFinder):
         super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
 
     def finder_fn(self, bin_im):
-        cim, contours, _ = cv2.findContours(
+        _, contours, _ = cv2.findContours(
             bin_im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         return contours
 

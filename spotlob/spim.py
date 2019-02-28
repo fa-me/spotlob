@@ -58,7 +58,11 @@ class Spim(object):
         im, metadata = reader.apply(self.metadata["filepath"])
         metadata.update(self.metadata)
         metadata.update({"image_shape": im.shape})
-        return Spim(im, metadata, SpimStage.loaded, self.cached, self._predecessors_and_self())
+        return Spim(im,
+                    metadata,
+                    SpimStage.loaded,
+                    self.cached,
+                    self._predecessors_and_self())
 
     def apply_process(self, process):
         assert self.stage == process.input_stage
@@ -94,13 +98,21 @@ class Spim(object):
                                                  self.metadata["image_shape"])
         metadata = self.metadata.copy()
         metadata["contours"] = filtered_contours
-        return Spim(None, metadata, SpimStage.features_filtered, self.cached, self._predecessors_and_self())
+        return Spim(None,
+                    metadata,
+                    SpimStage.features_filtered,
+                    self.cached,
+                    self._predecessors_and_self())
 
     def analyse(self, analysis):
         results = analysis.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["results"] = results
-        return Spim(None, metadata, SpimStage.analyzed, self.cached, self._predecessors_and_self())
+        return Spim(None, 
+                    metadata, 
+                    SpimStage.analyzed, 
+                    self.cached, 
+                    self._predecessors_and_self())
 
     def func_at_stage(self, spimstage):
         """returns the function, that can be applied the given stage"""
@@ -135,8 +147,8 @@ class Spim(object):
             try:
                 return self.predecessors[spimstage]
             except KeyError:
-                raise Exception("No predecessor at stage %s. Available predecessors at stages %s" % (
-                    spimstage, self.predecessors.keys()))
+                msg = "Spim has no predecessor at stage %s." % spimstage
+                raise Exception(msg)
 
     def get_data(self):
         """return all metadata and results as flat metadata"""

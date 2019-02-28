@@ -1,4 +1,5 @@
-from .process_steps import *
+from .process_steps import Binarisation, Converter, Preprocessor,\
+    Postprocessor, Analysis
 from .parameters import parameter_from_spec
 
 
@@ -6,7 +7,10 @@ class ProcessRegister(object):
     available_processes = dict()
 
     def binarisation_plugin(self, param_spec):
-        """register your binarisation function as a plugin by using this function as a decorator"""
+        """
+        register your binarisation function as a plugin by using
+        this function as a decorator
+        """
         wrapper = self._get_wrapper(Binarisation, param_spec)
         return wrapper
 
@@ -32,7 +36,8 @@ class ProcessRegister(object):
             spotlob_parameters = [parameter_from_spec(
                 spec) for spec in process_param_spec]
 
-            # instantiate given class name, handing over parameters, do not register the object
+            # instantiate given class name, handing over parameters,
+            # do not register the object
             proc = process_class_name(
                 process_function, spotlob_parameters, add_to_register=False)
 

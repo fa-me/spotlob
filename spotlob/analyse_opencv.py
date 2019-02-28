@@ -37,11 +37,13 @@ class CircleAnalysis(Analysis):
             ellipses_minor_axes += [e_minor_ax]
             ellipses_angles += [angle]
 
-        return self.calibrate(pd.DataFrame({"area_px2": areas,
-                                            "ellipse_position_px": ellipses_positions,
-                                            "ellipse_majorAxis_px": ellipses_major_axes,
-                                            "ellipse_minorAxis_px": ellipses_minor_axes,
-                                            "ellipse_angle": ellipses_angles}))
+        result = pd.DataFrame({"area_px2": areas,
+                               "ellipse_position_px": ellipses_positions,
+                               "ellipse_majorAxis_px": ellipses_major_axes,
+                               "ellipse_minorAxis_px": ellipses_minor_axes,
+                               "ellipse_angle": ellipses_angles})
+
+        return self.calibrate(result)
 
     def draw_results(self, image, dataframe):
         for index, row in dataframe.iterrows():

@@ -28,20 +28,29 @@ class Pipeline(object):
         return max(self.process_stage_dict.keys())+1
 
     def apply_all_steps(self, spim):
-        """return a spim with all processes within this pipeline applied in the defined order"""
+        """
+        return a spim with all processes within this
+        pipeline applied in the defined order
+        """
+
         minstage = min(self.process_stage_dict.keys())
         maxstage = self._maxstage()
         return self.apply_from_stage_to_stage(spim, minstage, maxstage)
 
     def apply_at_stage(self, spim):
-        """applies all steps following the stage of the spim"""
+        """
+        applies all steps following the stage of the spim
+        """
+
         startstage = spim.stage
         maxstage = self._maxstage()
         return self.apply_from_stage_to_stage(spim, startstage, maxstage)
 
     def apply_outdated_up_to_stage(self, spim, up_to_stage):
-        """applies all processes since the first outdated one on spim up to a given stage
-        if no process is outdated or if the outdated stage is past up_to_stage, spim is processed up to up_to_stage,
+        """
+        applies all processes since the first outdated one on spim up to
+        a given stage if no process is outdated or if the outdated stage
+        is past up_to_stage, spim is processed up to up_to_stage,
         or a predecessor is returned at up_to_stage
         """
         first_outdated_stage = -1
@@ -59,13 +68,18 @@ class Pipeline(object):
 
         # nothing is outdated or outdated stage is past up_to_stage
         if up_to_stage > spim.stage:
-            return self.apply_from_stage_to_stage(spim, spim.stage, up_to_stage)
+            return self.apply_from_stage_to_stage(spim,
+                                                  spim.stage,
+                                                  up_to_stage)
         else:
             return spim.get_at_stage(up_to_stage)
 
     def save(self, target_path):
-        """store the pipeline including process paramaters for later use (suitable for batch process and parallelization)
-        use from_file to load the pipeline"""
+        """
+        store the pipeline including process paramaters for later use
+        (suitable for batch process and parallelization)
+        use from_file to load the pipeline
+        """
         with open(target_path, "wb") as dill_file:
             dill.dump(self, dill_file)
 

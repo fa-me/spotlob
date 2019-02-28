@@ -3,12 +3,14 @@ from IPython.display import display
 import os.path
 
 from .widget import SpotlobNotebookGui
-from .process_opencv import *
+from .process_opencv import SimpleReader, GreyscaleConverter,\
+    GaussianPreprocess, BinaryThreshold, PostprocessNothing, \
+    ContourFinderSimple, FeatureFormFilter
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
 from .register import ProcessRegister
 from .analyse_opencv import CircleAnalysis
-from .spim import *
+from .spim import Spim
 
 
 def default_pipeline():

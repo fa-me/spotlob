@@ -26,7 +26,7 @@ class SpotlobProcessStep(object):
 
     def preview(self, spim):
         """
-        This function takes spim at an undefined stage and draws 
+        This function takes spim at an undefined stage and draws
         the effect of the process on top, to provide a preview for the
         user on how the funciton will work. No storage or sideeffects
         should take place.
@@ -35,7 +35,6 @@ class SpotlobProcessStep(object):
         raise NotImplementedError("abstract: to be implemented by subclass")
 
     def apply(self, *input_args):
-        #output = log(self.function)(input, **self.parameters.to_dict())
         output = self.function(*input_args, **self.parameters.to_dict())
         self.outdated = False
         return output

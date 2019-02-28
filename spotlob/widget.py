@@ -1,7 +1,8 @@
-from ipywidgets import IntSlider, FloatSlider, Text, Dropdown, VBox, Checkbox, Button, Output
+from ipywidgets import IntSlider, FloatSlider, Text,\
+    Dropdown, VBox, Checkbox, Button, Output
 from IPython.display import display, clear_output
 
-from .parameters import *
+from .parameters import EnumParameter, BoolParameter
 from .spim import Spim, SpimStage
 
 
@@ -32,7 +33,8 @@ class SpotlobNotebookGui(object):
 
     def show_preview_screen(self, *args, **kwargs):
         self.preview_screen.make_new(
-            self.dummyspim.get_at_stage(SpimStage.loaded).image, *args, **kwargs)
+            self.dummyspim.get_at_stage(SpimStage.loaded).image,
+            *args, **kwargs)
 
     def parameter_as_widget(self, parameter, parent_process):
         v = parameter.value
@@ -85,7 +87,7 @@ class SpotlobNotebookGui(object):
             # mark process as outdated --> it has to be reapplied for others
             parent_process.outdated = True
 
-        ## bind functionality to widget ###########
+        # bind functionality to widget ###########
         widget.observe(update_to_widgetstate, names="value")
 
         return widget
@@ -105,7 +107,10 @@ class SpotlobNotebookGui(object):
 
             # draw results
             image = self.dummyspim.get_at_stage(SpimStage.loaded).image
-            analyis_process = self.pipeline.process_stage_dict[SpimStage.analyzed-1]
+
+            before_analyzed = SpimStage.analyzed-1
+
+            analyis_process = self.pipeline.process_stage_dict[before_analyzed]
             image_with_results = analyis_process.draw_results(
                 image, self.results())
             self.preview_screen.update(image_with_results)
