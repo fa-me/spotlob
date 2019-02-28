@@ -1,40 +1,32 @@
 from .process_steps import *
 from .parameters import parameter_from_spec
 
-# TODO: should be possible to turn this into non-static class
-
 
 class ProcessRegister(object):
     available_processes = dict()
 
-    @classmethod
-    def binarisation_plugin(cls, param_spec):
+    def binarisation_plugin(self, param_spec):
         """register your binarisation function as a plugin by using this function as a decorator"""
-        wrapper = cls._get_wrapper(Binarisation, param_spec)
+        wrapper = self._get_wrapper(Binarisation, param_spec)
         return wrapper
 
-    @classmethod
-    def convert_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(Converter, param_spec)
+    def convert_plugin(self, param_spec):
+        wrapper = self._get_wrapper(Converter, param_spec)
         return wrapper
 
-    @classmethod
-    def preprocess_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(Preprocessor, param_spec)
+    def preprocess_plugin(self, param_spec):
+        wrapper = self._get_wrapper(Preprocessor, param_spec)
         return wrapper
 
-    @classmethod
-    def postprocess_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(Postprocessor, param_spec)
+    def postprocess_plugin(self, param_spec):
+        wrapper = self._get_wrapper(Postprocessor, param_spec)
         return wrapper
 
-    @classmethod
-    def analysis_plugin(cls, param_spec):
-        wrapper = cls._get_wrapper(Analysis, param_spec)
+    def analysis_plugin(self, param_spec):
+        wrapper = self._get_wrapper(Analysis, param_spec)
         return wrapper
 
-    @classmethod
-    def _get_wrapper(cls, process_class_name, process_param_spec):
+    def _get_wrapper(self, process_class_name, process_param_spec):
         def wrapper(process_function):
             # create SpotlobParameters out of definition in decorator
             spotlob_parameters = [parameter_from_spec(
@@ -45,11 +37,13 @@ class ProcessRegister(object):
                 process_function, spotlob_parameters, add_to_register=False)
 
             # register the object now, but via the name of the function
-            cls.available_processes[process_function.__name__] = proc
+            self.available_processes[process_function.__name__] = proc
             return process_function
 
         return wrapper
 
-    @classmethod
-    def register_process(cls, process_instance):
-        cls.available_processes[process_instance.__class__] = process_instance
+    def register_process(self, process_instance):
+        self.available_processes[process_instance.__class__] = process_instance
+
+
+PROCESS_REGISTER = ProcessRegister()

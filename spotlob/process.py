@@ -19,10 +19,10 @@ class SpotlobProcessStep(object):
         self.parameters = SpotlobParameterSet(parameters)
 
         # import needs to be delayed to avoid circular imports
-        from .register import ProcessRegister
+        from .register import PROCESS_REGISTER
 
         if add_to_register:
-            ProcessRegister.register_process(self)
+            PROCESS_REGISTER.register_process(self)
 
     def preview(self, spim):
         """

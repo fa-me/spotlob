@@ -5,7 +5,7 @@ import numpy
 
 from .image_generation import binary_circle_off_border
 from ..defaults import default_pipeline
-from ..register import ProcessRegister as preg
+from ..register import PROCESS_REGISTER as preg
 from ..spim import Spim, SpimStage
 from ..process_steps import Analysis
 
