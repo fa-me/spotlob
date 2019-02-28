@@ -1,4 +1,4 @@
-from .process import *
+from .process_steps import *
 from .parameters import parameter_from_spec
 
 # TODO: should be possible to turn this into non-static class
