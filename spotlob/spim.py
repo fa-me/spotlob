@@ -11,6 +11,7 @@ class SpimStage(object):
     features_extracted = 6
     features_filtered = 7
     analyzed = 8
+    stored = 9
 
 
 class Spim(object):
@@ -108,10 +109,27 @@ class Spim(object):
         results = analysis.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["results"] = results
-        return Spim(None, 
-                    metadata, 
-                    SpimStage.analyzed, 
-                    self.cached, 
+        return Spim(None,
+                    metadata,
+                    SpimStage.analyzed,
+                    self.cached,
+                    self._predecessors_and_self())
+
+    def store(self, writer):
+        assert self.stage == SpimStage.analyzed
+
+        metadata = self.metadata.copy()
+
+        image_path = writer.store_image(self.image)
+        data_path = writer.store_data(self.get_data())
+
+        metadata["output_image_filepath"] = image_path
+        metadata["output_data_path"] = data_path
+
+        return Spim(None,
+                    metadata,
+                    SpimStage.stored,
+                    self.cached,
                     self._predecessors_and_self())
 
     def func_at_stage(self, spimstage):
@@ -123,7 +141,8 @@ class Spim(object):
                      self.postprocess,
                      self.extract_features,
                      self.filter_features,
-                     self.analyse]
+                     self.analyse,
+                     self.store]
         return functions[spimstage]
 
     def do_process_at_stage(self, process):
