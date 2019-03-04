@@ -6,3 +6,4 @@ pandas
 matplotlib
 ipywidgets
 setuptools
+pillow

@@ -1,8 +1,9 @@
 import unittest
 from pkg_resources import resource_filename
+import os.path
 
 from ..output import Writer
-from ..spim import Spim
+from ..spim import Spim, SpimStage
 from ..defaults import default_pipeline
 
 
@@ -23,4 +24,10 @@ class TestStorage(unittest.TestCase):
 
         s_stored = s_final.store(writer)
 
-        # self.assertTrue(os.path.isfile(s_sto))
+        self.assertEqual(SpimStage.stored, s_stored.stage)
+
+        self.assertTrue(os.path.isfile(data_target_filename))
+        self.assertTrue(os.path.isfile(image_target_filename))
+
+        # TODO: test contour on image
+        # TODO: delete test files
