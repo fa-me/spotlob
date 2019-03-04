@@ -143,9 +143,9 @@ class FeatureFormFilter(FeatureFilter):
             return True
 
     def draw_contours(self, image, contours):
-        return draw_contours(image.copy(), contours)
+        background = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
+        return draw_contours(background, contours)
 
 
-def draw_contours(image, contours):
-    background = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
-    return cv2.drawContours(background, contours, -1, (0, 255, 0), 3)
+def draw_contours(color_image, contours, color=(0, 255, 0)):
+    return cv2.drawContours(color_image, contours, -1, color, 3)

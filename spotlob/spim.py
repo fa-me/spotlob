@@ -120,7 +120,10 @@ class Spim(object):
 
         metadata = self.metadata.copy()
 
-        image_path = writer.store_image(self.image)
+        contours = metadata["contours"]
+
+        fresh_image = self.get_at_stage(SpimStage.loaded).image
+        image_path = writer.store_image(fresh_image, contours)
         data_path = writer.store_data(self.get_data())
 
         metadata["output_image_filepath"] = image_path

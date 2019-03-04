@@ -14,8 +14,9 @@ class Writer(object):
         self.image_filepath = image_filepath
         self.data_filepath = data_filepath
 
-    def store_image(self, image):
-        im = Image.fromarray(image)
+    def store_image(self, image, contours):
+        image_w_contours = draw_contours(image, contours)
+        im = Image.fromarray(image_w_contours)
         im.save(self.image_filepath)
         return self.image_filepath
 
@@ -25,12 +26,3 @@ class Writer(object):
         if ext == ".csv":
             dataframe.to_csv(self.data_filepath)
         return self.data_filepath
-
-
-def draw_contour_and_save(spim):
-    """
-    Loads the image file and draws the contour of
-    detected features as saved in the metadata of the spim
-    """
-    filename = spim.metadata["filename"]
-    contours = spim.metadata["results"]["contours"]
