@@ -42,8 +42,10 @@ class CircleAnalysis(Analysis):
                                "ellipse_majorAxis_px": ellipses_major_axes,
                                "ellipse_minorAxis_px": ellipses_minor_axes,
                                "ellipse_angle": ellipses_angles})
-
-        return self.calibrate(result)
+        if not self.calibration:
+            return result
+        else:
+            return self.calibration.calibrate(result)
 
     def draw_results(self, image, dataframe):
         for _, row in dataframe.iterrows():
@@ -60,20 +62,3 @@ class CircleAnalysis(Analysis):
             cv2.circle(image, e_pos, 10, pen_color, -1)
             cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 3)
         return image
-
-    def calibrate(self, dataframe):
-        """if there is a calibration, get all columns that include the suffix _px and _px2 \
-         and calculate additional columns with the micron / micron^2 values"""
-        if not self.calibration:
-            return dataframe
-        else:
-            for col in dataframe.columns:
-                if col.endswith("_px"):
-                    new_col_name = col[:-3] + "_um"
-                    dataframe[new_col_name] = self.calibration.pixel_to_micron(
-                        dataframe[col])
-                elif col.endswith("_px2"):
-                    new_col_name = col[:-4] + "_um2"
-                    dataframe[new_col_name] = self.calibration.squarepixel_to_squaremicron(
-                        dataframe[col])
-            return dataframe

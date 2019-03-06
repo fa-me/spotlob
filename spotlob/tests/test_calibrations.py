@@ -9,7 +9,6 @@ from pkg_resources import resource_filename
 import pandas as pd
 import numpy
 
-from ..analyse_circle import CircleAnalysis
 from ..calibration import Calibration
 
 
@@ -63,8 +62,7 @@ class TestCalibration(unittest.TestCase):
         data = pd.DataFrame({"area_px2": [100, 10000], "radius_px": [10, 20]})
         cal = Calibration(10)
 
-        analysis = CircleAnalysis(cal)
-        df_cal = analysis.calibrate(data)
+        df_cal = cal.calibrate(data)
 
         numpy.testing.assert_array_equal(
             df_cal["area_um2"], numpy.array([1, 100]))
