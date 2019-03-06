@@ -35,5 +35,5 @@ def points_within_contours(contours):
 
     mask = mask.astype(bool)
 
-    xi, yi = np.indices((extend_y, extend_x))
+    yi, xi = np.indices((extend_y, extend_x))
     return np.vstack([xi[mask], yi[mask]]).T
