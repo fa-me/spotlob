@@ -9,7 +9,7 @@ from pkg_resources import resource_filename
 import pandas as pd
 import numpy
 
-from ..analyse_opencv import CircleAnalysis
+from ..analyse_circle import CircleAnalysis
 from ..calibration import Calibration
 
 
