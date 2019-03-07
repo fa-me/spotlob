@@ -191,7 +191,8 @@ def binary_line(position_A,
     testim = np.zeros(testim_shape).astype(val_type)
     j, i = np.indices(testim_shape)
 
-    line_mask = distance_point_to_line(j, i, position_A, position_B) <= width
+    line_mask = distance_point_to_line(
+        j, i, position_A, position_B) <= width/2.0
 
     # maximum value of val_type within linewidth
     testim[line_mask] = np.iinfo(val_type).max

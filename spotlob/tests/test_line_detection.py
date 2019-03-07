@@ -3,7 +3,7 @@ import unittest
 import cv2
 import numpy as np
 
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_almost_equal
 
 from .image_generation import binary_line
 
@@ -23,32 +23,55 @@ class LineDetectionTestCase(unittest.TestCase):
         contour_finder = ContourFinderSimple()
         feature_filter = FeatureFormFilter(
             size=0, solidity=0.9, remove_on_edge=False)
-        line_analysis = LineAnalysis()
+        line_analysis = LineAnalysis(linewidth_percentile=99)
 
         for i in range(self.repetitions):
-            # TODO: create a random line
-            # TODO: analyze
-            # TODO: compare analysis with input width
-            self.fail()
+            x1, x2 = np.random.randint(0, w, size=2)
+            y1, y2 = np.random.randint(0, h, size=2)
+            posA = (x1, y1)
+            posB = (x2, y2)
 
-    def test_contour_mask(self):
-        # create an image with a line
-        im, _ = binary_line((100, 100),
-                            (300, 400),
-                            150,
-                            shape=(2000, 2000))
+            width = np.random.random_sample()*min((w, h))/10
 
-        # find contours
-        _, contours, _ = cv2.findContours(
-            im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # create a random line
+            line_im, linewidth = binary_line(posA, posB, width)
 
-        # get points within contours
-        detected_points = points_within_contours(contours)
+            bin_spim = Spim(image=line_im,
+                            metadata={},
+                            stage=SpimStage.binarized,
+                            cached=False,
+                            predecessors=[])
 
-        # check if difference towards original image is zero
-        im_J, im_I = np.indices(im.shape)
-        im_mask = im.astype(bool)
+            res_spim = bin_spim\
+                .extract_features(contour_finder)\
+                .filter_features(feature_filter)\
+                .analyse(line_analysis)
 
-        original_points = np.vstack([im_I[im_mask], im_J[im_mask]]).T
+            res_df = res_spim.metadata["results"]
 
-        assert_array_equal(original_points, detected_points)
+            result_width = res_df.loc[0, "linewidth_px"]
+
+            # compare analysis with input width
+            assert_almost_equal(result_width, linewidth, decimal=0)
+
+    # def test_contour_mask(self):
+    #     # create an image with a line
+    #     im, _ = binary_line((100, 100),
+    #                         (300, 400),
+    #                         150,
+    #                         shape=(2000, 2000))
+
+    #     # find contours
+    #     _, contours, _ = cv2.findContours(
+    #         im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    #     # get points within contours
+    #     detected_points = points_within_contours(contours)
+
+    #     # check if difference towards original image is zero
+    #     im_J, im_I = np.indices(im.shape)
+    #     im_mask = im.astype(bool)
+
+    #     original_points = np.vstack([im_I[im_mask], im_J[im_mask]]).T
+
+    #     assert_array_equal(original_points, detected_points)

@@ -18,16 +18,22 @@ def distance_point_to_line(x0, y0, pt_on_line1, pt_on_line2):
     return numerator / denom
 
 
+def max_extends(contours):
+    max_extends = np.array([c.max(axis=0) for c in contours])
+    return max_extends.max(axis=0)[0]
+
+
 def points_within_contours(contours):
     """
     gives the indices of points within the given contours
     using the drawContours function
     """
 
+    extend_x, extend_y = max_extends(contours)
+
     # get maximum points from contours to create mask image
     # of that shape that just covers all
-    max_extends = np.array([c.max(axis=0) for c in contours])
-    extend_x, extend_y = max_extends.max(axis=0)[0]
+
     mask = np.zeros((extend_y, extend_x))
 
     # fill mask image
