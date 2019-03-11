@@ -24,8 +24,13 @@ class LineAnalysis(Analysis):
                                                  "linewidth2_px",
                                                  "bb_width_px",
                                                  "bb_height_px",
-                                                 "bb_angle"])
+                                                 "bb_angle",
+                                                 "distances_hist",
+                                                 "distances_bin_edges_px"])
             return empty_df
+        elif len(contours) > 1:
+            raise NotImplementedError("Currently only single contour is\
+                                       supported for lines")
 
         inner_points = points_within_contours(contours)
 
@@ -48,6 +53,8 @@ class LineAnalysis(Analysis):
                                            p1,
                                            p2)
 
+        hist, bin_edges = np.histogram(distances, bins="auto")
+
         linewidth_perc = np.percentile(distances, self.linewidth_percentile)*2
 
         # TODO: use convex hull to combine contours
@@ -61,6 +68,8 @@ class LineAnalysis(Analysis):
                                "bb_width_px": bb_w,
                                "bb_height_px": bb_h,
                                "bb_angle": bb_angle}, index=[0])
+                            #    "distances_hist": hist.tolist(),
+                            #    "distances_bin_edges_px": bin_edges.tolist()
 
         if not self.calibration:
             return result
