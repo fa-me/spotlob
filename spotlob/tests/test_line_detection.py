@@ -15,7 +15,32 @@ from ..calculation import points_within_contours
 
 class LineDetectionTestCase(unittest.TestCase):
     seed = 0
-    repetitions = 10
+    repetitions = 1
+
+    def test_empty_image(self):
+        h, w = [1000, 2000]
+
+        contour_finder = ContourFinderSimple()
+        feature_filter = FeatureFormFilter(
+            size=0, solidity=0.9, remove_on_edge=False)
+        line_analysis = LineAnalysis(linewidth_percentile=99)
+
+        black = np.zeros((h, w), dtype=np.uint8)
+
+        bin_spim = Spim(image=black,
+                        metadata={},
+                        stage=SpimStage.binarized,
+                        cached=False,
+                        predecessors=[])
+
+        res_spim = bin_spim\
+            .extract_features(contour_finder)\
+            .filter_features(feature_filter)\
+            .analyse(line_analysis)
+
+        res_df = res_spim.metadata["results"]
+
+        assert len(res_df) == 0
 
     def test_binary_line_detection(self):
         h, w = [1000, 2000]
@@ -24,6 +49,8 @@ class LineDetectionTestCase(unittest.TestCase):
         feature_filter = FeatureFormFilter(
             size=0, solidity=0.9, remove_on_edge=False)
         line_analysis = LineAnalysis(linewidth_percentile=99)
+
+        np.random.seed(self.seed)
 
         for i in range(self.repetitions):
             x1, x2 = np.random.randint(0, w, size=2)
@@ -49,10 +76,14 @@ class LineDetectionTestCase(unittest.TestCase):
 
             res_df = res_spim.metadata["results"]
 
-            result_width = res_df.loc[0, "linewidth_px"]
+            result_width_percentile = res_df.loc[0, "linewidth_px"]
+            result_width_bb = res_df.loc[0, "bb_width_px"]
+            result_width_area = res_df.loc[0, "linewidth2_px"]
 
             # compare analysis with input width
-            assert_almost_equal(result_width, linewidth, decimal=0)
+            assert_almost_equal(result_width_percentile, linewidth, decimal=0)
+            assert_almost_equal(result_width_bb, linewidth, decimal=1)
+            assert_almost_equal(result_width_area, linewidth, decimal=0)
 
     # def test_contour_mask(self):
     #     # create an image with a line

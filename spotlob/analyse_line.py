@@ -18,7 +18,18 @@ class LineAnalysis(Analysis):
         super(LineAnalysis, self).__init__(self.analyse, pars)
 
     def analyse(self, contours):
+        if len(contours) == 0:
+            empty_df = pd.DataFrame([], columns=["area_px2",
+                                                 "linewidth_px",
+                                                 "linewidth2_px",
+                                                 "bb_width_px",
+                                                 "bb_height_px",
+                                                 "bb_angle"])
+            return empty_df
+
         inner_points = points_within_contours(contours)
+
+        area = len(inner_points)
 
         [vx, vy, x, y] = cv2.fitLine(inner_points,
                                      cv2.DIST_FAIR, 0, 0.01, 0.01)
@@ -37,10 +48,19 @@ class LineAnalysis(Analysis):
                                            p1,
                                            p2)
 
-        linewidth = np.percentile(distances, self.linewidth_percentile)*2
+        linewidth_perc = np.percentile(distances, self.linewidth_percentile)*2
 
-        result = pd.DataFrame({"area_px": len(inner_points),
-                               "linewidth_px": linewidth}, index=[0])
+        # TODO: use convex hull to combine contours
+        (bb_cx, bb_cy), (bb_w, bb_h), bb_angle = cv2.minAreaRect(contours[0])
+
+        linewidth_area = area/bb_h
+
+        result = pd.DataFrame({"area_px2": area,
+                               "linewidth_px": linewidth_perc,
+                               "linewidth2_px": linewidth_area,
+                               "bb_width_px": bb_w,
+                               "bb_height_px": bb_h,
+                               "bb_angle": bb_angle}, index=[0])
 
         if not self.calibration:
             return result
