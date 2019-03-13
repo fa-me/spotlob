@@ -34,7 +34,11 @@ def batchprocess(pipeline_file, image_files, multiprocessing=False):
         jobs = zip([pipeline_file]*len(image_files), image_files)
         no_cores = mp.cpu_count()
         pool = mp.Pool(processes=no_cores)
-        res = pool.map(_process_job, jobs)
+        try:
+            res = pool.map(_process_job, jobs)
+        finally:
+            pool.close()
+            pool.join()
 
     else:
         pipeline = Pipeline.from_file(pipeline_file)
