@@ -1,9 +1,18 @@
-tests:
+# build_image:
+#   image: docker:stable
+#   stage: build
+#   tags:
+#     - asprunner
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY/fmeyer/spotlob .
+#     - docker push $CI_REGISTRY/fmeyer/spotlob
+
+test:
+  image: $CI_REGISTRY/fmeyer/spotlob:latest
   stage: test
-  image: continuumio/miniconda3:latest
   tags:
     - asprunner
   script:
-    - conda env create -f environment.yml
     - source activate spotlob-env
     - pytest --cov spotlob
