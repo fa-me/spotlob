@@ -8,7 +8,7 @@ from .image_generation import binary_circle_off_border
 
 from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
-from ..analyse_opencv import CircleAnalysis
+from ..analyse_circle import CircleAnalysis
 
 
 class CircleDetectionTestCase(unittest.TestCase):
@@ -19,7 +19,8 @@ class CircleDetectionTestCase(unittest.TestCase):
         h, w = [1000, 2000]
 
         contour_finder = ContourFinderSimple()
-        feature_filter = FeatureFormFilter(size=0, solidity=0.9)
+        feature_filter = FeatureFormFilter(
+            size=0, solidity=0.9, remove_on_edge=True)
         circle_analysis = CircleAnalysis()
 
         for i in range(self.repetitions):

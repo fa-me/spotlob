@@ -9,7 +9,7 @@ from .process_opencv import SimpleReader, GreyscaleConverter,\
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
 from .register import ProcessRegister
-from .analyse_opencv import CircleAnalysis
+from .analyse_circle import CircleAnalysis
 from .spim import Spim
 
 
@@ -20,7 +20,7 @@ def default_pipeline():
                      BinaryThreshold(100),
                      PostprocessNothing(),
                      ContourFinderSimple(),
-                     FeatureFormFilter(4000, 0.98),
+                     FeatureFormFilter(4000, 0.98, True),
                      CircleAnalysis()])
 
 
