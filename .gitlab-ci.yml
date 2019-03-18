@@ -2,8 +2,6 @@ build_image:
   image: docker:stable
   stage: build
   only:
-    refs:
-      - merge_requests
     changes:
       - dockerfile
       - requirements.yml
@@ -24,11 +22,11 @@ test:
     - pytest --cov spotlob
 
 test_pip:
-  image: python:3.6
+  image: python:3.7
   stage: test
-  only:
-    changes:
-      - requirements.txt
+  # only:
+  #   changes:
+  #     - requirements.txt
   tags:
     - asprunner
   script:
