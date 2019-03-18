@@ -1,5 +1,5 @@
 dill
-opencv
+opencv-python
 ipython
 numpy
 pandas
