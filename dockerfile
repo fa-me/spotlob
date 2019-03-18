@@ -7,6 +7,11 @@ LABEL maintainer="fabian.meyer@ise.fraunhofer.de"
 
 WORKDIR /app
 
+# missing library
+# https://github.com/ContinuumIO/docker-images/issues/49
+RUN apt-get update
+RUN apt-get install libgl1-mesa-swx11
+
 # Install myapp requirements
 COPY environment.yml /app/environment.yml
 RUN conda config --add channels conda-forge \
