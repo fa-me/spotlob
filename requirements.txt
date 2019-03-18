@@ -7,3 +7,5 @@ matplotlib
 ipywidgets
 setuptools
 pillow
+pytest
+pytest-cov
