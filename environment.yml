@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - opencv
+  - opencv>=4.0
   - dill
   - numpy
   - pandas
