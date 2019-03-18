@@ -27,8 +27,6 @@ test_pip:
   image: python:3.6
   stage: test
   only:
-    refs:
-      - merge_requests
     changes:
       - requirements.txt
   tags:
