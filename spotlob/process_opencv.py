@@ -93,9 +93,14 @@ class ContourFinderSimple(FeatureFinder):
         super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
 
     def finder_fn(self, bin_im):
-        contours, _ = cv2.findContours(bin_im,
+        cont_ret = cv2.findContours(bin_im,
                                        cv2.RETR_EXTERNAL,
                                        cv2.CHAIN_APPROX_SIMPLE)
+        # cont_ret is
+        # contours, hierarchy for opencv >4.0
+        # im, contours, hierarchy for opencv <=3.4
+
+        contours = cont_ret[-2]
         return contours
 
 
