@@ -1,5 +1,5 @@
 dill
-opencv
+opencv-python
 ipython
 numpy
 pandas
@@ -7,3 +7,5 @@ matplotlib
 ipywidgets
 setuptools
 pillow
+pytest
+pytest-cov
