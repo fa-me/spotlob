@@ -45,10 +45,12 @@ class LineDetectionTestCase(unittest.TestCase):
     def test_binary_line_detection(self):
         h, w = [1000, 2000]
 
+        percentile = 95
+
         contour_finder = ContourFinderSimple()
         feature_filter = FeatureFormFilter(
             size=0, solidity=0.9, remove_on_edge=False)
-        line_analysis = LineAnalysis(linewidth_percentile=99)
+        line_analysis = LineAnalysis(linewidth_percentile=percentile)
 
         np.random.seed(self.seed)
 
@@ -78,12 +80,13 @@ class LineDetectionTestCase(unittest.TestCase):
 
             result_width_percentile = res_df.loc[0, "linewidth_px"]
             result_width_bb = res_df.loc[0, "bb_width_px"]
-            result_width_area = res_df.loc[0, "linewidth2_px"]
+            # result_width_area = res_df.loc[0, "linewidth2_px"]
 
             # compare analysis with input width
-            assert_almost_equal(result_width_percentile, linewidth, decimal=0)
+            assert_almost_equal(result_width_percentile,
+                                linewidth*percentile/100.0, decimal=1)
             assert_almost_equal(result_width_bb, linewidth, decimal=1)
-            assert_almost_equal(result_width_area, linewidth, decimal=0)
+            # assert_almost_equal(result_width_area, linewidth, decimal=0)
 
     # def test_contour_mask(self):
     #     # create an image with a line

@@ -51,7 +51,7 @@ class TestSpimLifecycle(unittest.TestCase):
     def test_pipeline_apply_all_stages(self):
         mypipe = default_pipeline()
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename)
 
         s_final = mypipe.apply_all_steps(s0)
@@ -61,7 +61,7 @@ class TestSpimLifecycle(unittest.TestCase):
     def test_pipeline_intermediate_stages(self):
         mypipe = default_pipeline()
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename, cached=True)
 
         stages = mypipe.process_stage_dict.keys()
@@ -83,7 +83,7 @@ class TestSpimLifecycle(unittest.TestCase):
     def test_pipeline_apply_from_to_stage(self):
         mypipe = default_pipeline()
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename, cached=True)
 
         for intermediate_stage in range(SpimStage.analyzed):
@@ -98,7 +98,7 @@ class TestSpimLifecycle(unittest.TestCase):
     def test_pipeline_outdated(self):
         mypipe = default_pipeline()
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename, cached=True)
 
         # apply all stages

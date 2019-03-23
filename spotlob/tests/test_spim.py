@@ -18,8 +18,8 @@ from ..spim import Spim, SpimStage
 
 class TestSpimLifecycle(unittest.TestCase):
     def test_empty_spim_creation(self):
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
 
         s0 = Spim.from_file(image_filepath)
 
@@ -31,8 +31,8 @@ class TestSpimLifecycle(unittest.TestCase):
         self.assertTrue(s0.cached is False)
 
     def test_reader(self):
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
         s0 = Spim.from_file(image_filepath)
 
         reader = SimpleReader()
@@ -44,35 +44,35 @@ class TestSpimLifecycle(unittest.TestCase):
             self.fail("could not load image")
 
         self.assertTrue(s1.stage == SpimStage.loaded)
-        self.assertTupleEqual(s1im.shape, (2306, 2560, 3))
+        self.assertTupleEqual(s1im.shape, (1040, 1388, 3))
 
     def test_convert(self):
         reader = SimpleReader()
         converter = GreyscaleConverter()
 
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
 
         s2 = Spim.from_file(image_filepath)\
             .read(reader)\
             .convert(converter)
 
-        self.assertTupleEqual(s2.image.shape, (2306, 2560))
+        self.assertTupleEqual(s2.image.shape, (1040, 1388))
 
     def test_preprocess(self):
         reader = SimpleReader()
         converter = GreyscaleConverter()
         preprocessor = GaussianPreprocess(ksize=5)
 
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
 
         s_final = Spim.from_file(image_filepath)\
             .read(reader)\
             .convert(converter)\
             .preprocess(preprocessor)
 
-        self.assertTupleEqual(s_final.image.shape, (2306, 2560))
+        self.assertTupleEqual(s_final.image.shape, (1040, 1388))
 
     def test_binarize(self):
         reader = SimpleReader()
@@ -80,8 +80,8 @@ class TestSpimLifecycle(unittest.TestCase):
         preprocessor = GaussianPreprocess(ksize=5)
         binarizer = BinaryThreshold(100.0)
 
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
 
         s_final = Spim.from_file(image_filepath)\
             .read(reader)\
@@ -89,7 +89,7 @@ class TestSpimLifecycle(unittest.TestCase):
             .preprocess(preprocessor)\
             .binarize(binarizer)
 
-        self.assertTupleEqual(s_final.image.shape, (2306, 2560))
+        self.assertTupleEqual(s_final.image.shape, (1040, 1388))
 
         unique_values = np.sort(np.unique(s_final.image))
         assert_array_equal(unique_values, np.array([0, 255], dtype=np.uint8))
@@ -98,8 +98,8 @@ class TestSpimLifecycle(unittest.TestCase):
         reader = SimpleReader()
         converter = GreyscaleConverter()
 
-        image_filepath = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+        image_filepath = resource_filename("spotlob.tests",
+                                           "resources/testdata4.JPG")
 
         s0 = Spim.from_file(image_filepath, cached=True)
         s1 = s0.read(reader)
