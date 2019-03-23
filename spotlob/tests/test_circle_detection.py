@@ -1,4 +1,5 @@
 import unittest
+from pkg_resources import resource_filename
 
 import numpy as np
 from numpy.testing import assert_array_equal,\
@@ -8,14 +9,16 @@ from .image_generation import binary_circle_off_border
 
 from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
+from ..output import Writer
 from ..analyse_circle import CircleAnalysis
+from ..defaults import default_pipeline
 
 
 class CircleDetectionTestCase(unittest.TestCase):
     seed = 0
     repetitions = 10
 
-    def test_binary_circle_detection(self):
+    def test_binary_artificial_circle_detection(self):
         h, w = [1000, 2000]
 
         contour_finder = ContourFinderSimple()
@@ -56,3 +59,60 @@ class CircleDetectionTestCase(unittest.TestCase):
                 np.array(res_position), exp_pos, decimal=1)
             assert_almost_equal(res_MA/2, exp_radius, decimal=0)
             assert_almost_equal(res_ma/2, exp_radius, decimal=0)
+
+    def test_number_detected_spots_testdata4(self):
+        filename = resource_filename("spotlob.tests",
+                                     "resources/testdata4.JPG")
+        s0 = Spim.from_file(filename, cached="True")
+
+        mypipe = default_pipeline()
+
+        filterprocess = mypipe.process_stage_dict[SpimStage.features_extracted]
+        filterprocess.parameters["minimal_area"].value = 500
+        filterprocess.parameters["solidity_limit"].value = 0.5
+
+        s_final = mypipe.apply_all_steps(s0)
+
+        data = s_final.get_data()
+
+        # wr = Writer(resource_filename("spotlob.tests",
+        #                               "resources/testdata4_detected.JPG"),
+        #             resource_filename("spotlob.tests",
+        #                               "resources/testdata4_detected.csv"))
+
+        # s_final.store(wr)
+
+        # expect 22 spots
+        self.assertEqual(len(data), 22)
+
+    def test_number_detected_spots_testdata5(self):
+        filename = resource_filename("spotlob.tests",
+                                     "resources/testdata5.JPG")
+        s0 = Spim.from_file(filename, cached="True")
+
+        mypipe = default_pipeline()
+
+        filterprocess = mypipe.process_stage_dict[SpimStage.features_extracted]
+        filterprocess.parameters["minimal_area"].value = 500
+        filterprocess.parameters["solidity_limit"].value = 0.5
+
+        s_final = mypipe.apply_all_steps(s0)
+
+        data = s_final.get_data()
+
+        # expect 20 spots
+        self.assertEqual(len(data), 20)
+
+    def test_empty_file(self):
+        filename = resource_filename("spotlob.tests",
+                                     "resources/testdata6.JPG")
+        s0 = Spim.from_file(filename)
+
+        mypipe = default_pipeline()
+
+        s_final = mypipe.apply_all_steps(s0)
+
+        data = s_final.get_data()
+
+        # expect 20 spots
+        self.assertEqual(len(data), 0)
