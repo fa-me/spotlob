@@ -4,9 +4,10 @@ import spotlob
 setup(
     name=spotlob.__name__,
     version=spotlob.__version__,
-    packages=find_packages(
-        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    packages=["spotlob", "spotlob.tests"],
     author=spotlob.__version__,
+    author_email=spotlob.__email__,
     description=spotlob.__summary__,
-    license="BSD 3-clause"
+    license="BSD 3-clause",
+    url=spotlob.__url__
 )
