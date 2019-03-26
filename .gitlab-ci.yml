@@ -1,4 +1,4 @@
-build_image:
+build image:
   image: docker:stable
   stage: build
   only:
@@ -21,7 +21,7 @@ test:
     - source activate spotlob-env
     - pytest --cov spotlob
 
-test_pip:
+test pip:
   image: python:3.7
   stage: test
   # only:
@@ -33,3 +33,14 @@ test_pip:
     - apt-get update -q -y
     - pip install -r requirements.txt
     - pytest --cov spotlob
+
+test notebooks:
+  image: python:3.7
+  stage: test
+  tags:
+    - asprunner
+  script:
+    - apt-get update -q -y
+    - pip install -r requirements.txt
+    - pip install nbval
+    - pytest --nbval ./notebooks
