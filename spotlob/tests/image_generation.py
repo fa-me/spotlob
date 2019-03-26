@@ -3,6 +3,7 @@ This module provides functions to generate test images for spotlob tests
 """
 
 import numpy as np
+from ..calculation import distance_point_to_line
 
 
 def binary_circle(center_pos,
@@ -14,22 +15,20 @@ def binary_circle(center_pos,
 
     PARAMS:
     -------
-    shape: tuple of int
-        (number of rows, number of columns) of the image in pixels
-    val_type: numpy.dtype
-        type of the values of the image array
-    seed: int
-        seed for numpy randomizer to get a fixed result
     center_pos: tuple of floats
         x and y position of the center of the circle
     radius: float
         radius of the circle
+    shape: tuple of int
+        (number of rows, number of columns) of the image in pixels
+    val_type: numpy.dtype
+        type of the values of the image array
 
     RETURNS:
     --------
     tuple of image, position, radius
         image: numpy.array
-            image which is zero everywhere except within a random circle where
+            image which is zero everywhere except within the given circle where
             it has the maximum value of the dtype
         position: numpy.array
             position x and y of the circle
@@ -155,3 +154,47 @@ def binary_circle_border(border,
                          circ_r,
                          shape,
                          val_type)
+
+
+def binary_line(position_A,
+                position_B,
+                width,
+                shape=(1000, 1000),
+                val_type=np.uint8):
+    """
+    create a black image with a white line in it
+
+    PARAMS:
+    -------
+    position_A: tuple of int
+        coordinates of position on the center of the line in px
+    position_B: tuple of int
+        coordinates of other position on the center of the line in px
+    width: float
+        width of the line in px
+    shape: tuple of int
+        (number of rows, number of columns) of the image in pixels
+    val_type: numpy.dtype
+        type of the values of the image array
+
+    RETURNS:
+    --------
+    tuple of image, startposition, endposition, width
+        image: numpy.array
+            image which is zero everywhere except within a line,
+            of given width, where it has the maximum value of the dtype
+        width: float
+            width of the line
+    """
+    # black image
+    testim_shape = np.array(shape, dtype=np.uint16)
+    testim = np.zeros(testim_shape).astype(val_type)
+    j, i = np.indices(testim_shape)
+
+    line_mask = distance_point_to_line(
+        j, i, position_A, position_B) <= width/2.0
+
+    # maximum value of val_type within linewidth
+    testim[line_mask] = np.iinfo(val_type).max
+
+    return testim, width

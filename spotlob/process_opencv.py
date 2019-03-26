@@ -93,17 +93,24 @@ class ContourFinderSimple(FeatureFinder):
         super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
 
     def finder_fn(self, bin_im):
-        _, contours, _ = cv2.findContours(
-            bin_im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cont_ret = cv2.findContours(bin_im,
+                                       cv2.RETR_EXTERNAL,
+                                       cv2.CHAIN_APPROX_SIMPLE)
+        # cont_ret is
+        # contours, hierarchy for opencv >4.0
+        # im, contours, hierarchy for opencv <=3.4
+
+        contours = cont_ret[-2]
         return contours
 
 
 class FeatureFormFilter(FeatureFilter):
-    def __init__(self, size, solidity):
+    def __init__(self, size, solidity, remove_on_edge):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
              NumericRangeParameter("solidity_limit",
-                                   solidity, 0, 1, step=0.01, type_=float)])
+                                   solidity, 0, 1, step=0.01, type_=float),
+             BoolParameter("remove_on_edge", remove_on_edge)])
         super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
     def solidity(self, c):
@@ -112,13 +119,23 @@ class FeatureFormFilter(FeatureFilter):
         except ZeroDivisionError:
             return 0
 
-    def filter_fn(self, contours, image_shape, minimal_area, solidity_limit):
-        filtered_contours = [c for c in contours if
-                             (cv2.contourArea(c) > minimal_area and
-                              self.solidity(c) > solidity_limit and
-                              self.is_off_border(c, image_shape))]
+    def filter_fn(self,
+                  contours,
+                  image_shape,
+                  minimal_area,
+                  solidity_limit,
+                  remove_on_edge):
 
-        return filtered_contours
+        def valid_contour(c):
+            valid_area = cv2.contourArea(c) > minimal_area
+            valid_solidity = self.solidity(c) > solidity_limit
+            valid_on_edge = not remove_on_edge or \
+                self.is_off_border(c, image_shape)
+            return (valid_area and
+                    valid_solidity and
+                    valid_on_edge)
+
+        return [c for c in contours if valid_contour(c)]
 
     def is_off_border(self, contour, image_shape):
         """

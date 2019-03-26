@@ -60,3 +60,19 @@ class Calibration(object):
     def lenses_in_file(cls, microscope, calibration_file="calibrations.json"):
         caldict = Calibration.read_calibration_file(calibration_file)
         return caldict[microscope].keys()
+
+    def calibrate(self, dataframe):
+        """
+        get all columns that include the suffix _px and _px2 
+        and calculate additional columns with the micron / micron^2 values
+        """
+        for col in dataframe.columns:
+            if col.endswith("_px"):
+                new_col_name = col[:-3] + "_um"
+                dataframe[new_col_name] = self.pixel_to_micron(
+                    dataframe[col])
+            elif col.endswith("_px2"):
+                new_col_name = col[:-4] + "_um2"
+                dataframe[new_col_name] = self.squarepixel_to_squaremicron(
+                    dataframe[col])
+        return dataframe

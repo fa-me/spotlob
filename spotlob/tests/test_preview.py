@@ -13,7 +13,7 @@ class TestPreview(unittest.TestCase):
     def test_preview_default_pipe(self):
         mypipe = default_pipeline()
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename, cached=True)
         s_final = mypipe.apply_all_steps(s0)
 
@@ -39,7 +39,7 @@ class TestPreview(unittest.TestCase):
         mypipe = default_pipeline()
 
         filename = resource_filename(
-            "spotlob.tests", "resources/testdata3.jpg")
+            "spotlob.tests", "resources/testdata4.JPG")
         s0 = Spim.from_file(filename, cached=True)
         s_final = mypipe.apply_all_steps(s0)
 
