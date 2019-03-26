@@ -11,6 +11,7 @@ A lot of features are removed but will be re-implemented in future versions.
 - introduces output via pandas dataframes
 - introduces tests
 - introduces multiprocessing
+- uses pandas for result handling
 - support Python 3.7
 - GUI via wxPython is removed
 - exe compilation via py2exe is removed
