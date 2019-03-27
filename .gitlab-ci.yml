@@ -54,5 +54,6 @@ build doc:
     - apt-get update -q -y
     - pip install -r requirements.txt
     - pip install sphinx
+    - pip install sphinxcontrib-napoleon
     - cd docs
     - make html
