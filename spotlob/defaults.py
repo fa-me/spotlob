@@ -12,8 +12,6 @@ from .register import ProcessRegister
 from .analyse_circle import CircleAnalysis
 from .spim import Spim
 
-raise Exception("Exception")
-
 
 def default_pipeline():
     return Pipeline([SimpleReader(),
