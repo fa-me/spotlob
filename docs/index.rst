@@ -5,11 +5,10 @@ Spotlob documentation
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: spotlob.process
-.. autoclass:: SpotlobProcessStep
+.. autofunction:: spotlob.spim.Spim.__init__
 
 Indices and tables
---------
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

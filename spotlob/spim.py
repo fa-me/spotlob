@@ -18,6 +18,27 @@ class Spim(object):
     """Spotlob image item"""
 
     def __init__(self, image, metadata, stage, cached, predecessors):
+        """A Spim is a **Spotlob image item**, an object representing an image 
+        and the metadata that is collected along the process through a 
+        pipeline.
+        
+        Parameters
+        ----------
+        image : numpy array
+            an image
+        metadata : dict
+            the data desribing the image and containing results
+        stage : SpimStage
+            the stage along the pipeline the image has passed
+        cached : bool
+            if this is true, a reference to predecessors of this Spim are
+            stored and they are kept in memory. This is required if a process
+            step is to be repeated
+        predecessors : dict(SpimStage, Spim)
+            a registry of predecessors of the current spim, stored alongside the
+            stage they are in        
+        """
+
         self._image = image
         self.metadata = metadata
         self.stage = stage
