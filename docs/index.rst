@@ -1,9 +1,12 @@
+.. mdinclude:: ../README.md
 
+Further topics
+--------------
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-.. mdinclude:: ../README.md
+   workflow.rst
+   extending_spotlob.rst
 
 Indices and tables
 ------------------
