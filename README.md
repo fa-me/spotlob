@@ -43,7 +43,7 @@ pip install spotlob
 
 ### Usage example
 
-```
+```python
 from spotlob.spim import Spim
 from spotlob.defaults import default_pipeline()
 
