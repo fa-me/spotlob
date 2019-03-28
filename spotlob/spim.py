@@ -2,6 +2,8 @@ import pandas
 
 
 class SpimStage(object):
+    """Enumeration of the stages that a Spim can go through"""
+
     new = 0
     loaded = 1
     converted = 2
@@ -16,12 +18,13 @@ class SpimStage(object):
 
 class Spim(object):
     """Spotlob image item"""
+    # TODO: describe nature of Spim, immutable concept
 
     def __init__(self, image, metadata, stage, cached, predecessors):
-        """A Spim is a **Spotlob image item**, an object representing an image 
-        and the metadata that is collected along the process through a 
+        """A Spim is a **Spotlob image item**, an object representing an image
+        and the metadata that is collected along the process through a
         pipeline.
-        
+
         Parameters
         ----------
         image : numpy array
@@ -35,8 +38,8 @@ class Spim(object):
             stored and they are kept in memory. This is required if a process
             step is to be repeated
         predecessors : dict(SpimStage, Spim)
-            a registry of predecessors of the current spim, stored alongside the
-            stage they are in        
+            a registry of predecessors of the current spim, stored alongside
+            the stage they are in
         """
 
         self._image = image
@@ -50,6 +53,29 @@ class Spim(object):
 
     @classmethod
     def from_file(cls, image_filepath, cached=False):
+        """Create a Spim object from an image file. The path is stored in the
+        Spim object, but the image is not yet loaded.
+
+        Parameters
+        ----------
+        image_filepath : string
+            Path to an image file. The image type must be understood by the
+            reader that is given when the `read`-function is called. If an
+            invalid image type is given at this stage, it will not be
+            recognized
+        cached : bool, optional
+            If the spim is to be cached, a reference to predecessors will be
+            kept and not be deleted by the garbage collector. This allows to
+            go back to an earlier stage after applying processes, but is more
+            memory consuming. (the default is False)
+
+        Returns
+        -------
+        Spim
+            An empty Spim at SpimStage.new, that does not contain any data
+            except the filepath
+        """
+
         md = {"filepath": image_filepath}
         return Spim(None,
                     md,
@@ -59,6 +85,21 @@ class Spim(object):
 
     @property
     def image(self):
+        """Gives the image contained in this Spim or in the latest
+        predecessor, that has an image
+
+        Raises
+        ------
+        Exception
+            Exception is raised if no image is present, most likely
+            because it has not been cached
+
+        Returns
+        -------
+        numpy.array
+            latest image
+        """
+
         if not (self._image is None):
             return self._image
         elif self.cached:
@@ -158,6 +199,8 @@ class Spim(object):
 
     def func_at_stage(self, spimstage):
         """returns the function, that can be applied the given stage"""
+
+        # TODO: the static map of functions should be defined elsewhere
         functions = [self.read,
                      self.convert,
                      self.preprocess,
@@ -190,11 +233,19 @@ class Spim(object):
             try:
                 return self.predecessors[spimstage]
             except KeyError:
+                # TODO: check if cached = False, then predecessor cannot exist
                 msg = "Spim has no predecessor at stage %s." % spimstage
+                # TODO: more specific exception predecessor does not exist
                 raise Exception(msg)
 
     def get_data(self):
-        """return all metadata and results as flat metadata"""
+        """
+        get all metadata and results as flat metadata
+
+        RETURNS:
+        --------
+            dict : all metadata including collected results
+        """
         if "results" in self.metadata.keys():
             results = self.metadata["results"]
             results["filename"] = self.metadata["filepath"]
