@@ -7,6 +7,7 @@ Further topics
 
    workflow.rst
    extending_spotlob.rst
+   structures.rst
 
 Indices and tables
 ------------------
