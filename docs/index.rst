@@ -1,11 +1,9 @@
-Spotlob documentation
-===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-.. autofunction:: spotlob.spim.Spim.__init__
+.. mdinclude:: ../README.md
 
 Indices and tables
 ------------------

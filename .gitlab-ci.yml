@@ -55,5 +55,6 @@ build doc:
     - pip install -r requirements.txt
     - pip install sphinx
     - pip install sphinxcontrib-napoleon
+    - pip install m2r
     - cd docs
     - make html

@@ -45,7 +45,8 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinxcontrib.napoleon'
+    'sphinxcontrib.napoleon',
+    'm2r',
 ]
 
 # Napoleon settings
