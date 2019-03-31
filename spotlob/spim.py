@@ -239,12 +239,12 @@ class Spim(object):
                 raise Exception(msg)
 
     def get_data(self):
-        """
-        get all metadata and results as flat metadata
+        """get all metadata and results as flat metadata
 
         RETURNS:
         --------
-            dict : all metadata including collected results
+            dict
+                all metadata including collected results
         """
         if "results" in self.metadata.keys():
             results = self.metadata["results"]
