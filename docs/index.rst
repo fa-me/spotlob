@@ -6,6 +6,7 @@ Further topics
    :maxdepth: 2
 
    workflow.rst
+   principle.rst
    extending_spotlob.rst
    structures.rst
 

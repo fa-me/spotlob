@@ -1,7 +1,29 @@
+"""
+The pipeline structure is used to define a sequence of processes
+to be applied one after another onto a spim, to automate a
+detection task consisting of multiple process steps
+
+.. graphviz::
+
+    digraph foo {
+        "bar" -> "baz";
+    }
+
+"""
+
+
 import dill
 
 
 class Pipeline(object):
+    """
+    A pipeline is a selection of processes, that can be applied one after another.
+    The processes are stored in a Dictionary, along with the SpimStage at which
+    they can be applied. The pipeline can be applied completely using the
+    `apply_all_steps` method or partially using the `apply_from_stage_to_stage`
+    method.
+    """
+
     def __init__(self, processes):
         self.process_stage_dict = dict([(p.input_stage, p) for p in processes])
 
@@ -10,7 +32,24 @@ class Pipeline(object):
         return self.process_stage_dict.values()
 
     def apply_from_stage_to_stage(self, spim, from_stage, to_stage):
-        """recursively applies all pipeline-processes up to the given stage"""
+        """Recursively applies the pipeline-processes from a given stage up to
+        another given stage.
+
+        Parameters
+        ----------
+        spim : Spim
+            The image item to apply parts of the pipeline to
+        from_stage : int (SpimStage)
+            at which stage the first process should be applied
+        to_stage : int (SpimStage)
+            at which stage the last process should be applied
+
+        Raises
+        ------
+        Exception:
+            If to_stage is before from_stage
+
+        """
         if from_stage == to_stage:
             return spim
         elif from_stage > to_stage:
@@ -28,9 +67,17 @@ class Pipeline(object):
         return max(self.process_stage_dict.keys())+1
 
     def apply_all_steps(self, spim):
-        """
-        return a spim with all processes within this
-        pipeline applied in the defined order
+        """Apply the complete pipeline on a given spim
+
+        Parameters
+        ----------
+        spim : Spim
+            the spotlob image item to apply the complete pipeline to
+
+        Returns
+        -------
+        Spim
+            a spotlob image item a the stage after the last process
         """
 
         minstage = min(self.process_stage_dict.keys())

@@ -1,6 +1,16 @@
 """
-This module contains abstract super classes for concrete ProcessSteps.
-Processes are applied to a Spim to bring it to the next stage.
+The detection of features within an image with spotlob is split up into
+an abstract but fixed sequence of processes. Any of these process steps is
+applied onto a Spim and returns a new Spim. The new Spim contains the
+information added by the process step. The process steps supported by
+spotlob are the following in this fixed order:
+
+.. graphviz::
+
+    digraph seq {
+        rankdir="LR";
+        "bar" -> "baz" -> "test";
+    }
 """
 
 
