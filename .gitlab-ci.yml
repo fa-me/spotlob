@@ -34,10 +34,11 @@ build doc:
     - asprunner
   script:
     - apt-get update -q -y
-    - apt-get install graphviz
+    - apt-get install graphviz -y
     - pip install -r requirements-dev.txt
     - cd docs
-    - make html
+    - sphinx-build -nW -b html -d _build/doctrees . _build/html
+    #- make html
 
 build image:
   image: docker:stable
