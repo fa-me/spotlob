@@ -241,8 +241,8 @@ class Spim(object):
     def get_data(self):
         """get all metadata and results as flat metadata
 
-        RETURNS:
-        --------
+        RETURNS
+        -------
             dict
                 all metadata including collected results
         """
