@@ -58,7 +58,7 @@ class Spim(object):
 
         Parameters
         ----------
-        image_filepath : string
+        image_filepath : str
             Path to an image file. The image type must be understood by the
             reader that is given when the `read`-function is called. If an
             invalid image type is given at this stage, it will not be

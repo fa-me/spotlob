@@ -41,7 +41,7 @@ class SpotlobProcessStep(object):
 
         Parameters
         ----------
-        function : function(spim, args) -> spim
+        function : callable
             a function to be applied on spim with optional additional
             parameters
         parameters : list of SpotlobParameter

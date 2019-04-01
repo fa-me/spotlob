@@ -39,10 +39,10 @@ class Pipeline(object):
         ----------
         spim : Spim
             The image item to apply parts of the pipeline to
-        from_stage : int (SpimStage)
-            at which stage the first process should be applied
-        to_stage : int (SpimStage)
-            at which stage the last process should be applied
+        from_stage : int
+            SpimStage at which stage the first process should be applied
+        to_stage : int
+            SpimStage at which stage the last process should be applied
 
         Raises
         ------
