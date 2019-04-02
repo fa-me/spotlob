@@ -17,20 +17,41 @@ This way, standard routines for repetitive and comparable
 measurements for a defined type of images can be forged
 into a small and portable file.
 
-## Why is it helpful
+## When it's helpful
 
+It is meant to be used in a scenario where a detection method
+has to be applied repetetively onto a large set of similar images,
+but the exact parameters are not clear.
+If your set of tasks can be done by a collection of opencv-function
+calls, that need tweaking and you wish to have a GUI to do that, 
+but without to lose scripting options, spotlob is for you.
+
+If you already have a couple of working python algorithms and
+want to have a GUI for them to play around, use spotlob.
+
+If you need to evaluate some images and you don't know which
+of the thousand parameters of an algorithm you found on
+google work best, you might be able to find the right ones
+faster with spotlob.
 
 ## What it's not
 
-Spotlob is not a complete feature detection library and
+Spotlob does not solve a detection problem, that has already
+been solved elsewhere.
+
+It is not a complete feature detection library and
 it does try to solve an arbitrary detection problem.
+
 It is not an alternative to opencv or scikit-image, but
 rather builds on top of it.
-
 At the moment it covers only a tiny fraction of what is possible
 with these libraries, but it tries to make it easy for the
-reader to use these within the spotlob workflow, if he or
-she already knows what works for them.
+reader to use these (or any other image processing library) 
+within the spotlob workflow.
+
+Although it might work with machine learning algorithms, it is
+not tuned towards this usage and it is not designed with this
+use case in mind.
 
 ## Getting started
 
@@ -47,7 +68,7 @@ pip install spotlob
 from spotlob.spim import Spim
 from spotlob.defaults import default_pipeline()
 
-my_spim = Spim.from_file("path/to/image.jpg", cached=True)
+my_spim = Spim.from_file("image.jpg", cached=True)
 my_pipe = default_pipeline()
 
 result_spim = my_pipe.apply_all_steps(my_spim)
