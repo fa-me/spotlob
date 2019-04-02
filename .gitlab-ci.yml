@@ -37,7 +37,7 @@ build doc:
     - apt-get install graphviz -y
     - pip install -r requirements-dev.txt
     - cd docs
-    - sphinx-build -nW -b html -d _build/doctrees . _build/html
+    - sphinx-build -W -b html -d _build/doctrees . _build/html
     #- make html
 
 build image:
