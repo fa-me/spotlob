@@ -1,3 +1,53 @@
+"""A Spim is the object holding the images and metadata.
+It has methods, that return a Spim of the next stage.
+For example, a blank, empty Spim can be created and is then
+in the stage `SpimStage.new`. It contains only the information
+where to find the image file. If `Spim.read(Writer)` is called,
+a new Spim is returned, which contains the image data and is at
+stage `SpimStage.loaded`.
+
+Here is a list of the stages that a Spim can be in and in between,
+the methods that return a Spim of the next stage.
+
+.. graphviz::
+
+    strict digraph {
+        node [shape=box, width=2]
+
+        0 [label="new"];
+        1 [label="loaded"];
+        2 [label="converted"];
+        3 [label="preprocessed", below=2];
+        4 [label="binarized", below=1];
+        5 [label="postprocessed", below=0];
+        6 [label="features_extracted"];
+        7 [label="features_filtered"];
+        8 [label="analyzed"];
+        9 [label="stored"];
+
+        {rank=same;
+            0 -> 1 [label="read"];
+            1 -> 2 [label="convert"];
+        }
+        2 -> 3 [label="preprocess"];
+        {rank=same;
+            4 -> 3 [label="binarize", dir="back"];
+            5 -> 4 [label="postprocess", dir="back"];
+        }
+        5 -> 6 [label="extract_features"];
+        {rank=same;
+            6 -> 7 [label="filter_features"];
+            7 -> 8 [label="analyse"];
+        }
+        8 -> 9 [label="store"];
+    }
+
+With every step, information is collected. A spim at a later stage
+does not duplicate the image data from former stages. However, if this
+data is still needed, it can contain a reference to its predecessors.
+"""
+
+
 import pandas
 
 
@@ -198,7 +248,19 @@ class Spim(object):
                     self._predecessors_and_self())
 
     def func_at_stage(self, spimstage):
-        """returns the function, that can be applied the given stage"""
+        """The method like `self.read()`, `self.convert()`,... that can
+        be safely called at the given stage
+
+        Parameters
+        ----------
+        spimstage : int
+            SpimStage that the requested method corresponds to
+
+        Returns
+        -------
+        callable
+            the function, that can be applied the given stage
+        """
 
         # TODO: the static map of functions should be defined elsewhere
         functions = [self.read,
@@ -213,6 +275,21 @@ class Spim(object):
         return functions[spimstage]
 
     def do_process_at_stage(self, process):
+        """Apply the given process at at this Spim if the process fits
+        this stage or at a predecessor of this Spim that fits the
+        process' input stage
+
+        Parameters
+        ----------
+        process : SpotlobProcessStep
+            Process to apply
+
+        Returns
+        -------
+        Spim
+            The Spim that results from the process being applied. It is
+            in stage `process.input_stage + 1`
+        """
         return self.func_at_stage(process.input_stage)(process)
 
     def _predecessors_and_self(self):
@@ -224,9 +301,30 @@ class Spim(object):
             outd.update({self.stage: self})
             return outd
         else:
+            # TODO: should this return self
             return dict()
 
     def get_at_stage(self, spimstage):
+        """Get the Spim at a given stage. This returns a predecessor if it has
+        been chached
+
+        Parameters
+        ----------
+        spimstage : int
+            That the returned Spim should be at
+
+        Raises
+        ------
+        Exception
+            If there is no predecessor at the requested stage, for example if
+            Spim has not been cached
+
+        Returns
+        -------
+        Spim
+            The Spim at the requested Stage
+        """
+
         if spimstage == self.stage:
             return self
         else:
