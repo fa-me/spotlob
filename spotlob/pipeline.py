@@ -3,13 +3,12 @@ The pipeline structure is used to define a sequence of processes
 to be applied one after another onto a spim, to automate a
 detection task consisting of multiple process steps.
 """
-# TODO: create pipeline graph with python from static definitions
 
 import dill
 
 
 class Pipeline(object):
-    """A pipeline is a selection of processes, that can be applied one after
+    """A pipeline is a sequence of processes, that can be applied one after
     another.
     The processes are stored in a Dictionary, along with the SpimStage at which
     they can be applied. The pipeline can be applied completely using the

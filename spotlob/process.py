@@ -10,6 +10,19 @@ information added by the process step.
         rankdir="LR";
         "spim1" -> "spim2" [label="spim1.function(process)"];
     }
+
+For example, a `Spim` at stage `SpimStage.loaded` can be converted, using
+a concrete subclass of `Converter`, named `process_opencv.GreyscaleConverter`
+in the following way:
+
+.. code-block:: python
+
+    from spotlob.defaults import load_image
+    from spotlob.process_opencv import GreyscaleConverter
+
+    loaded_spim = load_image("color_image.jpg")
+    my_converter = GreyscaleConverter()
+    converted_spim = loaded_spim.convert(my_converter)
 """
 
 
@@ -78,6 +91,18 @@ class SpotlobProcessStep(object):
         raise NotImplementedError("abstract: to be implemented by subclass")
 
     def apply(self, *input_args):
+        """Apply the process step onto input data (eg. images or contours)
+        and yield the output data (again, could be a modified image or gathered
+        data). The actual return values depend on the concrete implementation of
+        the function. Additional arguments for the function are the parameters
+        of the process as stored in the `parameters` field of each process.
+        
+        Returns
+        -------
+        Contours or images
+            Output of the concrete process implementation
+        """
+
         output = self.function(*input_args, **self.parameters.to_dict())
         self.outdated = False
         return output

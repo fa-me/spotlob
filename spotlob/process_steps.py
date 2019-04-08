@@ -1,13 +1,24 @@
+"""For every function of `Spim` that returns another `Spim` at
+a further stage, there is a subclass of `SpotlobProcessStep`,
+that can be used as super class for an concrete implementation
+of that step. The return type of a `SpotlobProcessStep.apply`
+call is different depending on the type of process
+"""
+
 from .spim import Spim, SpimStage
 from .process import SpotlobProcessStep
 
 
 class Reader(SpotlobProcessStep):
+    """A reader loads the image data from storage into memory.
+    `apply` returns an image"""
     input_stage = SpimStage.new
 
 
 class Converter(SpotlobProcessStep):
-    """apply returns grey image"""
+    """A converter converts a color image to a greyscale image.
+    `apply` returns a greyscale image
+    """
     input_stage = SpimStage.loaded
 
     def preview(self, spim):
@@ -16,7 +27,11 @@ class Converter(SpotlobProcessStep):
 
 
 class Preprocessor(SpotlobProcessStep):
-    """apply returns grey image"""
+    """Preprocessing is applied onto a grey image to prepare for
+    binarization, for example by cleaning the image from unwanted
+    features.
+    `apply` returns a greyscale image
+    """
     input_stage = SpimStage.converted
 
     def preview(self, spim):
@@ -25,7 +40,9 @@ class Preprocessor(SpotlobProcessStep):
 
 
 class Binarisation(SpotlobProcessStep):
-    """apply returns binary image"""
+    """Turns a greyscale image into a black-and-white or binary image.
+    `apply` returns a greyscale image
+    """
     input_stage = SpimStage.preprocessed
 
     def preview(self, spim):
@@ -37,7 +54,10 @@ class Binarisation(SpotlobProcessStep):
 
 
 class Postprocessor(SpotlobProcessStep):
-    """apply returns binary image"""
+    """Postprocessing is done on a binary image to facilitate the
+    detection.
+    `apply` returns a greyscale image
+    """
     input_stage = SpimStage.binarized
 
     def preview(self, spim):
@@ -46,12 +66,19 @@ class Postprocessor(SpotlobProcessStep):
 
 
 class FeatureFinder(SpotlobProcessStep):
-    """apply returns contours"""
+    """The FeatureFinder tries to find contours in a binary image.
+
+    `apply` returns contours
+    """
     input_stage = SpimStage.postprocessed
 
 
 class FeatureFilter(SpotlobProcessStep):
-    """apply returns contours"""
+    """The FeatureFilter can reduce the number of detected features
+    by analyzing them.
+
+    `apply` returns contours
+    """
     input_stage = SpimStage.features_extracted
 
     def preview(self, spim):
@@ -67,7 +94,10 @@ class FeatureFilter(SpotlobProcessStep):
 
 
 class Analysis(SpotlobProcessStep):
-    """apply returns pandas DataFrame"""
+    """An Analysis class evaluates the contours and yields its results
+    as a dataframe.
+
+    `apply` returns :any:pandas.DataFrame"""
     input_stage = SpimStage.features_filtered
 
     def preview(self, spim):

@@ -34,26 +34,23 @@ of the thousand parameters of an algorithm you found on
 google work best, you might be able to find the right ones
 faster with spotlob.
 
+![Spotlob jupyter widget](/preview_edit.gif)
+
 ## What it's not
 
-Spotlob does not solve a detection problem, that has already
-been solved elsewhere.
-
-It is not a complete feature detection library and
-it does try to solve an arbitrary detection problem.
-
+Spotlob is not a complete feature detection library and it does
+not solve a detection problem, that has not already been solved
+elsewhere.
 It is not an alternative to opencv or scikit-image, but
 rather builds on top of it.
 At the moment it covers only a tiny fraction of what is possible
 with these libraries, but it tries to make it easy for the
-reader to use these (or any other image processing library) 
+reader to use these (or any other python image processing library) 
 within the spotlob workflow.
 
 Although it might work with machine learning algorithms, it is
 not tuned towards this usage and it is not designed with this
-use case in mind.
-
-## Getting started
+application in mind.
 
 ### Installation
 
