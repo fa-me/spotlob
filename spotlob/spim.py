@@ -14,7 +14,7 @@ the methods that return a Spim of the next stage.
     strict digraph {
         node [shape=box, width=2]
 
-        0 [label="new"];
+        0 [label="new", target="_top"];
         1 [label="loaded"];
         2 [label="converted"];
         3 [label="preprocessed", below=2];

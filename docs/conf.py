@@ -198,3 +198,4 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+graphviz_output_format = 'svg'
