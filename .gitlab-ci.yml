@@ -13,7 +13,6 @@ test pip:
   tags:
     - asprunner
   script:
-    - apt-get update -q -y
     - pip install -r requirements.txt
     - pip install pytest pytest-cov
     - pytest --cov spotlob
@@ -24,7 +23,6 @@ test notebooks:
   tags:
     - asprunner
   script:
-    - apt-get update -q -y
     - pip install -r requirements.txt
     - pip install pytest pytest-cov nbval
     - pytest --nbval ./notebooks
@@ -35,8 +33,7 @@ build doc:
   tags:
     - asprunner
   script:
-    - apt-get update -q -y
-    - apt-get install graphviz -y
+    - apk add graphviz
     - pip install -r requirements-dev.txt
     - cd docs
     - mkdir _static
@@ -54,7 +51,6 @@ build package:
     - dist/
     expire_in: 1 week
   script:
-    - apt-get update -q -y
     - pip install -r requirements-dev.txt
     - python setup.py sdist
 
