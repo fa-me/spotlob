@@ -4,7 +4,7 @@ import os.path
 
 from .widget import SpotlobNotebookGui
 from .process_opencv import SimpleReader, GreyscaleConverter,\
-    GaussianPreprocess, OtsuThreshold, PostprocessNothing, \
+    GaussianPreprocess, OtsuThreshold, BinaryThreshold, PostprocessNothing, \
     ContourFinderSimple, FeatureFormFilter
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
@@ -14,7 +14,7 @@ from .analyse_line import LineAnalysis
 from .spim import Spim
 
 
-def default_pipeline(mode="circle"):
+def default_pipeline(mode="circle", thresholding="auto"):
     """Gives a pipeline which works for many cases and can be used as a
     starting point for further tuning or as default for the GUI notebook.
     By default, features with an area smaller than 500 pixels are ignored.
@@ -28,6 +28,10 @@ def default_pipeline(mode="circle"):
         * as `circle` an ellipse is fitted and by default features that touch
         the edge of the image get ignored
         (the default is "circle")
+    thresholding : str, optional
+        * `auto` uses Otsu's thresholding algorithm
+        * `simple` uses a fixed threshold value, 100 by default
+        (the default is "auto")
 
     Returns
     -------
@@ -42,10 +46,15 @@ def default_pipeline(mode="circle"):
         feature_form_filter = FeatureFormFilter(500, 0, False)
         analysis = LineAnalysis()
 
+    if thresholding == "auto":
+        binarization = OtsuThreshold()
+    elif thresholding == "simple":
+        binarization = BinaryThreshold(100)
+
     return Pipeline([SimpleReader(),
                      GreyscaleConverter(),
                      GaussianPreprocess(1),
-                     OtsuThreshold(),
+                     binarization,
                      PostprocessNothing(),
                      ContourFinderSimple(),
                      feature_form_filter,

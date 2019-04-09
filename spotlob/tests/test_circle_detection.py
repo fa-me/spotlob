@@ -108,7 +108,7 @@ class CircleDetectionTestCase(unittest.TestCase):
                                      "resources/testdata6.JPG")
         s0 = Spim.from_file(filename)
 
-        mypipe = default_pipeline()
+        mypipe = default_pipeline(thresholding="simple")
 
         s_final = mypipe.apply_all_steps(s0)
 
