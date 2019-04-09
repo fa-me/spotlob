@@ -10,18 +10,46 @@ from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
 from .register import ProcessRegister
 from .analyse_circle import CircleAnalysis
+from .analyse_line import LineAnalysis
 from .spim import Spim
 
 
-def default_pipeline():
+def default_pipeline(mode="circle"):
+    """Gives a pipeline which works for many cases and can be used as a
+    starting point for further tuning or as default for the GUI notebook.
+    By default, features with an area smaller than 500 pixels are ignored.
+
+    Parameters
+    ----------
+    mode : str, optional
+        this defines the way in which detected features will be evaluated,
+        either "cirlce" or "line".
+        * as `line` the linewidth is calculated
+        * as `circle` an ellipse is fitted and by default features that touch
+        the edge of the image get ignored
+        (the default is "circle")
+
+    Returns
+    -------
+    Pipeline
+        the pipeline including default parameters
+    """
+
+    if mode == "circle":
+        feature_form_filter = FeatureFormFilter(500, 0, True)
+        analysis = CircleAnalysis()
+    elif mode == "line":
+        feature_form_filter = FeatureFormFilter(500, 0, False)
+        analysis = LineAnalysis()
+
     return Pipeline([SimpleReader(),
                      GreyscaleConverter(),
                      GaussianPreprocess(1),
                      OtsuThreshold(),
                      PostprocessNothing(),
                      ContourFinderSimple(),
-                     FeatureFormFilter(4000, 0.98, True),
-                     CircleAnalysis()])
+                     feature_form_filter,
+                     analysis])
 
 
 def make_gui(spim_or_filepath):
