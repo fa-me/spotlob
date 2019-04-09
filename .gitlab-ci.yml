@@ -52,7 +52,6 @@ build package:
     name: "$CI_COMMIT_REF_NAME"
     paths:
     - dist/
-    - spotlob.egg-info/
     expire_in: 1 week
   script:
     - apt-get update -q -y
