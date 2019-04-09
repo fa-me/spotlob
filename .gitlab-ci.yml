@@ -8,7 +8,7 @@
 #     - pytest --cov spotlob
 
 test pip:
-  image: python:3.7
+  image: python:3.7-alpine
   stage: test
   tags:
     - asprunner
@@ -19,7 +19,7 @@ test pip:
     - pytest --cov spotlob
 
 test notebooks:
-  image: python:3.7
+  image: python:3.7-alpine
   stage: test
   tags:
     - asprunner
@@ -30,7 +30,7 @@ test notebooks:
     - pytest --nbval ./notebooks
 
 build doc:
-  image: python:3.7
+  image: python:3.7-alpine
   stage: deploy
   tags:
     - asprunner
@@ -44,7 +44,7 @@ build doc:
     #- make html
 
 build package:
-  image: python:3.7
+  image: python:3.7-alpine
   stage: deploy
   tags:
     - asprunner
