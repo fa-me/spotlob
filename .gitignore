@@ -6,3 +6,5 @@ __pycache__/
 .hypothesis
 .coverage
 .coverage*
+.ipynb_checkpoints/
+docs/_build/

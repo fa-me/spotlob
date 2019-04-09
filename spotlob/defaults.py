@@ -25,6 +25,21 @@ def default_pipeline():
 
 
 def make_gui(spim_or_filepath):
+    """Creates a :any:`SpotlobNotebookGui` object which opens
+    a given :any:`Spim` or image file for preview editing
+
+    PARAMETERS
+    ----------
+    spim_or_filepath : Spim or str
+        Spim (should be cached) or filepath of an image file
+        to be loaded
+    
+    RETURNS
+    -------
+    SpotlobNotebookGui
+        GUI object that can be displayed using the :any:`show_gui`
+        function within a jupyter notebook
+    """
     try:
         assert os.path.exists(spim_or_filepath)
         spim = Spim.from_file(spim_or_filepath, cached=True)
@@ -38,6 +53,15 @@ def make_gui(spim_or_filepath):
 
 
 def show_gui(gui):
+    """Display a :any:`SpotlobNotebookGui` object.
+    Run the `%matplotlib notebook` magic command to get live preview
+
+    PARAMETERS
+    ----------
+    gui : SpotlobNotebookGui
+        Widget and preview screen, as created by the :any:`make_gui`
+        function
+    """
     widgets = gui.make_widgets()
     gui.show_preview_screen(figsize=(8, 6))
     display(widgets)

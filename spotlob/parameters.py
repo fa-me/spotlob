@@ -2,26 +2,26 @@ def parameter_from_spec(spec):
     """
     This function will create a SpotlobParameter from a specification
 
-    ARGS:
-    -----
-    spec: tuple(string, object)
+    PARAMETERS
+    ----------
+    spec : tuple(str, object)
         specification for the parameter, must be one of the following
         options:
             - a float range:
-                ("parameter_name", (float min_value,
-                                    float_max_value,
-                                    float_value))
+              ("parameter_name", (float min_value,
+                                  float_max_value,
+                                  float_value))
             - an integer range:
-                ("parameter_name", (int_value,
-                                    int_min_value,
-                                    int_max_value))
+              ("parameter_name", (int_value,
+                                int_min_value,
+                                int_max_value))
             - a boolean value:
-                ("parameter name", boolean)
+              ("parameter name", boolean)
             - an enumeration:
-                ("parameter name", ["option1", "option2", "option3"])
+              ("parameter name", ["option1", "option2", "option3"])
 
-    RETURNS:
-    --------
+    RETURNS
+    -------
     SpotlobParameter
         An instance of a SpotlobParameter subclass: EnumParameter,
         FloatParameter, ... depending on the type of the spec
