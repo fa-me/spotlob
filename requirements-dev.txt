@@ -1,0 +1,15 @@
+dill
+opencv-python
+ipython
+numpy
+pandas
+matplotlib
+ipywidgets
+setuptools
+pillow
+pytest
+pytest-cov
+nbval
+sphinx
+sphinxcontrib-napoleon
+m2r

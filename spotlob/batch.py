@@ -24,6 +24,24 @@ def _process_job(job):
 
 
 def batchprocess(pipeline_file, image_files, multiprocessing=False):
+    """This function applies a pipeline from a file onto a stack of images.
+    The results are collected in one :class:`pandas.Dataframe`.
+
+    PARAMETERS
+    ----------
+    pipeline_file : str
+        the filepath of a pickled pipeline
+    image_files : list of str
+        paths of the images
+    multiprocessing : bool, optional
+        if True, the processing will be done in parallel using multiple cpu
+        cores at once.
+    
+    RETURNS
+    -------
+    pandas.Dataframe
+        Flat Dataframe where one row corresponds to one detected feature
+    """
     if multiprocessing:
         if is_interactive():
             warnings.warn(

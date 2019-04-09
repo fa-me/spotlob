@@ -6,6 +6,7 @@ class MatplotlibPreviewScreen(object):
         self.fg_ax = None
 
     def make_new(self, background_im, *args, **kwargs):
+        kwargs.update({'num': 'spotlob'})
         self.fig = plt.figure(*args, **kwargs)
         self.ax = plt.Axes(self.fig, [0., 0., 1., 1.])
         self.fig.add_axes(self.ax)
