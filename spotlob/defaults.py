@@ -16,7 +16,7 @@ from .spim import Spim
 def default_pipeline():
     return Pipeline([SimpleReader(),
                      GreyscaleConverter(),
-                     GaussianPreprocess(3),
+                     GaussianPreprocess(1),
                      BinaryThreshold(100),
                      PostprocessNothing(),
                      ContourFinderSimple(),

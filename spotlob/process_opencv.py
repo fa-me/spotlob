@@ -62,8 +62,12 @@ class GaussianPreprocess(Preprocessor):
         super(GaussianPreprocess, self).__init__(self.filter_fn, pars)
 
     def filter_fn(self, grey_image, kernelsize):
-        kernel = np.ones((kernelsize, kernelsize), np.float32)/kernelsize**2
-        return cv2.filter2D(grey_image, -1, kernel)
+        if kernelsize > 1:
+            kernel = np.ones((kernelsize, kernelsize), np.float32)
+            kernel /= kernelsize**2
+            return cv2.filter2D(grey_image, -1, kernel)
+        else: 
+            return grey_image
 
 
 class BinaryThreshold(Binarisation):
