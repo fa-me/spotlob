@@ -10,3 +10,4 @@ __pycache__/
 docs/_build/
 spotlob.egg-info/
 dist/
+.tox/
