@@ -25,7 +25,7 @@ should appear an you can play around with the sliders. A change of
 parameter values will be reflected as a preview. Once you press `Evaluate`,
 the contours are analyzed.
 
-.. image:: preview_edit.gif
+.. image:: demo.gif
 
 The result of the analysis can be requested as a dataframe with
 

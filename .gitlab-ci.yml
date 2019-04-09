@@ -7,14 +7,37 @@
 #     - source activate spotlob-env
 #     - pytest --cov spotlob
 
+build package:
+  image: python:3.7
+  stage: build
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - dist/
+    expire_in: 1 week
+  script:
+    - pip install -r requirements-dev.txt
+    - python setup.py sdist
+
+test tox:
+  image: python:3.7
+  stage: test
+  tags:
+    - asprunner
+  script:
+    - pip install pytest tox
+    - tox
+
 test pip:
   image: python:3.7
   stage: test
   tags:
     - asprunner
   script:
-    - apt-get update -q -y
-    - pip install -r requirements-dev.txt
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov
     - pytest --cov spotlob
 
 test notebooks:
@@ -23,8 +46,8 @@ test notebooks:
   tags:
     - asprunner
   script:
-    - apt-get update -q -y
-    - pip install -r requirements-dev.txt
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov nbval
     - pytest --nbval ./notebooks
 
 build doc:
@@ -32,8 +55,13 @@ build doc:
   stage: deploy
   tags:
     - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - docs/_build/html/
+    expire_in: 1 week
   script:
-    - apt-get update -q -y
+    - apt-get update
     - apt-get install graphviz -y
     - pip install -r requirements-dev.txt
     - cd docs

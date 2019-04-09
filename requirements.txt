@@ -1,11 +1,8 @@
 dill
 opencv-python
 ipython
-numpy
+numpy~=1.15.0
 pandas
 matplotlib
 ipywidgets
-setuptools
 pillow
-pytest
-pytest-cov

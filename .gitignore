@@ -8,3 +8,6 @@ __pycache__/
 .coverage*
 .ipynb_checkpoints/
 docs/_build/
+spotlob.egg-info/
+dist/
+.tox/
