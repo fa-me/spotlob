@@ -11,6 +11,7 @@ from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
 from ..analyse_line import LineAnalysis
 from ..calculation import points_within_contours
+from ..defaults import default_pipeline
 
 
 class LineDetectionTestCase(unittest.TestCase):
@@ -75,6 +76,46 @@ class LineDetectionTestCase(unittest.TestCase):
                 .extract_features(contour_finder)\
                 .filter_features(feature_filter)\
                 .analyse(line_analysis)
+
+            res_df = res_spim.metadata["results"]
+
+            result_width_percentile = res_df.loc[0, "linewidth_px"]
+            result_width_bb = res_df.loc[0, "bb_width_px"]
+            # result_width_area = res_df.loc[0, "linewidth2_px"]
+
+            # compare analysis with input width
+            assert_almost_equal(result_width_percentile,
+                                linewidth*percentile/100.0, decimal=1)
+            assert_almost_equal(result_width_bb, linewidth, decimal=1)
+            # assert_almost_equal(result_width_area, linewidth, decimal=0)
+
+    def test_binary_line_detection_with_default_pipe(self):
+        h, w = [1000, 2000]
+
+        percentile = 95
+
+        default_pipe = default_pipeline(mode="line")
+
+        np.random.seed(self.seed)
+
+        for i in range(self.repetitions):
+            x1, x2 = np.random.randint(0, w, size=2)
+            y1, y2 = np.random.randint(0, h, size=2)
+            posA = (x1, y1)
+            posB = (x2, y2)
+
+            width = np.random.random_sample()*min((w, h))/10
+
+            # create a random line
+            line_im, linewidth = binary_line(posA, posB, width)
+
+            bin_spim = Spim(image=line_im,
+                            metadata={},
+                            stage=SpimStage.binarized,
+                            cached=False,
+                            predecessors=[])
+
+            res_spim = default_pipe.apply_at_stage(bin_spim)
 
             res_df = res_spim.metadata["results"]
 
