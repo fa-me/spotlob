@@ -36,6 +36,20 @@ faster with spotlob.
 
 ![Spotlob jupyter widget](/demo.gif)
 
+### Usage example
+
+```python
+from spotlob.spim import Spim
+from spotlob.defaults import default_pipeline()
+
+my_spim = Spim.from_file("image.jpg", cached=True)
+my_pipe = default_pipeline()
+
+result_spim = my_pipe.apply_all_steps(my_spim)
+
+print(result_spim.get_data())
+```
+
 ## What it's not
 
 Spotlob is not a complete feature detection library and it does
@@ -52,16 +66,3 @@ Although it might work with machine learning algorithms, it is
 not tuned towards this usage and it is not designed with this
 application in mind.
 
-### Usage example
-
-```python
-from spotlob.spim import Spim
-from spotlob.defaults import default_pipeline()
-
-my_spim = Spim.from_file("image.jpg", cached=True)
-my_pipe = default_pipeline()
-
-result_spim = my_pipe.apply_all_steps(my_spim)
-
-print(result_spim.get_data())
-```
