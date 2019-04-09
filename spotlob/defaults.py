@@ -61,7 +61,7 @@ def default_pipeline(mode="circle", thresholding="auto"):
                      analysis])
 
 
-def make_gui(spim_or_filepath):
+def make_gui(spim_or_filepath, mode="circle"):
     """Creates a :any:`SpotlobNotebookGui` object which opens
     a given :any:`Spim` or image file for preview editing
 
@@ -70,7 +70,11 @@ def make_gui(spim_or_filepath):
     spim_or_filepath : Spim or str
         Spim (should be cached) or filepath of an image file
         to be loaded
-    
+
+    mode : str
+        "circle" or "line" depending on how you want the image to
+        be evaluated
+
     RETURNS
     -------
     SpotlobNotebookGui
@@ -106,7 +110,19 @@ def show_gui(gui):
 
 
 def use_in(gui):
-    """decorator to tell gui to replace function"""
+    """Use this as a decorator replace a process in a
+    :any:SpotlobNotebookGui object
+
+    PARAMETERS
+    ----------
+    gui : SpotlobNotebookGui
+        GUI object to replace the process in
+
+    RETURNS
+    -------
+    callable
+        wrapper function
+    """
     def wrapper(fn):
         process = ProcessRegister.available_processes[fn.__name__]
 
@@ -117,6 +133,22 @@ def use_in(gui):
 
 
 def load_image(filepath, cached=False):
+    """Create a :any:Spim from a filepath directly, using a default
+    reader
+
+    PARAMETERS
+    ----------
+    filepath : str
+        Path to the image file
+    cached : bool
+        Wether or not references to previous Spim should be kept
+        when processing this spim to newer versions
+
+    RETURNS
+    -------
+    Spim
+        Spim containing the image, at stage SpimStage.loaded
+    """
     spim = Spim.from_file(filepath, cached=cached)
     reader = SimpleReader()
     return spim.read(reader)
