@@ -14,7 +14,8 @@ test pip:
     - asprunner
   script:
     - apt-get update -q -y
-    - pip install -r requirements-dev.txt
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov
     - pytest --cov spotlob
 
 test notebooks:
@@ -24,7 +25,8 @@ test notebooks:
     - asprunner
   script:
     - apt-get update -q -y
-    - pip install -r requirements-dev.txt
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov nbval
     - pytest --nbval ./notebooks
 
 build doc:
@@ -40,6 +42,23 @@ build doc:
     - mkdir _static
     - sphinx-build -W -b html -d _build/doctrees . _build/html
     #- make html
+
+build package:
+  image: python:3.7
+  stage: deploy
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - dist/
+    - spotlob.egg-info/
+    expire_in: 1 week
+  script:
+    - apt-get update -q -y
+    - pip install -r requirements-dev.txt
+    - python setup.py sdist
+
 
 build image:
   image: docker:stable
