@@ -34,7 +34,7 @@ of the thousand parameters of an algorithm you found on
 google work best, you might be able to find the right ones
 faster with spotlob.
 
-![Spotlob jupyter widget](/preview_edit.gif)
+![Spotlob jupyter widget](/demo.gif)
 
 ## What it's not
 
@@ -51,13 +51,6 @@ within the spotlob workflow.
 Although it might work with machine learning algorithms, it is
 not tuned towards this usage and it is not designed with this
 application in mind.
-
-### Installation
-
-#### with pip
-```
-pip install spotlob
-```
 
 ### Usage example
 
