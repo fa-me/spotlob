@@ -56,6 +56,11 @@ build doc:
   stage: deploy
   tags:
     - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - docs/_build/html/
+    expire_in: 1 week
   script:
     - apt-get update
     - apt-get install graphviz -y
