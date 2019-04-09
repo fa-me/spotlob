@@ -4,7 +4,7 @@ import os.path
 
 from .widget import SpotlobNotebookGui
 from .process_opencv import SimpleReader, GreyscaleConverter,\
-    GaussianPreprocess, BinaryThreshold, PostprocessNothing, \
+    GaussianPreprocess, OtsuThreshold, PostprocessNothing, \
     ContourFinderSimple, FeatureFormFilter
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
@@ -17,7 +17,7 @@ def default_pipeline():
     return Pipeline([SimpleReader(),
                      GreyscaleConverter(),
                      GaussianPreprocess(1),
-                     BinaryThreshold(100),
+                     OtsuThreshold(),
                      PostprocessNothing(),
                      ContourFinderSimple(),
                      FeatureFormFilter(4000, 0.98, True),

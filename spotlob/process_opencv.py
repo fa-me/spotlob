@@ -82,6 +82,19 @@ class BinaryThreshold(Binarisation):
         return im
 
 
+class OtsuThreshold(Binarisation):
+    def __init__(self):
+        pars = SpotlobParameterSet([])
+        super(OtsuThreshold, self).__init__(self.threshold_fn, pars)
+
+    def threshold_fn(self, grey_image):
+        _, im = cv2.threshold(grey_image,
+                              0,
+                              255,
+                              cv2.THRESH_OTSU)
+        return im
+
+
 class PostprocessNothing(Postprocessor):
     def __init__(self):
         pars = SpotlobParameterSet([])
