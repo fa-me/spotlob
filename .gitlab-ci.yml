@@ -27,7 +27,6 @@ test tox:
   tags:
     - asprunner
   script:
-    - pip install -r requirements.txt
     - pip install pytest tox
     - tox
 
