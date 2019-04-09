@@ -7,6 +7,30 @@
 #     - source activate spotlob-env
 #     - pytest --cov spotlob
 
+build package:
+  image: python:3.7
+  stage: build
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - dist/
+    expire_in: 1 week
+  script:
+    - pip install -r requirements-dev.txt
+    - python setup.py sdist
+
+test tox:
+  image: python:3.7
+  stage: test
+  tags:
+    - asprunner
+  script:
+    - pip install -r requirements.txt
+    - pip install pytest
+    - tox
+
 test pip:
   image: python:3.7
   stage: test
@@ -40,21 +64,6 @@ build doc:
     - mkdir _static
     - sphinx-build -W -b html -d _build/doctrees . _build/html
     #- make html
-
-build package:
-  image: python:3.7
-  stage: deploy
-  tags:
-    - asprunner
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-    - dist/
-    expire_in: 1 week
-  script:
-    - pip install -r requirements-dev.txt
-    - python setup.py sdist
-
 
 build image:
   image: docker:stable
