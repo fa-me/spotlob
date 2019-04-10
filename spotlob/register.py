@@ -54,7 +54,9 @@ from .process_steps import Binarisation, Converter, Preprocessor,\
 
 
 class ProcessRegister(object):
-    available_processes = dict()
+
+    def __init__(self):
+        self.available_processes = dict()
 
     def binarisation_plugin(self, param_spec):
         """

@@ -127,3 +127,24 @@ class TestSpimLifecycle(unittest.TestCase):
         # common predecessor should be the same
         self.assertIs(s1_final_updated.get_at_stage(last_unchanged_stage),
                       s_unchanged_ancestor)
+
+    def test_pipeline_to_str(self):
+        mypipe = default_pipeline()
+
+        expected_str_lines = [
+            "SimpleReader\n",
+            "GreyscaleConverter\n",
+            "- conversion: Grey\n",
+            "- invert: False\n",
+            "GaussianPreprocess\n",
+            "- kernelsize: 1\n",
+            "OtsuThreshold\n",
+            "PostprocessNothing\n",
+            "ContourFinderSimple\n",
+            "FeatureFormFilter\n",
+            "- minimal_area: 500\n",
+            "- solidity_limit: 0\n",
+            "- remove_on_edge: True\n",
+            "CircleAnalysis\n"]
+
+        self.assertEqual("".join(expected_str_lines), str(mypipe))

@@ -2,7 +2,7 @@
 The detection of features within an image with spotlob is split up into
 an abstract but fixed sequence of processes. Any of these process steps is
 applied onto a Spim and returns a new Spim. The new Spim contains the
-information added by the process step. 
+information added by the process step.
 
 .. graphviz::
 
@@ -93,10 +93,11 @@ class SpotlobProcessStep(object):
     def apply(self, *input_args):
         """Apply the process step onto input data (eg. images or contours)
         and yield the output data (again, could be a modified image or gathered
-        data). The actual return values depend on the concrete implementation of
-        the function. Additional arguments for the function are the parameters
-        of the process as stored in the `parameters` field of each process.
-        
+        data). The actual return values depend on the concrete implementation
+        of the function. Additional arguments for the function are the
+        parameters of the process as stored in the `parameters` field of each
+        process.
+
         Returns
         -------
         Contours or images
@@ -106,3 +107,8 @@ class SpotlobProcessStep(object):
         output = self.function(*input_args, **self.parameters.to_dict())
         self.outdated = False
         return output
+
+    def __str__(self):
+        classname = str(type(self).__name__)
+        parameters_str = str(self.parameters)
+        return "%s\n%s" % (classname, parameters_str)
