@@ -8,7 +8,7 @@ from .process_opencv import SimpleReader, GreyscaleConverter,\
     ContourFinderSimple, FeatureFormFilter
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
-from .register import ProcessRegister
+from .register import PROCESS_REGISTER
 from .analyse_circle import CircleAnalysis
 from .analyse_line import LineAnalysis
 from .spim import Spim
@@ -78,14 +78,16 @@ def make_gui(spim_or_filepath, mode="circle"):
     RETURNS
     -------
     SpotlobNotebookGui
-        GUI object that can be displayed using the 
-        :func:`~spotlob.defaults.show_gui` function within 
+        GUI object that can be displayed using the
+        :func:`~spotlob.defaults.show_gui` function within
         a jupyter notebook
     """
-    try:
-        assert os.path.exists(spim_or_filepath)
-        spim = Spim.from_file(spim_or_filepath, cached=True)
-    except AssertionError:
+    if not isinstance(spim_or_filepath, Spim):
+        if os.path.exists(spim_or_filepath):
+            spim = Spim.from_file(spim_or_filepath, cached=True)
+        else:
+            raise FileNotFoundError("File %s not found" % spim_or_filepath)
+    else:
         spim = spim_or_filepath
 
     pipe = default_pipeline()
@@ -110,7 +112,7 @@ def show_gui(gui):
     display(gui.run_button())
 
 
-def use_in(gui):
+def use_in(gui, register=None):
     """Use this as a decorator replace a process in a
     :class:`~spotlob.SpotlobNotebookGui` object
 
@@ -124,11 +126,14 @@ def use_in(gui):
     callable
         wrapper function
     """
+    if register is None:
+        register = PROCESS_REGISTER
+
     def wrapper(fn):
-        process = ProcessRegister.available_processes[fn.__name__]
+        process = register.available_processes[fn.__name__]
 
         # overwrite process at the given stage in pipeline of gui
-        gui.pipeline.process_stage_dict[process.input_stage] = process
+        gui.pipeline = gui.pipeline.replaced_with(process)
         return fn
     return wrapper
 

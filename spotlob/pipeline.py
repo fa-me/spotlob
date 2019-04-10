@@ -23,6 +23,26 @@ class Pipeline(object):
     def processes(self):
         return self.process_stage_dict.values()
 
+    def replaced_with(self, new_process):
+        """This will give a new pipeline, where one process is replaced with
+        the given one
+
+        Parameters
+        ----------
+        new_process : SpotlobProcessStep
+            the new process to be inserted
+
+        Returns
+        ----------
+        Pipeline
+            the pipeline, that includes `new_process`
+
+        """
+        new_dict = self.process_stage_dict.copy()
+        new_dict[new_process.input_stage] = new_process
+
+        return Pipeline(new_dict.values())
+
     def apply_from_stage_to_stage(self, spim, from_stage, to_stage):
         """Recursively applies the pipeline-processes from a given stage up to
         another given stage.
@@ -35,6 +55,11 @@ class Pipeline(object):
             SpimStage at which stage the first process should be applied
         to_stage : int
             SpimStage at which stage the last process should be applied
+
+        Returns
+        ----------
+        Spim
+            The processed Spim at stage `to_stage`
 
         Raises
         ------
@@ -77,8 +102,17 @@ class Pipeline(object):
         return self.apply_from_stage_to_stage(spim, minstage, maxstage)
 
     def apply_at_stage(self, spim):
-        """
-        applies all steps following the stage of the spim
+        """Applies all steps following the stage of the spim
+
+        Parameters
+        ----------
+        spim : Spim
+            the spotlob image item to apply the pipeline to
+
+        Returns
+        ----------
+        Spim
+            the processed Spim at stage `to_stage`
         """
 
         startstage = spim.stage
@@ -141,7 +175,7 @@ class Pipeline(object):
         See also
         --------
         Pipeline.from_file
-            Use `Pipeline.from_file` to restore the pipeline object 
+            Use `Pipeline.from_file` to restore the pipeline object
             from storage
         """
         with open(target_path, "wb") as dill_file:
@@ -165,3 +199,10 @@ class Pipeline(object):
         with open(filepath, "rb") as dill_file:
             restored_pipe = dill.load(dill_file)
         return restored_pipe
+
+    def __str__(self):
+        out = []
+        for stage in sorted(self.process_stage_dict.keys()):
+            process = self.process_stage_dict[stage]
+            out += [str(process)]
+        return "".join(out)

@@ -81,6 +81,9 @@ class SpotlobParameter(object):
     def value(self, new_val):
         self._value = new_val
 
+    def __str__(self):
+        return "%s: %s" % (self.name, self.value)
+
 
 class SpotlobParameterSet(object):
     def __init__(self, parameters):
@@ -103,6 +106,10 @@ class SpotlobParameterSet(object):
 
     def to_dict(self):
         return dict([(p.name, p.value) for p in self.parameters])
+
+    def __str__(self):
+        lines = ["- %s\n" % p for p in self.parameters]
+        return "".join(lines)
 
 
 class FilepathParameter(SpotlobParameter):
