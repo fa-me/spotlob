@@ -11,20 +11,55 @@ The processes
 
 .. automodule:: spotlob.process
 
-Here is the list of process step superclasses
+Any process step corresponds to one input stage and
+one method of Spim to use it with
+
++--------------------+------------------+---------------------+
+| input stage        | Spim method      | SpotlobProcessStep  |
+|                    |                  | subclass            |
++====================+==================+=====================+
+| new                | read             | Reader              |
++--------------------+------------------+---------------------+
+| loaded             | convert          | Converter           |
++--------------------+------------------+---------------------+
+| converted          | preprocess       | Preprocessor        |
++--------------------+------------------+---------------------+
+| preprocessed       | binarize         | Binarization        |
++--------------------+------------------+---------------------+
+| binarized          | postprocess      | Postprocessor       |
++--------------------+------------------+---------------------+
+| postprocessed      | extract_features | FeatureExtractor    |
++--------------------+------------------+---------------------+
+| features_extracted | filter_features  | FeatureFilter       |
++--------------------+------------------+---------------------+
+| features_filtered  | analyze          | Analysis            |
++--------------------+------------------+---------------------+
+| analyzed           | store            | Writer              |
++--------------------+------------------+---------------------+
+| stored             |                  |                     |
++--------------------+------------------+---------------------+
 
 .. automodule:: spotlob.process_steps
 .. autoclass:: spotlob.process_steps.Reader
+    :noindex:
 .. autoclass:: spotlob.process_steps.Converter
+    :noindex:
 .. autoclass:: spotlob.process_steps.Preprocessor
+    :noindex:
 .. autoclass:: spotlob.process_steps.Binarisation
+    :noindex:
 .. autoclass:: spotlob.process_steps.Postprocessor
+    :noindex:
 .. autoclass:: spotlob.process_steps.FeatureFinder
+    :noindex:
 .. autoclass:: spotlob.process_steps.FeatureFilter
+    :noindex:
 .. autoclass:: spotlob.process_steps.Analysis
+    :noindex:
 
 The spotlob pipeline
 --------------------
 
 .. automodule:: spotlob.pipeline
 .. autoclass:: spotlob.pipeline.Pipeline
+    :noindex:

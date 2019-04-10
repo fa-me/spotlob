@@ -1,6 +1,56 @@
+"""The register is meant to be used to keep track of available
+process steps. Using decorators, a function can be internally
+turned into a :class:`~spotlob.SpotlobProcessStep` subclass, to be used
+within a :class:`~spotlob.Pipeline`. This way, using only minimal code,
+new functionality can be added to Spotlob and directly used
+within its workflow
+
+Example using a decorator
+-------------------------
+Create a process register
+
+.. code-block:: python
+
+    from spotlob.register import ProcessRegister
+    register = ProcessRegister()
+
+Create an alternative function, that should replace a single
+:class:`~spotlob.SpotlobProcessStep`. Here, a binarization function is defined,
+using upper and lower value boundaries, with `numpy`.
+
+.. code-block:: python
+
+    import numpy as np
+
+    def my_threshold(image, lower_threshold, upper_threshold, invert):
+        out = np.logical_and( image > lower_threshold,
+                            image < upper_threshold)
+        out = out.astype(np.uint8)*255
+        if invert:
+            out = ~out
+        return out
+
+To add this function to the register, use the methods of
+:class:`~spotlob.ProcessRegister` as decorators, giving a list of parameter
+specifications
+
+.. code-block:: python
+
+    @register.binarisation_plugin([("lower_threshold",(0,255,100)),
+                                   ("upper_threshold",(0,255,200)),
+                                   ("invert", True)])
+    def my_threshold(image, lower_threshold, upper_threshold, invert):
+        out = np.logical_and( image > lower_threshold,
+                            image < upper_threshold)
+        out = out.astype(np.uint8)*255
+        if invert:
+            out = ~out
+        return out
+"""
+
+from .parameters import parameter_from_spec
 from .process_steps import Binarisation, Converter, Preprocessor,\
     Postprocessor, Analysis
-from .parameters import parameter_from_spec
 
 
 class ProcessRegister(object):
