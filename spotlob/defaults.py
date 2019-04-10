@@ -62,8 +62,8 @@ def default_pipeline(mode="circle", thresholding="auto"):
 
 
 def make_gui(spim_or_filepath, mode="circle"):
-    """Creates a :any:`SpotlobNotebookGui` object which opens
-    a given :any:`Spim` or image file for preview editing
+    """Creates a :class:`~spotlob.SpotlobNotebookGui` object which opens
+    a given :class:`~spotlob.Spim` or image file for preview editing
 
     PARAMETERS
     ----------
@@ -78,8 +78,9 @@ def make_gui(spim_or_filepath, mode="circle"):
     RETURNS
     -------
     SpotlobNotebookGui
-        GUI object that can be displayed using the :any:`show_gui`
-        function within a jupyter notebook
+        GUI object that can be displayed using the 
+        :func:`~spotlob.defaults.show_gui` function within 
+        a jupyter notebook
     """
     try:
         assert os.path.exists(spim_or_filepath)
@@ -94,14 +95,14 @@ def make_gui(spim_or_filepath, mode="circle"):
 
 
 def show_gui(gui):
-    """Display a :any:`SpotlobNotebookGui` object.
+    """Display a :class:`~spotlob.SpotlobNotebookGui` object.
     Run the `%matplotlib notebook` magic command to get live preview
 
     PARAMETERS
     ----------
     gui : SpotlobNotebookGui
-        Widget and preview screen, as created by the :any:`make_gui`
-        function
+        Widget and preview screen, as created by the
+        :func:`~spotlob.defaults.show_gui` function
     """
     widgets = gui.make_widgets()
     gui.show_preview_screen(figsize=(8, 6))
@@ -111,7 +112,7 @@ def show_gui(gui):
 
 def use_in(gui):
     """Use this as a decorator replace a process in a
-    :any:SpotlobNotebookGui object
+    :class:`~spotlob.SpotlobNotebookGui` object
 
     PARAMETERS
     ----------
@@ -133,8 +134,8 @@ def use_in(gui):
 
 
 def load_image(filepath, cached=False):
-    """Create a :any:Spim from a filepath directly, using a default
-    reader
+    """Create a :class:`~spotlob.Spim` from a filepath directly,
+    using a default reader
 
     PARAMETERS
     ----------

@@ -2,7 +2,9 @@
 a further stage, there is a subclass of `SpotlobProcessStep`,
 that can be used as super class for an concrete implementation
 of that step. The return type of a `SpotlobProcessStep.apply`
-call is different depending on the type of process
+call is different depending on the type of process. The Spim
+internally passes the modified data to the new Spim created
+through the process.
 """
 
 from .spim import Spim, SpimStage
@@ -97,7 +99,7 @@ class Analysis(SpotlobProcessStep):
     """An Analysis class evaluates the contours and yields its results
     as a dataframe.
 
-    `apply` returns :any:pandas.DataFrame"""
+    `apply` returns :class:`~pandas.DataFrame`"""
     input_stage = SpimStage.features_filtered
 
     def preview(self, spim):
