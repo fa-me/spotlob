@@ -37,7 +37,7 @@ the methods that return a Spim of the next stage.
         5 -> 6 [label="extract_features"];
         {rank=same;
             6 -> 7 [label="filter_features"];
-            7 -> 8 [label="analyse"];
+            7 -> 8 [label="analyze"];
         }
         8 -> 9 [label="store"];
     }
@@ -217,7 +217,7 @@ class Spim(object):
                     self.cached,
                     self._predecessors_and_self())
 
-    def analyse(self, analysis):
+    def analyze(self, analysis):
         results = analysis.apply(self.metadata["contours"])
         metadata = self.metadata.copy()
         metadata["results"] = results
@@ -270,7 +270,7 @@ class Spim(object):
                      self.postprocess,
                      self.extract_features,
                      self.filter_features,
-                     self.analyse,
+                     self.analyze,
                      self.store]
         return functions[spimstage]
 

@@ -46,7 +46,7 @@ one method of Spim to use it with
     :noindex:
 .. autoclass:: spotlob.process_steps.Preprocessor
     :noindex:
-.. autoclass:: spotlob.process_steps.Binarisation
+.. autoclass:: spotlob.process_steps.Binarization
     :noindex:
 .. autoclass:: spotlob.process_steps.Postprocessor
     :noindex:

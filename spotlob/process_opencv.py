@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 from .process_steps import Reader, Converter, Preprocessor,\
-    Binarisation, Postprocessor, FeatureFinder, FeatureFilter
+    Binarization, Postprocessor, FeatureFinder, FeatureFilter
 from .parameters import SpotlobParameterSet, EnumParameter,\
     BoolParameter, NumericRangeParameter
 
@@ -70,7 +70,7 @@ class GaussianPreprocess(Preprocessor):
             return grey_image
 
 
-class BinaryThreshold(Binarisation):
+class BinaryThreshold(Binarization):
     def __init__(self, threshold):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("threshold", threshold, 0, 255)])
@@ -82,7 +82,7 @@ class BinaryThreshold(Binarisation):
         return im
 
 
-class OtsuThreshold(Binarisation):
+class OtsuThreshold(Binarization):
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(OtsuThreshold, self).__init__(self.threshold_fn, pars)

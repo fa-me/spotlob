@@ -10,7 +10,7 @@ from .image_generation import binary_circle_off_border
 from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
 from ..output import Writer
-from ..analyse_circle import CircleAnalysis
+from ..analyze_circle import CircleAnalysis
 from ..defaults import default_pipeline
 
 
@@ -47,7 +47,7 @@ class CircleDetectionTestCase(unittest.TestCase):
 
             res_spim = cont_spim\
                 .filter_features(feature_filter)\
-                .analyse(circle_analysis)
+                .analyze(circle_analysis)
 
             res_df = res_spim.metadata["results"]
 

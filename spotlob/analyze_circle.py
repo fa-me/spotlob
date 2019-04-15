@@ -12,9 +12,9 @@ class CircleAnalysis(Analysis):
     def __init__(self, calibration=None):
         pars = SpotlobParameterSet([])
         self.calibration = calibration
-        super(CircleAnalysis, self).__init__(self.analyse, pars)
+        super(CircleAnalysis, self).__init__(self.analyze, pars)
 
-    def analyse(self, contours):
+    def analyze(self, contours):
         areas = []
         ellipses_positions = []
         ellipses_major_axes = []

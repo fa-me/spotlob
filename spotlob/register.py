@@ -36,7 +36,7 @@ specifications
 
 .. code-block:: python
 
-    @register.binarisation_plugin([("lower_threshold",(0,255,100)),
+    @register.binarization_plugin([("lower_threshold",(0,255,100)),
                                    ("upper_threshold",(0,255,200)),
                                    ("invert", True)])
     def my_threshold(image, lower_threshold, upper_threshold, invert):
@@ -49,7 +49,7 @@ specifications
 """
 
 from .parameters import parameter_from_spec
-from .process_steps import Binarisation, Converter, Preprocessor,\
+from .process_steps import Binarization, Converter, Preprocessor,\
     Postprocessor, Analysis
 
 
@@ -58,12 +58,12 @@ class ProcessRegister(object):
     def __init__(self):
         self.available_processes = dict()
 
-    def binarisation_plugin(self, param_spec):
+    def binarization_plugin(self, param_spec):
         """
-        register your binarisation function as a plugin by using
+        register your binarization function as a plugin by using
         this function as a decorator
         """
-        wrapper = self._get_wrapper(Binarisation, param_spec)
+        wrapper = self._get_wrapper(Binarization, param_spec)
         return wrapper
 
     def convert_plugin(self, param_spec):

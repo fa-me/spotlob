@@ -9,8 +9,8 @@ from .process_opencv import SimpleReader, GreyscaleConverter,\
 from .pipeline import Pipeline
 from .preview import MatplotlibPreviewScreen
 from .register import PROCESS_REGISTER
-from .analyse_circle import CircleAnalysis
-from .analyse_line import LineAnalysis
+from .analyze_circle import CircleAnalysis
+from .analyze_line import LineAnalysis
 from .spim import Spim
 
 
