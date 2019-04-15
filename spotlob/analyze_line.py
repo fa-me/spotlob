@@ -15,9 +15,9 @@ class LineAnalysis(Analysis):
         pars = SpotlobParameterSet([])
         self.calibration = calibration
         self.linewidth_percentile = linewidth_percentile
-        super(LineAnalysis, self).__init__(self.analyse, pars)
+        super(LineAnalysis, self).__init__(self.analyze, pars)
 
-    def analyse(self, contours):
+    def analyze(self, contours):
         if len(contours) == 0:
             empty_df = pd.DataFrame([], columns=["area_px2",
                                                  "linewidth_px",

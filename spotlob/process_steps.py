@@ -41,7 +41,7 @@ class Preprocessor(SpotlobProcessStep):
         return self.apply(input)
 
 
-class Binarisation(SpotlobProcessStep):
+class Binarization(SpotlobProcessStep):
     """Turns a greyscale image into a black-and-white or binary image.
     `apply` returns a greyscale image
     """

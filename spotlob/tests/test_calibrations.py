@@ -58,7 +58,7 @@ class TestCalibration(unittest.TestCase):
         self.assertTrue(mycal.pixel_to_micron(1) == 0.01)
         self.assertTrue(mycal.pixel_to_micron(2) == 0.02)
 
-    def test_analyse_dataframe(self):
+    def test_analyze_dataframe(self):
         data = pd.DataFrame({"area_px2": [100, 10000], "radius_px": [10, 20]})
         cal = Calibration(10)
 

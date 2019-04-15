@@ -9,7 +9,7 @@ from .image_generation import binary_line
 
 from ..spim import Spim, SpimStage
 from ..process_opencv import ContourFinderSimple, FeatureFormFilter
-from ..analyse_line import LineAnalysis
+from ..analyze_line import LineAnalysis
 from ..calculation import points_within_contours
 from ..defaults import default_pipeline
 
@@ -37,7 +37,7 @@ class LineDetectionTestCase(unittest.TestCase):
         res_spim = bin_spim\
             .extract_features(contour_finder)\
             .filter_features(feature_filter)\
-            .analyse(line_analysis)
+            .analyze(line_analysis)
 
         res_df = res_spim.metadata["results"]
 
@@ -75,7 +75,7 @@ class LineDetectionTestCase(unittest.TestCase):
             res_spim = bin_spim\
                 .extract_features(contour_finder)\
                 .filter_features(feature_filter)\
-                .analyse(line_analysis)
+                .analyze(line_analysis)
 
             res_df = res_spim.metadata["results"]
 
