@@ -10,6 +10,10 @@ from .parameters import SpotlobParameterSet, EnumParameter,\
 
 
 class SimpleReader(Reader):
+    """Reads an image from a file as an RGB file.
+    Standard image formats, such as `png`, `jpg`, `tif` are supported.
+    It uses `cv2.imread`.
+    """
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(SimpleReader, self).__init__(self.fn_read, pars)
@@ -23,6 +27,18 @@ class SimpleReader(Reader):
 
 
 class GreyscaleConverter(Converter):
+    """Converts a color image to a greyscale image, by selecting one channel
+    or by converting it to another color space and then selecting one channel.
+
+    The supported options are given by the `conversion` parameter, which must be
+    one of the following strings
+    - `Hue`, `Saturation` or `Value` channel
+    - `Red`, `Blue` or `Green` color channel
+    - normal `Greyscale` conversion
+
+    It uses the `cv2.cvtColor` function.
+    Additionally the dark an bright parts can be switched using `invert=True`
+    """
     def __init__(self):
         self.hsv_str_list = ["Hue", "Saturation", "Value"]
         self.rgb_str_list = ["Red channel", "Blue channel", "Green channel"]
@@ -56,6 +72,9 @@ class GreyscaleConverter(Converter):
 
 
 class GaussianPreprocess(Preprocessor):
+    """Blur the image with a gaussian blur with kernel size given 
+    by `ksize`. It uses the `cv2.filter2D` function
+    """
     def __init__(self, ksize):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)])
@@ -71,6 +90,12 @@ class GaussianPreprocess(Preprocessor):
 
 
 class BinaryThreshold(Binarization):
+    """Converts the image to a binary one, where the parts above
+    the given threshold are set to 255 and the parts below it to 0.
+    The sole parameter is the threshold value.
+    It uses the `cv2.threshold` function.    
+    """
+
     def __init__(self, threshold):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("threshold", threshold, 0, 255)])
@@ -83,6 +108,9 @@ class BinaryThreshold(Binarization):
 
 
 class OtsuThreshold(Binarization):
+    """Performs a binarization based on Otsu's algorithm.
+    It uses the `cv2.threshold` function.    
+    """
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(OtsuThreshold, self).__init__(self.threshold_fn, pars)
@@ -96,6 +124,8 @@ class OtsuThreshold(Binarization):
 
 
 class PostprocessNothing(Postprocessor):
+    """This process is used as a placeholder for a postprocessing step
+    and does not modify the image at all"""
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(PostprocessNothing, self).__init__(self.postprocess_fn, pars)
@@ -105,14 +135,18 @@ class PostprocessNothing(Postprocessor):
 
 
 class ContourFinderSimple(FeatureFinder):
+    """Finds contours, i.e. lists of points that enclose connected areas of
+    the same value. It is based on the `cv2.findContours` function
+    """
+
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
 
     def finder_fn(self, bin_im):
         cont_ret = cv2.findContours(bin_im,
-                                       cv2.RETR_EXTERNAL,
-                                       cv2.CHAIN_APPROX_SIMPLE)
+                                    cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
         # cont_ret is
         # contours, hierarchy for opencv >4.0
         # im, contours, hierarchy for opencv <=3.4
@@ -122,6 +156,16 @@ class ContourFinderSimple(FeatureFinder):
 
 
 class FeatureFormFilter(FeatureFilter):
+    """It analyzes the contours and filters them using given criteria:
+    
+    - the enclosed area must be smaller (i.e. contain fewer pixels) than
+      `minimal_area`
+    - it solidity, i.e. the ratio of the area of the contour and its convex
+      hull must be below a given value
+    - if `remove_on_edge` is `True`, contours that touch the border of the
+      image are filtered out
+
+    """
     def __init__(self, size, solidity, remove_on_edge):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),

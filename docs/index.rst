@@ -9,6 +9,7 @@ Further topics
    principle.rst
    extending_spotlob.rst
    structures.rst
+   defaults.rst
 
 Indices and tables
 ------------------

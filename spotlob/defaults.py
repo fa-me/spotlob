@@ -22,16 +22,16 @@ def default_pipeline(mode="circle", thresholding="auto"):
     Parameters
     ----------
     mode : str, optional
-        this defines the way in which detected features will be evaluated,
-        either "cirlce" or "line".
-        * as `line` the linewidth is calculated
-        * as `circle` an ellipse is fitted and by default features that touch
-        the edge of the image get ignored
-        (the default is "circle")
+        this defines the way in which detected features will be evaluated
+
+        - as `line` the linewidth is calculated
+        - as `circle` an ellipse is fitted and by default features that touch
+          the edge of the image get ignored (the default is "circle")
+
     thresholding : str, optional
-        * `auto` uses Otsu's thresholding algorithm
-        * `simple` uses a fixed threshold value, 100 by default
-        (the default is "auto")
+        - `auto` uses Otsu's thresholding algorithm
+        - `simple` uses a fixed threshold value, 100 by default
+          (the default is "auto")
 
     Returns
     -------
