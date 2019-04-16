@@ -13,6 +13,16 @@ Process
 .. automodule:: spotlob.process_steps
     :members:
 
+Process step implementations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: spotlob.process_opencv
+    :members:
+.. automodule:: spotlob.analyze_circle
+    :members:
+.. automodule:: spotlob.analyze_line
+    :members:
+
 Pipeline
 --------
 .. automodule:: spotlob.pipeline
@@ -27,4 +37,5 @@ Batch processing
 ----------------
 .. automodule:: spotlob.batch
     :members:
+
 
