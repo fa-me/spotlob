@@ -32,7 +32,7 @@ class CircleAnalysis(Analysis):
                 e_pos, (e_major_ax,
                         e_minor_ax), angle = np.nan, (np.nan, np.nan), np.nan
 
-            ellipses_positions += [e_pos]
+            ellipses_positions += [np.array(e_pos)]
             ellipses_major_axes += [e_major_ax]
             ellipses_minor_axes += [e_minor_ax]
             ellipses_angles += [angle]
