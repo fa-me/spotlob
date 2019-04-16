@@ -1,3 +1,5 @@
+import numpy as np
+
 from ipywidgets import IntSlider, FloatSlider, Text,\
     Dropdown, VBox, Checkbox, Button, Output
 from IPython.display import display, clear_output
@@ -105,8 +107,10 @@ class SpotlobNotebookGui(object):
         def run_inner(btn):
             self.run()
 
+            fresh_predecessor = self.dummyspim.get_at_stage(SpimStage.loaded)
+
             # draw results
-            image = self.dummyspim.get_at_stage(SpimStage.loaded).image
+            image = np.copy(fresh_predecessor.image)
 
             before_analyzed = SpimStage.analyzed-1
 
