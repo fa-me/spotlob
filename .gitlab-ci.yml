@@ -1,3 +1,8 @@
+stages:
+  - build
+  - test
+  - deploy
+
 # test:
 #   image: $CI_REGISTRY/fmeyer/spotlob:latest
 #   stage: test
@@ -20,6 +25,24 @@ build package:
   script:
     - pip install -r requirements-dev.txt
     - python setup.py sdist
+
+build doc:
+  image: python:3.7
+  stage: build
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - docs/_build/html/
+    expire_in: 1 week
+  script:
+    - apt-get update
+    - apt-get install graphviz -y
+    - pip install -r requirements-dev.txt
+    - cd docs
+    - mkdir _static
+    - sphinx-build -W -b html -d _build/doctrees . _build/html
 
 test tox:
   image: python:3.7
@@ -50,37 +73,33 @@ test notebooks:
     - pip install pytest pytest-cov nbval
     - pytest --nbval ./notebooks
 
-build doc:
-  image: python:3.7
-  stage: deploy
-  tags:
-    - asprunner
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-    - docs/_build/html/
-    expire_in: 1 week
-  script:
-    - apt-get update
-    - apt-get install graphviz -y
-    - pip install -r requirements-dev.txt
-    - cd docs
-    - mkdir _static
-    - sphinx-build -W -b html -d _build/doctrees . _build/html
-    #- make html
+deploy pypi:
+    image: python:3.7
+    stage: deploy
+    tags:
+      - asprunner
+    script:
+        - pip install -r requirements-dev.txt
+        - pip install -U twine
+        - python setup.py sdist
+        - twine upload dist/*
+    only:
+        - tags
+    except:
+        - branches
 
-build image:
-  image: docker:stable
-  stage: deploy
-  only:
-    refs:
-      - master
-    changes:
-      - dockerfile
-      - requirements.yml
-  tags:
-    - asprunner
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/fmeyer/spotlob .
-    - docker push $CI_REGISTRY/fmeyer/spotlob
+# build image:
+#   image: docker:stable
+#   stage: deploy
+#   only:
+#     refs:
+#       - master
+#     changes:
+#       - dockerfile
+#       - requirements.yml
+#   tags:
+#     - asprunner
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY/fmeyer/spotlob .
+#     - docker push $CI_REGISTRY/fmeyer/spotlob

@@ -66,3 +66,11 @@ Although it might work with machine learning algorithms, it is
 not tuned towards this usage and it is not designed with this
 application in mind.
 
+## Installation
+
+Install with pip
+
+```
+pip install spotlob
+```
+

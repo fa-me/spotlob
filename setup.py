@@ -14,12 +14,13 @@ setup(
     license="BSD 3-clause",
     url=spotlob.__url__,
     classifiers=[
-            'Development Status :: 4 - Alpha',
+            'Development Status :: 3 - Alpha',
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: BSD License',
             'Natural Language :: English',
             'Programming Language :: Python :: 3 :: Only',
             'Topic :: Scientific/Engineering :: Image Recognition',
     ],
-    long_description=readme
+    long_description=readme,
+    long_description_content_type='text/markdown'
 )
