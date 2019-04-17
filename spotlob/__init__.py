@@ -1,5 +1,5 @@
 __name__ = "spotlob"
-__version__ = "0.9.0.a"
+__version__ = "0.9.0.a1"
 __author__ = "Fabian Meyer"
 __summary__ = "feature extraction and analysis pipeline for image data"
 __copyright__ = "Copyright 2019, Fraunhofer ISE"
