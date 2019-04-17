@@ -21,5 +21,6 @@ setup(
             'Programming Language :: Python :: 3 :: Only',
             'Topic :: Scientific/Engineering :: Image Recognition',
     ],
-    long_description=readme
+    long_description=readme,
+    long_description_content_type='text/markdown'
 )
