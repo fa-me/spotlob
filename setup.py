@@ -14,7 +14,7 @@ setup(
     license="BSD 3-clause",
     url=spotlob.__url__,
     classifiers=[
-            'Development Status :: 4 - Alpha',
+            'Development Status :: 3 - Alpha',
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: BSD License',
             'Natural Language :: English',
