@@ -14,7 +14,8 @@ class CircleAnalysis(Analysis):
         self.calibration = calibration
         super(CircleAnalysis, self).__init__(self.analyze, pars)
 
-    def analyze(self, contours):
+    def analyze(self, metadata):
+        contours = metadata['contours']
         areas = []
         ellipses_positions = []
         ellipses_major_axes = []

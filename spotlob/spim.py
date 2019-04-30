@@ -218,7 +218,7 @@ class Spim(object):
                     self._predecessors_and_self())
 
     def analyze(self, analysis):
-        results = analysis.apply(self.metadata["contours"])
+        results = analysis.apply(self.metadata)
         metadata = self.metadata.copy()
         metadata["results"] = results
         return Spim(None,
