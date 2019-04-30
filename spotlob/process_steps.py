@@ -96,15 +96,14 @@ class FeatureFilter(SpotlobProcessStep):
 
 
 class Analysis(SpotlobProcessStep):
-    """An Analysis class evaluates the contours and yields its results
+    """An Analysis class evaluates the metadata (including contours) and yields its results
     as a dataframe.
 
     `apply` returns :class:`~pandas.DataFrame`"""
     input_stage = SpimStage.features_filtered
 
     def preview(self, spim):
-        contours = spim.metadata["contours"]
-        df = self.apply(contours)
+        df = self.apply(spim.metadata)
 
         im = spim.get_at_stage(SpimStage.loaded).image
         return self.draw_results(im, df)

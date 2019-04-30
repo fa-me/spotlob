@@ -17,7 +17,9 @@ class LineAnalysis(Analysis):
         self.linewidth_percentile = linewidth_percentile
         super(LineAnalysis, self).__init__(self.analyze, pars)
 
-    def analyze(self, contours):
+    def analyze(self, metadata):
+        contours = metadata['contours']
+
         if len(contours) == 0:
             empty_df = pd.DataFrame([], columns=["area_px2",
                                                  "linewidth_px",
@@ -68,8 +70,8 @@ class LineAnalysis(Analysis):
                                "bb_width_px": bb_w,
                                "bb_height_px": bb_h,
                                "bb_angle": bb_angle}, index=[0])
-                            #    "distances_hist": hist.tolist(),
-                            #    "distances_bin_edges_px": bin_edges.tolist()
+        #    "distances_hist": hist.tolist(),
+        #    "distances_bin_edges_px": bin_edges.tolist()
 
         if not self.calibration:
             return result
