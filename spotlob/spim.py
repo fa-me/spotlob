@@ -341,15 +341,29 @@ class Spim(object):
 
         RETURNS
         -------
-            dict
+            pandas.Dataframe
                 all metadata including collected results
         """
+        # TODO: better tests for get_data
+
         if "results" in self.metadata.keys():
-            results = self.metadata["results"]
-            results["filename"] = self.metadata["filepath"]
-            return results
+            # results is a dataframe
+            # flatten to one dataframe
+
+            md_copy = self.metadata.copy()
+
+            results = md_copy.pop("results")
+            results["filepath"] = md_copy["filepath"]
+
+            # TODO: find a way to include contours output in get_data
+            # drop contours
+            _ = md_copy.pop("contours")
+
+            md = pandas.Series(md_copy).to_frame().T
+
+            return results.merge(md, on="filepath")
         else:
-            return pandas.DataFrame(self.metadata, index=[0])
+            return pandas.Series(self.metadata).to_frame().T
 
     def __repr__(self):
         return "<Spim instance %s at stage %s>" % (id(self), self.stage)
