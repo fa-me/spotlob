@@ -344,9 +344,19 @@ class Spim(object):
             dict
                 all metadata including collected results
         """
+        # TODO: get_data should always return a dict
+        # TODO: better tests for get_data
+        # TODO: find a way to include contours output in get_data
+
         if "results" in self.metadata.keys():
-            results = self.metadata["results"]
-            results["filename"] = self.metadata["filepath"]
+            # results are nested dict
+            # flatten to one dataframe
+
+            md_copy = self.metadata.copy()
+            results = md_copy.pop("results")
+            results["filename"] = md_copy.pop("filepath")
+            _ = md_copy.pop("contours")
+            results.update(md_copy)
             return results
         else:
             return pandas.DataFrame(self.metadata, index=[0])
