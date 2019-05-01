@@ -12,6 +12,18 @@ from spotlob.spim import Spim, SpimStage
 
 
 def review_widgets(dataframe, pipeline):
+    """Displays a review widget, that has a button
+    to browse through all the files listed in a given
+    dataframe and draw the result of the analysis contained
+    in the given pipeline 
+
+    Parameters
+    ----------
+    dataframe : pandas.Dataframe
+        Result from a detection with pipeline
+    pipeline : Pipeline
+        The pipeline that the results have been created with
+    """
     screen = MatplotlibPreviewScreen()
 
     load_process = pipeline.process_stage_dict[SpimStage.loaded-1]
