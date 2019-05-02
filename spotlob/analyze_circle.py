@@ -6,6 +6,7 @@ import numpy as np
 
 from .process_steps import Analysis
 from .parameters import SpotlobParameterSet
+from .process_opencv import draw_contours
 
 
 class CircleAnalysis(Analysis):
@@ -67,6 +68,10 @@ class CircleAnalysis(Analysis):
 
             pen_color = [255, 0, 0]
 
-            cv2.circle(image, e_pos, 10, pen_color, -1)
-            cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 3)
+            if "contours" in row.keys():
+                contour = row["contours"]
+                draw_contours(image, contour)
+
+            cv2.circle(image, e_pos, 3, pen_color, -1)
+            cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 1)
         return image
