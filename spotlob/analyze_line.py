@@ -33,11 +33,12 @@ class LineAnalysis(Analysis):
                                                  "distances_hist",
                                                  "distances_bin_edges_px"])
             return empty_df
-        elif len(contours) > 1:
-            raise NotImplementedError("Currently only single contour is\
-                                       supported for lines")
 
-        inner_points = points_within_contours(contours)
+        elif len(contours) == 1:
+            inner_points = points_within_contours(contours)
+        else:
+            inner_points = np.vstack([points_within_contours([ctr])
+                                      for ctr in contours])
 
         area = len(inner_points)
 
@@ -72,7 +73,10 @@ class LineAnalysis(Analysis):
                                "linewidth2_px": linewidth_area,
                                "bb_width_px": bb_w,
                                "bb_height_px": bb_h,
-                               "bb_angle": bb_angle}, index=[0])
+                               "bb_angle": bb_angle,
+                               "line_params": [np.array([x, y, vx, vy])]},
+                              index=[0])
+
         #    "distances_hist": hist.tolist(),
         #    "distances_bin_edges_px": bin_edges.tolist()
 
@@ -83,4 +87,15 @@ class LineAnalysis(Analysis):
 
     def draw_results(self, image, dataframe):
         # TODO: draw line(s) from dataframe onto image
+        assert len(dataframe) == 1
+        x0, y0, vx, vy = dataframe.loc[0, "line_params"]
+        m = 1000
+
+        lw1h = dataframe.loc[0, "linewidth_px"]
+
+        cstart = (x0-m*vx[0], y0-m*vy[0])
+        cstop = (x0+m*vx[0], y0+m*vy[0])
+
+        # center line
+        cv2.line(image, cstart, cstop, (255, 0, 0), 3)
         return image
