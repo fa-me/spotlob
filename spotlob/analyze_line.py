@@ -11,11 +11,14 @@ from .calculation import points_within_contours, max_extends,\
 
 
 class LineAnalysis(Analysis):
-    def __init__(self, calibration=None, linewidth_percentile=95):
+    def __init__(self, calibration=None,
+                 linewidth_percentile=95,
+                 extended_output=True):
         pars = SpotlobParameterSet([])
         self.calibration = calibration
         self.linewidth_percentile = linewidth_percentile
-        super(LineAnalysis, self).__init__(self.analyze, pars)
+        super(LineAnalysis, self).__init__(
+            self.analyze, pars, extended_output=extended_output)
 
     def analyze(self, metadata):
         contours = metadata['contours']

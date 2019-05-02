@@ -9,10 +9,11 @@ from .parameters import SpotlobParameterSet
 
 
 class CircleAnalysis(Analysis):
-    def __init__(self, calibration=None):
+    def __init__(self, calibration=None, extended_output=True):
         pars = SpotlobParameterSet([])
         self.calibration = calibration
-        super(CircleAnalysis, self).__init__(self.analyze, pars)
+        super(CircleAnalysis, self).__init__(
+            self.analyze, pars, extended_output=extended_output)
 
     def analyze(self, metadata):
         contours = metadata['contours']
@@ -38,11 +39,17 @@ class CircleAnalysis(Analysis):
             ellipses_minor_axes += [e_minor_ax]
             ellipses_angles += [angle]
 
-        result = pd.DataFrame({"area_px2": areas,
-                               "ellipse_position_px": ellipses_positions,
-                               "ellipse_majorAxis_px": ellipses_major_axes,
-                               "ellipse_minorAxis_px": ellipses_minor_axes,
-                               "ellipse_angle": ellipses_angles})
+        res_dict = {"area_px2": areas,
+                    "ellipse_position_px": ellipses_positions,
+                    "ellipse_majorAxis_px": ellipses_major_axes,
+                    "ellipse_minorAxis_px": ellipses_minor_axes,
+                    "ellipse_angle": ellipses_angles}
+
+        if self.extended_output:
+            res_dict.update({"contours": contours})
+
+        result = pd.DataFrame(res_dict)
+
         if not self.calibration:
             return result
         else:

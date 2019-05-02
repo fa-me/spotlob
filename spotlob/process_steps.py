@@ -96,11 +96,38 @@ class FeatureFilter(SpotlobProcessStep):
 
 
 class Analysis(SpotlobProcessStep):
-    """An Analysis class evaluates the metadata (including contours) and yields its results
-    as a dataframe.
+    """An Analysis class evaluates the metadata (including contours) and 
+    yields its results as a dataframe.
 
     `apply` returns :class:`~pandas.DataFrame`"""
     input_stage = SpimStage.features_filtered
+
+    def __init__(self,
+                 function,
+                 parameters,
+                 add_to_register=True,
+                 extended_output=True):
+        """Abstract analysis process step. 
+
+        Parameters
+        ----------
+        function : callable
+            function that performs the analysis. As first argument it must
+            take the metadata dict and further arguments must match the
+            Parameters of the SpotlobParameterSet.
+            Must return a pandas.Dataframe
+        parameters : SpotlobParameterSet
+            Parameters of this process steps
+        add_to_register : bool, optional
+            wether this should automatically be added to the list of known
+            processes, by default True
+        extended_output : bool, optional
+            if the output of this Analysis should contain as much data as
+            possible. If False, only most important results are returned. 
+            By default True
+        """
+        self.extended_output = extended_output
+        super(Analysis, self).__init__(function, parameters, add_to_register)
 
     def preview(self, spim):
         df = self.apply(spim.metadata)
