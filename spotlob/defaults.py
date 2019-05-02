@@ -90,7 +90,7 @@ def make_gui(spim_or_filepath, mode="circle"):
     else:
         spim = spim_or_filepath
 
-    pipe = default_pipeline()
+    pipe = default_pipeline(mode=mode)
     preview_screen = MatplotlibPreviewScreen()
     gui = SpotlobNotebookGui(pipe, preview_screen, spim)
     return gui
