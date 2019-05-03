@@ -59,26 +59,29 @@ class LineAnalysis(Analysis):
                                            p1,
                                            p2)
 
-        hist, bin_edges = np.histogram(distances, bins="auto")
-
         linewidth_perc = np.percentile(distances, self.linewidth_percentile)*2
 
         # TODO: use convex hull to combine contours
-        (bb_cx, bb_cy), (bb_w, bb_h), bb_angle = cv2.minAreaRect(contours[0])
+        # (bb_cx, bb_cy), (bb_w, bb_h), bb_angle = cv2.minAreaRect(contours[0])
 
-        linewidth_area = area/bb_h
+        # linewidth_area = area/bb_h
 
-        result = pd.DataFrame({"area_px2": area,
-                               "linewidth_px": linewidth_perc,
-                               "linewidth2_px": linewidth_area,
-                               "bb_width_px": bb_w,
-                               "bb_height_px": bb_h,
-                               "bb_angle": bb_angle,
-                               "line_params": [np.array([x, y, vx, vy])]},
+        res_dict = {"area_px2": area,
+                    "linewidth_px": linewidth_perc,
+                   #  "linewidth2_px": linewidth_area,
+                    "line_params": [np.array([x, y, vx, vy])]}
+
+        if self.extended_output:
+            hist, bin_edges = np.histogram(distances, bins="auto")
+            res_dict.update({"distances_hist": [hist],
+                             "distances_bin_edges_px": [bin_edges]})
+
+                            #  "bb_width_px": bb_w,
+                            #  "bb_height_px": bb_h,
+                            #  "bb_angle": bb_angle,
+
+        result = pd.DataFrame(res_dict,
                               index=[0])
-
-        #    "distances_hist": hist.tolist(),
-        #    "distances_bin_edges_px": bin_edges.tolist()
 
         if not self.calibration:
             return result
@@ -86,16 +89,26 @@ class LineAnalysis(Analysis):
             return self.calibration.calibrate(result)
 
     def draw_results(self, image, dataframe):
-        # TODO: draw line(s) from dataframe onto image
         assert len(dataframe) == 1
         x0, y0, vx, vy = dataframe.loc[0, "line_params"]
         m = 1000
 
-        lw1h = dataframe.loc[0, "linewidth_px"]
-
-        cstart = (x0-m*vx[0], y0-m*vy[0])
-        cstop = (x0+m*vx[0], y0+m*vy[0])
+        cstart = np.array([x0[0]-m*vx[0], y0[0]-m*vy[0]]).astype(int)
+        cstop = np.array([x0[0]+m*vx[0], y0[0]+m*vy[0]]).astype(int)
 
         # center line
-        cv2.line(image, cstart, cstop, (255, 0, 0), 3)
+        cv2.line(image, tuple(cstart), tuple(cstop), (255, 0, 0), 3)
+
+        # calculate border lines
+        lw1h = dataframe.loc[0, "linewidth_px"]/2.0
+        orthogonal_v = (np.array([vx[0], -vy[0]])*lw1h).astype(int)
+
+        lower_start = tuple(np.subtract(cstart, orthogonal_v))
+        lower_stop = tuple(np.subtract(cstop, orthogonal_v))
+        upper_start = tuple(np.add(cstart, orthogonal_v))
+        upper_stop = tuple(np.add(cstop, orthogonal_v))
+
+        cv2.line(image, lower_start, lower_stop, (200, 0, 0), 1)
+        cv2.line(image, upper_start, upper_stop, (200, 0, 0), 1)
+
         return image
