@@ -68,7 +68,7 @@ class LineAnalysis(Analysis):
 
         res_dict = {"area_px2": area,
                     "linewidth_px": linewidth_perc,
-                   #  "linewidth2_px": linewidth_area,
+                    #  "linewidth2_px": linewidth_area,
                     "line_params": [np.array([x, y, vx, vy])]}
 
         if self.extended_output:
@@ -76,9 +76,9 @@ class LineAnalysis(Analysis):
             res_dict.update({"distances_hist": [hist],
                              "distances_bin_edges_px": [bin_edges]})
 
-                            #  "bb_width_px": bb_w,
-                            #  "bb_height_px": bb_h,
-                            #  "bb_angle": bb_angle,
+            #  "bb_width_px": bb_w,
+            #  "bb_height_px": bb_h,
+            #  "bb_angle": bb_angle,
 
         result = pd.DataFrame(res_dict,
                               index=[0])
@@ -91,24 +91,28 @@ class LineAnalysis(Analysis):
     def draw_results(self, image, dataframe):
         assert len(dataframe) == 1
         x0, y0, vx, vy = dataframe.loc[0, "line_params"]
+        lw1h = dataframe.loc[0, "linewidth_px"]/2.0
+
         m = 1000
 
         cstart = np.array([x0[0]-m*vx[0], y0[0]-m*vy[0]]).astype(int)
         cstop = np.array([x0[0]+m*vx[0], y0[0]+m*vy[0]]).astype(int)
 
         # center line
-        cv2.line(image, tuple(cstart), tuple(cstop), (255, 0, 0), 3)
+        cv2.line(image, tuple(cstart), tuple(cstop),
+                 (255, 0, 0), 1, lineType=cv2.LINE_AA)
 
         # calculate border lines
-        lw1h = dataframe.loc[0, "linewidth_px"]/2.0
-        orthogonal_v = (np.array([vx[0], -vy[0]])*lw1h).astype(int)
+        orthogonal_v = (np.array([-vy[0], vx[0]])*lw1h).astype(int)
 
         lower_start = tuple(np.subtract(cstart, orthogonal_v))
         lower_stop = tuple(np.subtract(cstop, orthogonal_v))
         upper_start = tuple(np.add(cstart, orthogonal_v))
         upper_stop = tuple(np.add(cstop, orthogonal_v))
 
-        cv2.line(image, lower_start, lower_stop, (200, 0, 0), 1)
-        cv2.line(image, upper_start, upper_stop, (200, 0, 0), 1)
+        cv2.line(image, lower_start, lower_stop,
+                 (200, 0, 0), 2, lineType=cv2.LINE_AA)
+        cv2.line(image, upper_start, upper_stop,
+                 (200, 0, 0), 2, lineType=cv2.LINE_AA)
 
         return image
