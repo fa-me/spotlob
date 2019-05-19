@@ -7,7 +7,7 @@ import numpy as np
 from .process_steps import Analysis
 from .parameters import SpotlobParameterSet
 from .calculation import points_within_contours, max_extends,\
-    distance_point_to_line
+    distance_point_to_line, straight_line_rectangle_collision, perp
 
 
 class LineAnalysis(Analysis):
@@ -42,17 +42,17 @@ class LineAnalysis(Analysis):
 
         area = len(inner_points)
 
-        [vx, vy, x, y] = cv2.fitLine(inner_points,
+        vx, vy, x0, y0 = cv2.fitLine(inner_points,
                                      cv2.DIST_FAIR, 0, 0.01, 0.01)
+        # x0, y0, vx, vy
+        line_parameters = x0[0], y0[0], vx[0], vy[0]
 
-        # calculate crossings with right/left border
-        # TODO: what happens with perfectly vertical line
-        _, extend = max_extends(contours)
+        # calculate crossings with borders
+        width, height = max_extends(contours)
 
-        left_y = int((-x*vy/vx) + y)
-        righty_y = int(((extend-x)*vy/vx)+y)
-        p1 = (0, left_y)
-        p2 = (extend, righty_y)
+        image_rectangle = 0, 0, width, height
+        p1, p2 = straight_line_rectangle_collision(line_parameters,
+                                                   image_rectangle)
 
         distances = distance_point_to_line(inner_points[:, 0],
                                            inner_points[:, 1],
@@ -61,15 +61,15 @@ class LineAnalysis(Analysis):
 
         linewidth_perc = np.percentile(distances, self.linewidth_percentile)*2
 
-        # TODO: use convex hull to combine contours
-        # (bb_cx, bb_cy), (bb_w, bb_h), bb_angle = cv2.minAreaRect(contours[0])
-
-        # linewidth_area = area/bb_h
+        line_length = np.linalg.norm(np.array(p2)-np.array(p1))
+        linewidth_shading = area/line_length
 
         res_dict = {"area_px2": area,
                     "linewidth_px": linewidth_perc,
-                    #  "linewidth2_px": linewidth_area,
-                    "line_params": [np.array([x, y, vx, vy])]}
+                    "linewidth_shading_px": linewidth_shading,
+                    "line_params": [np.array(line_parameters)],
+                    "line_start": [np.array(p1)],
+                    "line_end": [np.array(p2)]}
 
         if self.extended_output:
             hist, bin_edges = np.histogram(distances, bins="auto")
@@ -91,28 +91,56 @@ class LineAnalysis(Analysis):
     def draw_results(self, image, dataframe):
         assert len(dataframe) == 1
         x0, y0, vx, vy = dataframe.loc[0, "line_params"]
-        lw1h = dataframe.loc[0, "linewidth_px"]/2.0
+        linewidth = dataframe.loc[0, "linewidth_px"]
+        linewidth_shading = dataframe.loc[0, "linewidth_shading_px"]
 
-        m = 1000
-
-        cstart = np.array([x0[0]-m*vx[0], y0[0]-m*vy[0]]).astype(int)
-        cstop = np.array([x0[0]+m*vx[0], y0[0]+m*vy[0]]).astype(int)
+        cstart = np.round(dataframe.loc[0, "line_start"]).astype(int)
+        cstop = np.round(dataframe.loc[0, "line_end"]).astype(int)
 
         # center line
         cv2.line(image, tuple(cstart), tuple(cstop),
                  (255, 0, 0), 1, lineType=cv2.LINE_AA)
+        cv2.circle(image, tuple(cstart), 4, (255, 0, 0), -1)
+        cv2.circle(image, tuple(cstop), 4, (255, 0, 0), -1)
 
-        # calculate border lines
-        orthogonal_v = (np.array([-vy[0], vx[0]])*lw1h).astype(int)
+        # border lines
 
-        lower_start = tuple(np.subtract(cstart, orthogonal_v))
-        lower_stop = tuple(np.subtract(cstop, orthogonal_v))
-        upper_start = tuple(np.add(cstart, orthogonal_v))
-        upper_stop = tuple(np.add(cstop, orthogonal_v))
+        # percentile linewidth
+        self._draw_line_borders(image,
+                                linewidth,
+                                (255, 0, 0),
+                                cstart,
+                                cstop,
+                                (vx, vy))
 
-        cv2.line(image, lower_start, lower_stop,
-                 (200, 0, 0), 2, lineType=cv2.LINE_AA)
-        cv2.line(image, upper_start, upper_stop,
-                 (200, 0, 0), 2, lineType=cv2.LINE_AA)
+        # # shading linewidth
+        self._draw_line_borders(image,
+                                linewidth_shading,
+                                (0, 255, 0),
+                                cstart,
+                                cstop,
+                                (vx, vy))
 
         return image
+
+    def _draw_line_borders(self,
+                           image,
+                           linewidth,
+                           color,
+                           center_start,
+                           center_stop,
+                           vector):
+
+        # orthogonal vector to line vector with length linewidth
+        # assuming vector is normalized to length 1
+        orthogonal_v = np.round(perp(vector)*linewidth/2.0).astype(int)
+
+        lower_start = tuple(np.subtract(center_start, orthogonal_v))
+        lower_stop = tuple(np.subtract(center_stop, orthogonal_v))
+        upper_start = tuple(np.add(center_start, orthogonal_v))
+        upper_stop = tuple(np.add(center_stop, orthogonal_v))
+
+        cv2.line(image, lower_start, lower_stop,
+                 color, 2, lineType=cv2.LINE_AA)
+        cv2.line(image, upper_start, upper_stop,
+                 color, 2, lineType=cv2.LINE_AA)

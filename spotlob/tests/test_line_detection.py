@@ -80,13 +80,13 @@ class LineDetectionTestCase(unittest.TestCase):
             res_df = res_spim.metadata["results"]
 
             result_width_percentile = res_df.loc[0, "linewidth_px"]
-            result_width_bb = res_df.loc[0, "bb_width_px"]
+            result_shading = res_df.loc[0, "linewidth_shading_px"]
             # result_width_area = res_df.loc[0, "linewidth2_px"]
 
             # compare analysis with input width
             assert_almost_equal(result_width_percentile,
                                 linewidth*percentile/100.0, decimal=1)
-            assert_almost_equal(result_width_bb, linewidth, decimal=1)
+            assert_almost_equal(result_shading, linewidth, decimal=1)
             # assert_almost_equal(result_width_area, linewidth, decimal=0)
 
     def test_binary_line_detection_with_default_pipe(self):
@@ -120,14 +120,12 @@ class LineDetectionTestCase(unittest.TestCase):
             res_df = res_spim.metadata["results"]
 
             result_width_percentile = res_df.loc[0, "linewidth_px"]
-            result_width_bb = res_df.loc[0, "bb_width_px"]
-            # result_width_area = res_df.loc[0, "linewidth2_px"]
+            result_width_shading = res_df.loc[0, "linewidth_shading_px"]
 
             # compare analysis with input width
             assert_almost_equal(result_width_percentile,
                                 linewidth*percentile/100.0, decimal=1)
-            assert_almost_equal(result_width_bb, linewidth, decimal=1)
-            # assert_almost_equal(result_width_area, linewidth, decimal=0)
+            assert_almost_equal(result_width_shading, linewidth, decimal=1)
 
     # def test_contour_mask(self):
     #     # create an image with a line
