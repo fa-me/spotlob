@@ -100,7 +100,7 @@ def make_gui(spim_or_filepath, mode="circle", thresholding="auto"):
     return gui
 
 
-def show_gui(gui):
+def show_gui(gui, *args, **kwargs):
     """Display a :class:`~spotlob.SpotlobNotebookGui` object.
     Run the `%matplotlib notebook` magic command to get live preview
 
@@ -111,7 +111,7 @@ def show_gui(gui):
         :func:`~spotlob.defaults.show_gui` function
     """
     widgets = gui.make_widgets()
-    gui.show_preview_screen(figsize=(8, 6))
+    gui.show_preview_screen(*args, **kwargs)
     display(widgets)
     display(gui.run_button())
 
