@@ -8,6 +8,7 @@ from .process_steps import Analysis
 from .parameters import SpotlobParameterSet
 from .calculation import points_within_contours, max_extends,\
     distance_point_to_line, straight_line_rectangle_collision, perp
+from .process_opencv import draw_contours
 
 
 class LineAnalysis(Analysis):
@@ -74,11 +75,8 @@ class LineAnalysis(Analysis):
         if self.extended_output:
             hist, bin_edges = np.histogram(distances, bins="auto")
             res_dict.update({"distances_hist": [hist],
-                             "distances_bin_edges_px": [bin_edges]})
-
-            #  "bb_width_px": bb_w,
-            #  "bb_height_px": bb_h,
-            #  "bb_angle": bb_angle,
+                             "distances_bin_edges_px": [bin_edges],
+                             "contours": [contours]})
 
         result = pd.DataFrame(res_dict,
                               index=[0])
@@ -89,37 +87,41 @@ class LineAnalysis(Analysis):
             return self.calibration.calibrate(result)
 
     def draw_results(self, image, dataframe):
-        assert len(dataframe) == 1
-        x0, y0, vx, vy = dataframe.loc[0, "line_params"]
-        linewidth = dataframe.loc[0, "linewidth_px"]
-        linewidth_shading = dataframe.loc[0, "linewidth_shading_px"]
+        if len(dataframe) == 1:
+            x0, y0, vx, vy = dataframe.loc[0, "line_params"]
+            linewidth = dataframe.loc[0, "linewidth_px"]
+            linewidth_shading = dataframe.loc[0, "linewidth_shading_px"]
 
-        cstart = np.round(dataframe.loc[0, "line_start"]).astype(int)
-        cstop = np.round(dataframe.loc[0, "line_end"]).astype(int)
+            if "contours" in dataframe:
+                contour = dataframe.loc[0, "contours"]
+                draw_contours(image, contour)
 
-        # center line
-        cv2.line(image, tuple(cstart), tuple(cstop),
-                 (255, 0, 0), 1, lineType=cv2.LINE_AA)
-        cv2.circle(image, tuple(cstart), 4, (255, 0, 0), -1)
-        cv2.circle(image, tuple(cstop), 4, (255, 0, 0), -1)
+            cstart = np.round(dataframe.loc[0, "line_start"]).astype(int)
+            cstop = np.round(dataframe.loc[0, "line_end"]).astype(int)
 
-        # border lines
+            # center line
+            cv2.line(image, tuple(cstart), tuple(cstop),
+                     (255, 0, 0), 1, lineType=cv2.LINE_AA)
+            cv2.circle(image, tuple(cstart), 4, (255, 0, 0), -1)
+            cv2.circle(image, tuple(cstop), 4, (255, 0, 0), -1)
 
-        # percentile linewidth
-        self._draw_line_borders(image,
-                                linewidth,
-                                (255, 0, 0),
-                                cstart,
-                                cstop,
-                                (vx, vy))
+            # border lines
 
-        # # shading linewidth
-        self._draw_line_borders(image,
-                                linewidth_shading,
-                                (0, 255, 0),
-                                cstart,
-                                cstop,
-                                (vx, vy))
+            # percentile linewidth
+            self._draw_line_borders(image,
+                                    linewidth,
+                                    (255, 0, 0),
+                                    cstart,
+                                    cstop,
+                                    (vx, vy))
+
+            # # shading linewidth
+            self._draw_line_borders(image,
+                                    linewidth_shading,
+                                    (0, 200, 200),
+                                    cstart,
+                                    cstop,
+                                    (vx, vy))
 
         return image
 
