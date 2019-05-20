@@ -3,14 +3,8 @@ stages:
   - test
   - deploy
 
-# test:
-#   image: $CI_REGISTRY/fmeyer/spotlob:latest
-#   stage: test
-#   tags:
-#     - asprunner
-#   script:
-#     - source activate spotlob-env
-#     - pytest --cov spotlob
+before_script:
+  - pip install -r requirements-dev.txt
 
 build package:
   image: python:3.7
@@ -22,8 +16,9 @@ build package:
     paths:
     - dist/
     expire_in: 1 week
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
   script:
-    - pip install -r requirements-dev.txt
     - python setup.py sdist
 
 build doc:
@@ -39,12 +34,11 @@ build doc:
   script:
     - apt-get update
     - apt-get install graphviz -y
-    - pip install -r requirements-dev.txt
     - cd docs
     - mkdir _static
     - sphinx-build -W -b html -d _build/doctrees . _build/html
 
-test tox:
+test:
   image: python:3.7
   stage: test
   tags:
@@ -53,33 +47,12 @@ test tox:
     - pip install pytest tox
     - tox
 
-test pip:
-  image: python:3.7
-  stage: test
-  tags:
-    - asprunner
-  script:
-    - pip install -r requirements.txt
-    - pip install pytest pytest-cov
-    - pytest --cov spotlob
-
-test notebooks:
-  image: python:3.7
-  stage: test
-  tags:
-    - asprunner
-  script:
-    - pip install -r requirements.txt
-    - pip install pytest pytest-cov nbval
-    - pytest --nbval ./notebooks
-
 deploy pypi:
     image: python:3.7
     stage: deploy
     tags:
       - asprunner
     script:
-        - pip install -r requirements-dev.txt
         - pip install -U twine
         - python setup.py sdist
         - twine upload dist/*
@@ -87,19 +60,3 @@ deploy pypi:
         - tags
     except:
         - branches
-
-# build image:
-#   image: docker:stable
-#   stage: deploy
-#   only:
-#     refs:
-#       - master
-#     changes:
-#       - dockerfile
-#       - requirements.yml
-#   tags:
-#     - asprunner
-#   script:
-#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY/fmeyer/spotlob .
-#     - docker push $CI_REGISTRY/fmeyer/spotlob
