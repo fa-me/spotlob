@@ -6,7 +6,7 @@ import numpy.testing
 
 from ..defaults import default_pipeline
 from ..spim import Spim, SpimStage
-from ..review import ReviewBrowser, review_widgets
+from ..review import ReviewBrowser
 from ..batch import batchprocess
 
 
