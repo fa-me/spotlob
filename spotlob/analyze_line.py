@@ -88,16 +88,18 @@ class LineAnalysis(Analysis):
 
     def draw_results(self, image, dataframe):
         if len(dataframe) == 1:
-            x0, y0, vx, vy = dataframe.loc[0, "line_params"]
-            linewidth = dataframe.loc[0, "linewidth_px"]
-            linewidth_shading = dataframe.loc[0, "linewidth_shading_px"]
+            row = dataframe.iloc[0]
+
+            x0, y0, vx, vy = row["line_params"]
+            linewidth = row["linewidth_px"]
+            linewidth_shading = row["linewidth_shading_px"]
 
             if "contours" in dataframe:
-                contour = dataframe.loc[0, "contours"]
+                contour = row["contours"]
                 draw_contours(image, contour)
 
-            cstart = np.round(dataframe.loc[0, "line_start"]).astype(int)
-            cstop = np.round(dataframe.loc[0, "line_end"]).astype(int)
+            cstart = np.round(row["line_start"]).astype(int)
+            cstop = np.round(row["line_end"]).astype(int)
 
             # center line
             cv2.line(image, tuple(cstart), tuple(cstop),
