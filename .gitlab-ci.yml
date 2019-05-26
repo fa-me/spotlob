@@ -3,8 +3,14 @@ stages:
   - test
   - deploy
 
+cache:
+  paths:
+    - .pip
+
 before_script:
-  - pip install -r requirements-dev.txt
+  - mkdir -p .pip
+  - pip install -U pip
+  - pip --cache-dir=.pip install -r requirements-dev.txt
 
 build package:
   image: python:3.7
@@ -21,23 +27,6 @@ build package:
   script:
     - python setup.py sdist
 
-build doc:
-  image: python:3.7
-  stage: build
-  tags:
-    - asprunner
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-    - docs/_build/html/
-    expire_in: 1 week
-  script:
-    - apt-get update
-    - apt-get install graphviz -y
-    - cd docs
-    - mkdir _static
-    - sphinx-build -W -b html -d _build/doctrees . _build/html
-
 test:
   image: python:3.7
   stage: test
@@ -47,16 +36,36 @@ test:
     - pip install pytest tox
     - tox
 
+pages:
+  image: python:3.7
+  stage: deploy
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - public
+    expire_in: 1 week
+  script:
+    - apt-get update
+    - apt-get install graphviz -y
+    - cd docs
+    - mkdir _static
+    - sphinx-build -W -b html -d _build/doctrees . _build/html
+    - mv _build/html/ ../public/
+  only:
+    - master
+
 deploy pypi:
-    image: python:3.7
-    stage: deploy
-    tags:
-      - asprunner
-    script:
-        - pip install -U twine
-        - python setup.py sdist
-        - twine upload dist/*
-    only:
-        - tags
-    except:
-        - branches
+  image: python:3.7
+  stage: deploy
+  tags:
+    - asprunner
+  script:
+      - pip install -U twine
+      - python setup.py sdist
+      - twine upload dist/*
+  only:
+      - tags
+  except:
+      - branches
