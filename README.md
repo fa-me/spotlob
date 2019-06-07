@@ -40,7 +40,7 @@ faster with spotlob.
 
 ```python
 from spotlob.spim import Spim
-from spotlob.defaults import default_pipeline()
+from spotlob.defaults import default_pipeline
 
 my_spim = Spim.from_file("image.jpg", cached=True)
 my_pipe = default_pipeline()

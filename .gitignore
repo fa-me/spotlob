@@ -11,3 +11,4 @@ docs/_build/
 spotlob.egg-info/
 dist/
 .tox/
+cov.xml

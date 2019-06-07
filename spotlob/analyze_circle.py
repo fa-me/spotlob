@@ -6,13 +6,15 @@ import numpy as np
 
 from .process_steps import Analysis
 from .parameters import SpotlobParameterSet
+from .process_opencv import draw_contours
 
 
 class CircleAnalysis(Analysis):
-    def __init__(self, calibration=None):
+    def __init__(self, calibration=None, extended_output=True):
         pars = SpotlobParameterSet([])
         self.calibration = calibration
-        super(CircleAnalysis, self).__init__(self.analyze, pars)
+        super(CircleAnalysis, self).__init__(
+            self.analyze, pars, extended_output=extended_output)
 
     def analyze(self, metadata):
         contours = metadata['contours']
@@ -38,11 +40,17 @@ class CircleAnalysis(Analysis):
             ellipses_minor_axes += [e_minor_ax]
             ellipses_angles += [angle]
 
-        result = pd.DataFrame({"area_px2": areas,
-                               "ellipse_position_px": ellipses_positions,
-                               "ellipse_majorAxis_px": ellipses_major_axes,
-                               "ellipse_minorAxis_px": ellipses_minor_axes,
-                               "ellipse_angle": ellipses_angles})
+        res_dict = {"area_px2": areas,
+                    "ellipse_position_px": ellipses_positions,
+                    "ellipse_majorAxis_px": ellipses_major_axes,
+                    "ellipse_minorAxis_px": ellipses_minor_axes,
+                    "ellipse_angle": ellipses_angles}
+
+        if self.extended_output:
+            res_dict.update({"contours": contours})
+
+        result = pd.DataFrame(res_dict)
+
         if not self.calibration:
             return result
         else:
@@ -60,6 +68,10 @@ class CircleAnalysis(Analysis):
 
             pen_color = [255, 0, 0]
 
-            cv2.circle(image, e_pos, 10, pen_color, -1)
-            cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 3)
+            if "contours" in row.keys():
+                contour = row["contours"]
+                draw_contours(image, contour)
+
+            cv2.circle(image, e_pos, 3, pen_color, -1)
+            cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 1)
         return image

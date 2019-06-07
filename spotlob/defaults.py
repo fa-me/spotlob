@@ -61,7 +61,7 @@ def default_pipeline(mode="circle", thresholding="auto"):
                      analysis])
 
 
-def make_gui(spim_or_filepath, mode="circle"):
+def make_gui(spim_or_filepath, mode="circle", thresholding="auto"):
     """Creates a :class:`~spotlob.SpotlobNotebookGui` object which opens
     a given :class:`~spotlob.Spim` or image file for preview editing
 
@@ -74,6 +74,10 @@ def make_gui(spim_or_filepath, mode="circle"):
     mode : str
         "circle" or "line" depending on how you want the image to
         be evaluated
+
+    thresholding : str
+        "auto" for automatic thresholding based on the histogram (Otsu)
+        or "simple" for a fixed thresholding based on a single value
 
     RETURNS
     -------
@@ -90,13 +94,13 @@ def make_gui(spim_or_filepath, mode="circle"):
     else:
         spim = spim_or_filepath
 
-    pipe = default_pipeline()
+    pipe = default_pipeline(mode=mode, thresholding=thresholding)
     preview_screen = MatplotlibPreviewScreen()
     gui = SpotlobNotebookGui(pipe, preview_screen, spim)
     return gui
 
 
-def show_gui(gui):
+def show_gui(gui, *args, **kwargs):
     """Display a :class:`~spotlob.SpotlobNotebookGui` object.
     Run the `%matplotlib notebook` magic command to get live preview
 
@@ -107,7 +111,7 @@ def show_gui(gui):
         :func:`~spotlob.defaults.show_gui` function
     """
     widgets = gui.make_widgets()
-    gui.show_preview_screen(figsize=(8, 6))
+    gui.show_preview_screen(*args, **kwargs)
     display(widgets)
     display(gui.run_button())
 

@@ -14,6 +14,7 @@ class SimpleReader(Reader):
     Standard image formats, such as `png`, `jpg`, `tif` are supported.
     It uses `cv2.imread`.
     """
+
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(SimpleReader, self).__init__(self.fn_read, pars)
@@ -39,6 +40,7 @@ class GreyscaleConverter(Converter):
     It uses the `cv2.cvtColor` function.
     Additionally the dark an bright parts can be switched using `invert=True`
     """
+
     def __init__(self):
         self.hsv_str_list = ["Hue", "Saturation", "Value"]
         self.rgb_str_list = ["Red channel", "Blue channel", "Green channel"]
@@ -75,6 +77,7 @@ class GaussianPreprocess(Preprocessor):
     """Blur the image with a gaussian blur with kernel size given 
     by `ksize`. It uses the `cv2.filter2D` function
     """
+
     def __init__(self, ksize):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)])
@@ -85,7 +88,7 @@ class GaussianPreprocess(Preprocessor):
             kernel = np.ones((kernelsize, kernelsize), np.float32)
             kernel /= kernelsize**2
             return cv2.filter2D(grey_image, -1, kernel)
-        else: 
+        else:
             return grey_image
 
 
@@ -111,6 +114,7 @@ class OtsuThreshold(Binarization):
     """Performs a binarization based on Otsu's algorithm.
     It uses the `cv2.threshold` function.    
     """
+
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(OtsuThreshold, self).__init__(self.threshold_fn, pars)
@@ -126,6 +130,7 @@ class OtsuThreshold(Binarization):
 class PostprocessNothing(Postprocessor):
     """This process is used as a placeholder for a postprocessing step
     and does not modify the image at all"""
+
     def __init__(self):
         pars = SpotlobParameterSet([])
         super(PostprocessNothing, self).__init__(self.postprocess_fn, pars)
@@ -157,7 +162,7 @@ class ContourFinderSimple(FeatureFinder):
 
 class FeatureFormFilter(FeatureFilter):
     """It analyzes the contours and filters them using given criteria:
-    
+
     - the enclosed area must be smaller (i.e. contain fewer pixels) than
       `minimal_area`
     - it solidity, i.e. the ratio of the area of the contour and its convex
@@ -166,6 +171,7 @@ class FeatureFormFilter(FeatureFilter):
       image are filtered out
 
     """
+
     def __init__(self, size, solidity, remove_on_edge):
         pars = SpotlobParameterSet(
             [NumericRangeParameter("minimal_area", size, 0, 10000),
@@ -226,4 +232,4 @@ class FeatureFormFilter(FeatureFilter):
 
 
 def draw_contours(color_image, contours, color=(0, 255, 0)):
-    return cv2.drawContours(color_image, contours, -1, color, 3)
+    return cv2.drawContours(color_image, contours, -1, color, 1)
