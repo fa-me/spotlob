@@ -5,7 +5,7 @@ and fast workflow to measure properties of features in
 images for scientific purposes.
 
 It provides implementations for some use cases but can
-be easily tuned and be extended towards specific purposes.
+be easily tuned and be extended towards specific applications.
 Jupyter notebook widgets can be used to quickly find a
 set of algorithms and parameters that work for a given
 image and should also work for similar images.
@@ -30,9 +30,8 @@ If you already have a couple of working python algorithms and
 want to have a GUI for them to play around, use spotlob.
 
 If you need to evaluate some images and you don't know which
-of the thousand parameters of an algorithm you found on
-google work best, you might be able to find the right ones
-faster with spotlob.
+of the thousand parameters of an algorithm work best, you might be
+able to find the right ones faster with spotlob.
 
 ![Spotlob jupyter widget](/demo.gif)
 
