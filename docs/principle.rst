@@ -5,11 +5,13 @@ The Spim and its stages
 -----------------------
 
 .. automodule:: spotlob.spim
+    :noindex:
 
 The processes
 -------------
 
 .. automodule:: spotlob.process
+    :noindex:
 
 Any process step corresponds to one input stage and
 one method of Spim to use it with
@@ -40,6 +42,7 @@ one method of Spim to use it with
 +--------------------+------------------+---------------------+
 
 .. automodule:: spotlob.process_steps
+    :noindex:
 .. autoclass:: spotlob.process_steps.Reader
     :noindex:
 .. autoclass:: spotlob.process_steps.Converter
@@ -61,5 +64,6 @@ The spotlob pipeline
 --------------------
 
 .. automodule:: spotlob.pipeline
+    :noindex:
 .. autoclass:: spotlob.pipeline.Pipeline
     :noindex:
