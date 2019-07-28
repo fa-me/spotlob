@@ -6,7 +6,7 @@ import numpy as np
 
 from .process_steps import Analysis
 from .parameters import SpotlobParameterSet
-from .process_opencv import draw_contours
+from .process_opencv import draw_contours, crop_to_contour
 
 
 class CircleAnalysis(Analysis):
@@ -56,7 +56,7 @@ class CircleAnalysis(Analysis):
         else:
             return self.calibration.calibrate(result)
 
-    def draw_results(self, image, dataframe):
+    def draw_results(self, image, dataframe, crop_to_contours=False):
         for _, row in dataframe.iterrows():
             pos_x, pos_y = row["ellipse_position_px"]
             e_major = row["ellipse_majorAxis_px"]
@@ -74,4 +74,10 @@ class CircleAnalysis(Analysis):
 
             cv2.circle(image, e_pos, 3, pen_color, -1)
             cv2.ellipse(image, e_pos, e_size, angle, 0, 360, pen_color, 1)
+
+            if crop_to_contours:
+                if "contours" in row.keys():
+                    contour = row["contours"]
+                    image = crop_to_contour(image, contour)
+
         return image

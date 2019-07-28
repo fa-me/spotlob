@@ -233,3 +233,9 @@ class FeatureFormFilter(FeatureFilter):
 
 def draw_contours(color_image, contours, color=(0, 255, 0)):
     return cv2.drawContours(color_image, contours, -1, color, 1)
+
+
+def crop_to_contour(image, contours):
+    x, y, w, h = cv2.boundingRect(contours)
+
+    return image[y:y+h, x:x+w]

@@ -42,3 +42,9 @@ class TestReview(unittest.TestCase):
         browser.drop_current_row(None)
 
         assert len(browser.dataframe) == len(self.dummy_dataset) - 1
+
+    def test_crop_to_contour(self):
+        browser = ReviewBrowser(self.dummy_dataset,
+                                self.dummy_pipeline,
+                                crop_to_contour=True)
+        browser.draw()

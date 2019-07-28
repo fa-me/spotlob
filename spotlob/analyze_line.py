@@ -86,7 +86,7 @@ class LineAnalysis(Analysis):
         else:
             return self.calibration.calibrate(result)
 
-    def draw_results(self, image, dataframe):
+    def draw_results(self, image, dataframe, crop_to_contours=False):
         if len(dataframe) == 1:
             row = dataframe.iloc[0]
 

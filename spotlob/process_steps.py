@@ -135,5 +135,5 @@ class Analysis(SpotlobProcessStep):
         im = spim.get_at_stage(SpimStage.loaded).image
         return self.draw_results(im, df)
 
-    def draw_results(self, image, dataframe):
+    def draw_results(self, image, dataframe, crop_to_contours=False):
         raise NotImplementedError("abstract: to be implemented by subclass")
