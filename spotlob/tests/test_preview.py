@@ -18,8 +18,7 @@ class TestPreview(unittest.TestCase):
         s_final = mypipe.apply_all_steps(s0)
 
         input_stages_without_preview = [
-            SpimStage.new,
-            SpimStage.postprocessed
+            SpimStage.new
         ]
 
         for input_stage, process in mypipe.process_stage_dict.items():
