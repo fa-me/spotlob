@@ -117,17 +117,23 @@ class CircleDetectionTestCase(unittest.TestCase):
         # expect 0 spots
         self.assertEqual(len(data), 0)
 
-    def test_inner_outer_contour(self):
+    def test_inner_outer_hole_contour(self):
         filename = resource_filename("spotlob.tests",
                                      "resources/inner-outer.png")
-        s0 = Spim.from_file(filename)
+        s0 = Spim.from_file(filename, cached=True)
         simple_pipe = default_pipeline(thresholding="simple")
+
+        simple_pipe.process_stage_dict[SpimStage.preprocessed-1] \
+            .parameters['kernelsize'].value = 7
 
         hole_finder = ContourFinder(mode="holes")
         hole_find_pipe = simple_pipe.replaced_with(hole_finder)
 
-        innermost_finder = ContourFinder(mode="innermost")
+        innermost_finder = ContourFinder(mode="inner")
         innermost_find_pipe = simple_pipe.replaced_with(innermost_finder)
+
+        nonholes_finder = ContourFinder(mode="non-holes")
+        nonholes_find_pipe = simple_pipe.replaced_with(nonholes_finder)
 
         simple_results = simple_pipe.apply_all_steps(s0).get_data()
         self.assertEqual(len(simple_results), 1)
@@ -135,7 +141,10 @@ class CircleDetectionTestCase(unittest.TestCase):
         self.assertEqual(len(hole_results), 1)
         inner_results = innermost_find_pipe.apply_all_steps(s0).get_data()
         self.assertEqual(len(inner_results), 1)
+        nonholes_results = nonholes_find_pipe.apply_all_steps(s0).get_data()
+        self.assertEqual(len(nonholes_results), 2)
 
+        MA_hole = hole_results.loc[0, "ellipse_majorAxis_px"]
         MA_outer = simple_results.loc[0, "ellipse_majorAxis_px"]
         MA_inner = inner_results.loc[0, "ellipse_majorAxis_px"]
-        self.assertTrue(MA_outer > MA_inner)
+        self.assertTrue(MA_outer > MA_hole > MA_inner)
