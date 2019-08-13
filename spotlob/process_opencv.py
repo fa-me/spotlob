@@ -162,7 +162,24 @@ class ContourFinderSimple(FeatureFinder):
 
 class ContourFinder(FeatureFinder):
     """Finds contours, i.e. lists of points that enclose connected areas of
-    the same value. It is based on the `cv2.findContours` function
+    the same value. It is based on the `cv2.findContours` function.
+    It can distinguish between different levels of nested areas
+
+    Parameters
+    ----------
+    mode : string
+        Select which kind of blobs should be found and the contour of
+        which should be returned. Select of the following
+
+        * all = all contours, both holes and non-holes
+
+        * inner = innermost blobs without holes in them
+
+        * outer = only outermost blobs
+
+        * holes = only holes, that are contained in other blobs
+
+        * non-holes = all blobs, that are not holes
     """
 
     def __init__(self, mode):
