@@ -160,6 +160,98 @@ class ContourFinderSimple(FeatureFinder):
         return contours
 
 
+class ContourFinder(FeatureFinder):
+    """Finds contours, i.e. lists of points that enclose connected areas of
+    the same value. It is based on the `cv2.findContours` function.
+    It can distinguish between different levels of nested areas
+
+    Parameters
+    ----------
+    mode : string
+        Select which kind of blobs should be found and the contour of
+        which should be returned. Select of the following
+
+        * all = all contours, both holes and non-holes
+
+        * inner = innermost blobs without holes in them
+
+        * outer = only outermost blobs
+
+        * holes = only holes, that are contained in other blobs
+
+        * non-holes = all blobs, that are not holes
+    """
+
+    def __init__(self, mode):
+        mode_par = EnumParameter("mode", mode,
+                                 ["outer",
+                                  "inner",
+                                  "all",
+                                  "holes",
+                                  "non-holes"])
+        pars = SpotlobParameterSet([mode_par])
+        super(ContourFinder, self).__init__(self.finder_fn, pars)
+
+    def finder_fn(self, bin_im, mode):
+        print(mode)
+
+        if mode == "outer":
+            cont_ret = cv2.findContours(bin_im,
+                                        cv2.RETR_EXTERNAL,
+                                        cv2.CHAIN_APPROX_SIMPLE)
+            return cont_ret[-2]
+        else:
+            cont_ret = cv2.findContours(bin_im,
+                                        cv2.RETR_CCOMP,
+                                        cv2.CHAIN_APPROX_SIMPLE)
+            # cont_ret is
+            # contours, hierarchy for opencv >4.0
+            # im, contours, hierarchy for opencv <=3.4
+
+            contours = cont_ret[-2]
+            hierarchy = cont_ret[-1][0]
+
+            if mode == 'all':
+                return contours
+            else:
+                holes = []
+                nonholes = []
+                inner = []
+
+                i = 0
+
+                nonholes_i = []
+
+                # first hierarchy is the nonholes
+                # parse through them
+                while i >= 0:
+                    head = contours[i]
+                    nonholes.append(head)
+                    nonholes_i.append(i)
+
+                    next_i, prev_i, child_i, parent_i = hierarchy[i]
+
+                    if child_i < 0:
+                        inner.append(head)
+
+                    i = next_i  # index of next contour on same hierarchy level
+
+            if mode == "holes":
+                # rest should be holes
+                # ie. all which are not nonholes
+                # list of holes is the contour list withouth the ones
+                # specified by nonholes index list
+                holes = np.delete(contours, nonholes_i, axis=0)
+                return holes
+            elif mode == "non-holes":
+                return nonholes
+            elif mode == "inner":
+                return inner
+            else:
+                raise NotImplementedError(
+                    "Unsupported contour finder mode %s" % mode)
+
+
 class FeatureFormFilter(FeatureFilter):
     """It analyzes the contours and filters them using given criteria:
 

@@ -74,6 +74,10 @@ class FeatureFinder(SpotlobProcessStep):
     """
     input_stage = SpimStage.postprocessed
 
+    def preview(self, spim):
+        # do nothing, get at stage before feature find
+        return spim.get_at_stage(self.input_stage).image
+
 
 class FeatureFilter(SpotlobProcessStep):
     """The FeatureFilter can reduce the number of detected features
