@@ -160,6 +160,27 @@ class ContourFinderSimple(FeatureFinder):
         return contours
 
 
+class ContourFinder(FeatureFinder):
+    """Finds contours, i.e. lists of points that enclose connected areas of
+    the same value. It is based on the `cv2.findContours` function
+    """
+
+    def __init__(self, mode):
+        pars = SpotlobParameterSet([])
+        super(ContourFinder, self).__init__(self.finder_fn, pars)
+
+    def finder_fn(self, bin_im):
+        cont_ret = cv2.findContours(bin_im,
+                                    cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+        # cont_ret is
+        # contours, hierarchy for opencv >4.0
+        # im, contours, hierarchy for opencv <=3.4
+
+        contours = cont_ret[-2]
+        return contours
+
+
 class FeatureFormFilter(FeatureFilter):
     """It analyzes the contours and filters them using given criteria:
 

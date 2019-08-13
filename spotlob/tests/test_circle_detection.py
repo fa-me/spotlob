@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal,\
 from .image_generation import binary_circle_off_border
 
 from ..spim import Spim, SpimStage
-from ..process_opencv import ContourFinderSimple, FeatureFormFilter
+from ..process_opencv import ContourFinderSimple, ContourFinder, FeatureFormFilter
 from ..output import Writer
 from ..analyze_circle import CircleAnalysis
 from ..defaults import default_pipeline
@@ -114,5 +114,28 @@ class CircleDetectionTestCase(unittest.TestCase):
 
         data = s_final.get_data()
 
-        # expect 20 spots
+        # expect 0 spots
         self.assertEqual(len(data), 0)
+
+    def test_inner_outer_contour(self):
+        filename = resource_filename("spotlob.tests",
+                                     "resources/inner-outer.png")
+        s0 = Spim.from_file(filename)
+        simple_pipe = default_pipeline(thresholding="simple")
+
+        hole_finder = ContourFinder(mode="holes")
+        hole_find_pipe = simple_pipe.replaced_with(hole_finder)
+
+        innermost_finder = ContourFinder(mode="innermost")
+        innermost_find_pipe = simple_pipe.replaced_with(innermost_finder)
+
+        simple_results = simple_pipe.apply_all_steps(s0).get_data()
+        self.assertEqual(len(simple_results), 1)
+        hole_results = hole_find_pipe.apply_all_steps(s0).get_data()
+        self.assertEqual(len(hole_results), 1)
+        inner_results = innermost_find_pipe.apply_all_steps(s0).get_data()
+        self.assertEqual(len(inner_results), 1)
+
+        MA_outer = simple_results.loc[0, "ellipse_majorAxis_px"]
+        MA_inner = inner_results.loc[0, "ellipse_majorAxis_px"]
+        self.assertTrue(MA_outer > MA_inner)
