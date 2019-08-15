@@ -102,7 +102,7 @@ def make_gui(spim_or_filepath, mode="circle", thresholding="auto"):
 
 def show_gui(gui, *args, **kwargs):
     """Display a :class:`~spotlob.SpotlobNotebookGui` object.
-    Run the `%matplotlib notebook` magic command to get live preview
+    Run the `%matplotlib widget` magic command to get live preview
 
     PARAMETERS
     ----------

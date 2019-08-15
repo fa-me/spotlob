@@ -127,11 +127,15 @@ class SpotlobNotebookGui(object):
 
     def results_button(self):
         rb = Button(description="Show Results")
+        out = Output()
 
         def results_button_inner(btn):
-            clear_output()
-            display(rb)
-            display(self.results())
+            out.clear_output()
+            # display(rb)
+            with out:
+                display(self.results())
 
         rb.on_click(results_button_inner)
-        return rb
+        # return rb
+        display(rb)
+        display(out)
