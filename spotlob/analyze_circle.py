@@ -11,10 +11,9 @@ from .process_opencv import draw_contours, crop_to_contour
 
 class CircleAnalysis(Analysis):
     def __init__(self, calibration=None, extended_output=True):
-        pars = SpotlobParameterSet([])
         self.calibration = calibration
         super(CircleAnalysis, self).__init__(
-            self.analyze, pars, extended_output=extended_output)
+            self.analyze, [], extended_output=extended_output)
 
     def analyze(self, metadata):
         contours = metadata['contours']
