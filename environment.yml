@@ -10,6 +10,7 @@ dependencies:
   - matplotlib
   - ipython
   - ipywidgets
+  - ipympl
   - pytest
   - pytest-cov
   - setuptools

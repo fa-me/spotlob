@@ -5,6 +5,8 @@ numpy
 pandas
 matplotlib
 ipywidgets
+ipympl
+voila
 setuptools
 pillow
 pytest

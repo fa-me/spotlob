@@ -5,4 +5,5 @@ numpy~=1.15.0
 pandas
 matplotlib
 ipywidgets
+ipympl
 pillow
