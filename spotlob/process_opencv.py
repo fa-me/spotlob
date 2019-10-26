@@ -16,8 +16,7 @@ class SimpleReader(Reader):
     """
 
     def __init__(self):
-        pars = SpotlobParameterSet([])
-        super(SimpleReader, self).__init__(self.fn_read, pars)
+        super(SimpleReader, self).__init__(self.fn_read, [])
 
     def fn_read(self, filepath):
         # load as color, convert from BGR to RGB
@@ -46,11 +45,10 @@ class GreyscaleConverter(Converter):
         self.rgb_str_list = ["Red channel", "Blue channel", "Green channel"]
         converter_options = ["Grey"] + self.hsv_str_list + self.rgb_str_list
 
-        pars = SpotlobParameterSet(
-            [EnumParameter("conversion",
-                           converter_options[0],
-                           converter_options),
-             BoolParameter("invert", False)])
+        pars = [EnumParameter("conversion",
+                              converter_options[0],
+                              converter_options),
+                BoolParameter("invert", False)]
         super(GreyscaleConverter, self).__init__(self.convert, pars)
 
     def convert(self, rgb_image, conversion, invert):
@@ -79,8 +77,7 @@ class GaussianPreprocess(Preprocessor):
     """
 
     def __init__(self, ksize):
-        pars = SpotlobParameterSet(
-            [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)])
+        pars = [NumericRangeParameter("kernelsize", ksize, 1, 47, step=2)]
         super(GaussianPreprocess, self).__init__(self.filter_fn, pars)
 
     def filter_fn(self, grey_image, kernelsize):
@@ -116,8 +113,7 @@ class OtsuThreshold(Binarization):
     """
 
     def __init__(self):
-        pars = SpotlobParameterSet([])
-        super(OtsuThreshold, self).__init__(self.threshold_fn, pars)
+        super(OtsuThreshold, self).__init__(self.threshold_fn, [])
 
     def threshold_fn(self, grey_image):
         _, im = cv2.threshold(grey_image,
@@ -132,8 +128,7 @@ class PostprocessNothing(Postprocessor):
     and does not modify the image at all"""
 
     def __init__(self):
-        pars = SpotlobParameterSet([])
-        super(PostprocessNothing, self).__init__(self.postprocess_fn, pars)
+        super(PostprocessNothing, self).__init__(self.postprocess_fn, [])
 
     def postprocess_fn(self, im):
         return im
@@ -145,8 +140,7 @@ class ContourFinderSimple(FeatureFinder):
     """
 
     def __init__(self):
-        pars = SpotlobParameterSet([])
-        super(ContourFinderSimple, self).__init__(self.finder_fn, pars)
+        super(ContourFinderSimple, self).__init__(self.finder_fn, [])
 
     def finder_fn(self, bin_im):
         cont_ret = cv2.findContours(bin_im,
@@ -189,12 +183,9 @@ class ContourFinder(FeatureFinder):
                                   "all",
                                   "holes",
                                   "non-holes"])
-        pars = SpotlobParameterSet([mode_par])
-        super(ContourFinder, self).__init__(self.finder_fn, pars)
+        super(ContourFinder, self).__init__(self.finder_fn, [mode_par])
 
     def finder_fn(self, bin_im, mode):
-        print(mode)
-
         if mode == "outer":
             cont_ret = cv2.findContours(bin_im,
                                         cv2.RETR_EXTERNAL,
@@ -205,8 +196,8 @@ class ContourFinder(FeatureFinder):
                                         cv2.RETR_CCOMP,
                                         cv2.CHAIN_APPROX_SIMPLE)
             # cont_ret is
-            # contours, hierarchy for opencv >4.0
-            # im, contours, hierarchy for opencv <=3.4
+            # * contours, hierarchy for opencv >4.0
+            # * im, contours, hierarchy for opencv <=3.4
 
             contours = cont_ret[-2]
             hierarchy = cont_ret[-1][0]
@@ -265,11 +256,10 @@ class FeatureFormFilter(FeatureFilter):
     """
 
     def __init__(self, size, solidity, remove_on_edge):
-        pars = SpotlobParameterSet(
-            [NumericRangeParameter("minimal_area", size, 0, 10000),
-             NumericRangeParameter("solidity_limit",
-                                   solidity, 0, 1, step=0.01, type_=float),
-             BoolParameter("remove_on_edge", remove_on_edge)])
+        pars = [NumericRangeParameter("minimal_area", size, 0, 10000),
+                NumericRangeParameter("solidity_limit",
+                                      solidity, 0, 1, step=0.01, type_=float),
+                BoolParameter("remove_on_edge", remove_on_edge)]
         super(FeatureFormFilter, self).__init__(self.filter_fn, pars)
 
     def solidity(self, c):
@@ -323,8 +313,8 @@ class FeatureFormFilter(FeatureFilter):
         return draw_contours(background, contours)
 
 
-def draw_contours(color_image, contours, color=(0, 255, 0)):
-    return cv2.drawContours(color_image, contours, -1, color, 1)
+def draw_contours(color_image, contours, color=(0, 255, 0), thickness=1):
+    return cv2.drawContours(color_image, contours, -1, color, thickness)
 
 
 def crop_to_contour(image, contours):

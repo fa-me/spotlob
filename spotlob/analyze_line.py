@@ -15,11 +15,10 @@ class LineAnalysis(Analysis):
     def __init__(self, calibration=None,
                  linewidth_percentile=95,
                  extended_output=True):
-        pars = SpotlobParameterSet([])
         self.calibration = calibration
         self.linewidth_percentile = linewidth_percentile
         super(LineAnalysis, self).__init__(
-            self.analyze, pars, extended_output=extended_output)
+            self.analyze, [], extended_output=extended_output)
 
     def analyze(self, metadata):
         contours = metadata['contours']
