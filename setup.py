@@ -1,5 +1,5 @@
 from setuptools import setup
-import spotlob.version as spotlobversion
+from spotlob import version as spotlobversion
 
 
 with open('README.md') as readme_file:
