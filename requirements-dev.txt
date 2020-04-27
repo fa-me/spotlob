@@ -13,7 +13,7 @@ pytest
 pytest-cov
 nbval
 tox
-sphinx=2.9
+sphinx==2.9
 sphinxcontrib-napoleon
 sphinx_rtd_theme
 m2r
