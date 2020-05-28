@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.9.1
+- structure imports and allow wildcard import
+- handling of nested contours
+- review notebook to browse detection results
+- review browser shows clipped view of detected features
+- optionally include contour coordinates in result dataframe
+- more metadata in batchprocess output
+
 ## 0.9.0
 This version is a complete re-development from scratch.
 
