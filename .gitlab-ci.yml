@@ -36,6 +36,25 @@ test:
     - pip install pytest tox
     - tox
 
+test doc build:
+  image: python:3.7
+  stage: test
+  tags:
+    - asprunner
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+    - public
+    expire_in: 1 week
+  script:
+    - apt-get update
+    - apt-get install graphviz -y
+    - cd docs
+    - mkdir _static
+    - sphinx-build -b html -d _build/doctrees . _build/html
+  only:
+    - branches
+
 pages:
   image: python:3.7
   stage: deploy
@@ -51,7 +70,7 @@ pages:
     - apt-get install graphviz -y
     - cd docs
     - mkdir _static
-    - sphinx-build -W -b html -d _build/doctrees . _build/html
+    - sphinx-build -b html -d _build/doctrees . _build/html
     - mv _build/html/ ../public/
   only:
     - master
