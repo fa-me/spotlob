@@ -86,3 +86,4 @@ deploy pypi:
       - twine upload dist/*
   only:
       - master
+      - tags
