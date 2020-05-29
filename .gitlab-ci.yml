@@ -51,7 +51,7 @@ test doc build:
     - apt-get install graphviz -y
     - cd docs
     - mkdir _static
-    - sphinx-build -W -b html -d _build/doctrees . _build/html
+    - sphinx-build -b html -d _build/doctrees . _build/html
   only:
     - branches
 
@@ -70,7 +70,7 @@ pages:
     - apt-get install graphviz -y
     - cd docs
     - mkdir _static
-    - sphinx-build -W -b html -d _build/doctrees . _build/html
+    - sphinx-build -b html -d _build/doctrees . _build/html
     - mv _build/html/ ../public/
   only:
     - master
