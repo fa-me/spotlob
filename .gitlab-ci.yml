@@ -85,5 +85,6 @@ deploy pypi:
       - python setup.py sdist
       - twine upload dist/*
   only:
-      - master
       - tags
+  except:
+      - branches
