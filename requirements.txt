@@ -9,3 +9,4 @@ ipympl
 pillow
 imageio
 tifffile
+PIL
