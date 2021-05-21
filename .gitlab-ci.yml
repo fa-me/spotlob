@@ -8,6 +8,7 @@ cache:
     - .pip
 
 before_script:
+  - apt-get update && apt-get install -y python3-opencv
   - mkdir -p .pip
   - pip install -U pip
   - pip --cache-dir=.pip install -r requirements-dev.txt
