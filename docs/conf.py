@@ -67,7 +67,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.graphviz',
     'sphinxcontrib.napoleon',
-    'm2r',
+    'm2r2',
 ]
 
 # Napoleon settings
