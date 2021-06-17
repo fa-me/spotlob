@@ -2,6 +2,9 @@ import cv2
 import pandas as pd
 import numpy as np
 import os
+from PIL import Image
+import tifffile as tf
+import imageio as im
 
 from .process_steps import Reader, Converter, Preprocessor,\
     Binarization, Postprocessor, FeatureFinder, FeatureFilter
@@ -25,6 +28,78 @@ class SimpleReader(Reader):
         else:
             raise IOError("File %s not found" % filepath)
 
+class TifReader(Reader):
+    """
+    Reads an image from a file as an RGB file.
+    Only image format `tif` is supported.
+    It uses `tifffile.memmap`.
+    """
+
+    def __init__(self):
+        pars = [NumericRangeParameter("width_percent", 100, 0, 100),
+                NumericRangeParameter("height_percent", 100, 0, 100),
+                NumericRangeParameter("x0_percent", 0, 0, 100),
+                NumericRangeParameter("y0_percent", 0, 0, 100)]
+        
+        self._preview_image_cache = None
+
+        super(TifReader, self).__init__(self.partial_read, pars)
+
+    def _absolute_ROI_corners(self, filepath, width_percent, height_percent, x0, y0):
+        
+        if os.path.exists(filepath):
+            im = Image.open(filepath)
+            w, h = im.size
+            
+            new_w = int(w * width_percent / 100)
+            new_h = int(h * height_percent / 100)
+            x0 = int(w * x0 / 100)
+            y0 =  int(h * y0 / 100)
+            x1 = x0 + new_w
+            y1 = y0 + new_h
+
+            return x0, y0, min(x1,w), min(y1,h)
+        else:
+            raise IOError(f"File {filepath} not found")
+
+    def partial_read(self, filepath, width_percent, height_percent, x0_percent, y0_percent): # -> tuple(np.ndarray, dict)
+        """
+        Returns an array of a part of an .tif image.
+        The arguments must be percentages, even the startingpoint is relative.
+        Starting Point is the top-left corner.
+        """
+        x0,y0, x1,y1 = self._absolute_ROI_corners(filepath, 
+                                                    width_percent, 
+                                                    height_percent, 
+                                                    x0_percent, 
+                                                    y0_percent)
+        
+        return tf.memmap(filepath, dtype= np.uint8)[y0:y1, x0:x1, :], {"ROI": (x0,y0,x1,y1)}
+    
+    def preview(self, spim):
+        filepath = spim.metadata["filepath"]
+        x0,y0, x1,y1 = self._absolute_ROI_corners(filepath, 
+                                                  self.parameters["width_percent"].value, 
+                                                  self.parameters["height_percent"].value,
+                                                  self.parameters["x0_percent"].value,
+                                                  self.parameters["y0_percent"].value)
+
+        # read entire image
+        if self._preview_image_cache is None:
+            self._preview_image_cache = cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_BGR2RGB)
+
+        image = self._preview_image_cache.copy()
+        
+        start_point = x0,y0
+        end_point = x1,y1
+
+        image = (image*0.5).astype(np.uint8) # darken image
+        image[y0:y1, x0:x1] *= 2             # brighten ROI
+
+        # draw rectangle
+        image = cv2.rectangle(image, start_point, end_point, (0,255,0), thickness=1)
+        
+        return image
 
 class GreyscaleConverter(Converter):
     """Converts a color image to a greyscale image, by selecting one channel
